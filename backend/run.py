@@ -1,14 +1,17 @@
+from flask_migrate import Migrate
 from app.config import DataBaseConfig
+from app.database import db
 from app import create_app
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
-
 app = create_app()
-
 app.config.from_object(DataBaseConfig)
+
+db.init_app(app)
+migrate = Migrate(app, db)
 
 if __name__ == "__main__":
     app.run(
