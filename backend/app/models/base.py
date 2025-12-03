@@ -15,7 +15,8 @@ class BaseModel(db.Model):
             db.session.rollback()
             raise e
 
-    def set_utc_now(self) -> datetime:
+    @staticmethod
+    def set_utc_now() -> datetime:
         return datetime.now(timezone.utc)
 
     def soft_delete(self) -> None:
