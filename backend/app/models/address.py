@@ -2,7 +2,6 @@ from app.database import db
 from app.models.base import BaseModel
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import from_shape
-from datetime import datetime
 from shapely.geometry import Point
 
 

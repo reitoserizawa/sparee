@@ -1,7 +1,6 @@
 from app.database import db
 from app.models.base import BaseModel
 from sqlalchemy.orm import backref
-from datetime import datetime, timezone
 
 
 class Company(BaseModel):
