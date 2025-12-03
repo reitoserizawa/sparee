@@ -1,5 +1,6 @@
 from app.database import db
 from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime, timezone
 
 
 class BaseModel(db.Model):
@@ -13,3 +14,10 @@ class BaseModel(db.Model):
         except SQLAlchemyError as e:
             db.session.rollback()
             raise e
+
+    def set_utc_now(self) -> datetime:
+        return datetime.now(timezone.utc)
+
+    def soft_delete(self) -> None:
+        if hasattr(self, 'deleted_at'):
+            self.deleted_at = datetime.now(timezone.utc)
