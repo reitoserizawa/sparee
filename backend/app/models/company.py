@@ -1,0 +1,16 @@
+from app.database import db
+from app.models.base import BaseModel
+from sqlalchemy.orm import backref
+
+
+class Company(BaseModel):
+    __tablename__ = 'companies'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+    address_id = db.Column(db.Integer, db.ForeignKey('addresses.id'))
+    address = db.relationship(
+        "Address", backref=backref("company", uselist=False))
+
+    def __repr__(self):
+        return f"<Company id={self.id} name={self.name}>"
