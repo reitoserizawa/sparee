@@ -20,7 +20,7 @@ class Address(BaseModel):
         Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
     created_at = db.Column(
-        db.DateTime, default=datetime.utcnow, nullable=False)
+        db.DateTime, default=BaseModel.set_utc_now, nullable=False)
 
     def __init__(self, street: str, city: str, state: str, postal_code: str, lat: float, lng: float, country: str = "USA") -> None:
         self.street = street

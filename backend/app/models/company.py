@@ -1,7 +1,7 @@
 from app.database import db
 from app.models.base import BaseModel
 from sqlalchemy.orm import backref
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class Company(BaseModel):
@@ -14,7 +14,7 @@ class Company(BaseModel):
         "Address", backref=backref("company", uselist=False))
 
     created_at = db.Column(
-        db.DateTime, default=datetime.utcnow, nullable=False)
+        db.DateTime, default=BaseModel.set_utc_now, nullable=False)
     deleted_at = db.Column(
         db.DateTime, nullable=True)
 
