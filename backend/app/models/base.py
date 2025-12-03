@@ -20,4 +20,5 @@ class BaseModel(db.Model):
 
     def soft_delete(self) -> None:
         if hasattr(self, 'deleted_at'):
-            self.deleted_at = datetime.now(timezone.utc)
+            self.deleted_at = self.set_utc_now()
+            self.save()
