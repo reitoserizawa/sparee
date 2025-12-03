@@ -20,6 +20,14 @@ class JobPost(BaseModel):
     company = db.relationship(
         "Company", backref="job_posts")
 
+    salary = db.Column(db.Float, nullable=False)
+    salary_type = db.Column(db.String(20), default="hourly")
+
+    address_id = db.Column(db.Integer, db.ForeignKey(
+        'addresses.id'), nullable=True)
+    address = db.relationship(
+        "Address", backref="job_posts")
+
     created_at = db.Column(
         db.DateTime, default=BaseModel.set_utc_now, nullable=False)
     updated_at = db.Column(
