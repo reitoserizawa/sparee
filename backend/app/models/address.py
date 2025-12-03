@@ -17,7 +17,7 @@ class Address(BaseModel):
     country = db.Column(db.String(100), nullable=False, default="USA")
 
     location = db.Column(
-        Geometry(geometry_type='POINT', srid=4326), nullable=False)
+        Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
@@ -28,7 +28,12 @@ class Address(BaseModel):
         self.state = state
         self.postal_code = postal_code
         self.country = country
-        self.location = from_shape(Point(lng, lat), srid=4326)
+        self.set_location(lng=lng, lat=lat)
+
+    def set_location(self, lng: float, lat: float) -> None:
+        if lng is not None and lat is not None:
+            return from_shape(Point(lng, lat), srid=4326)
+        return None
 
     def __repr__(self) -> str:
         return f"<Address {self.street}, {self.city}>"
