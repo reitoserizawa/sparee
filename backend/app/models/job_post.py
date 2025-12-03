@@ -1,6 +1,10 @@
 from app.database import db
+from app.models.job_post_skill import job_post_skills
 from app.models.base import BaseModel
-from sqlalchemy.orm import backref
+from app.models.address import Address
+from app.models.skill import Skill
+from app.models.company import Company
+from app.models.job_category import JobCategory
 
 
 class JobPost(BaseModel):
@@ -13,12 +17,12 @@ class JobPost(BaseModel):
     job_category_id = db.Column(db.Integer, db.ForeignKey(
         'job_categories.id'), nullable=False)
     job_category = db.relationship(
-        "JobCategory", backref="job_posts")
+        JobCategory, backref="job_posts")
 
     company_id = db.Column(db.Integer, db.ForeignKey(
         'companies.id'), nullable=False)
     company = db.relationship(
-        "Company", backref="job_posts")
+        Company, backref="job_posts")
 
     salary = db.Column(db.Float, nullable=False)
     salary_type = db.Column(db.String(20), default="hourly")
@@ -26,14 +30,20 @@ class JobPost(BaseModel):
     address_id = db.Column(db.Integer, db.ForeignKey(
         'addresses.id'), nullable=True)
     address = db.relationship(
-        "Address", backref="job_posts")
+        Address, backref="job_posts")
+
+    skills = db.relationship(
+        Skill,
+        secondary=job_post_skills,
+        backref="job_posts"
+    )
 
     created_at = db.Column(
-        db.DateTime, default=BaseModel.set_utc_now, nullable=False)
+        db.DateTime(timezone=True), default=BaseModel.set_utc_now, nullable=False)
     updated_at = db.Column(
-        db.DateTime, default=BaseModel.set_utc_now, onupdate=BaseModel.set_utc_now, nullable=True)
+        db.DateTime(timezone=True), default=BaseModel.set_utc_now, onupdate=BaseModel.set_utc_now, nullable=True)
     deleted_at = db.Column(
-        db.DateTime, nullable=True)
+        db.DateTime(timezone=True), nullable=True)
 
     def __repr__(self):
         return f"<JobPost id={self.id} title={self.title}>"
