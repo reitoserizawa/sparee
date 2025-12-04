@@ -1,5 +1,5 @@
 from app.database import db
-from app.models.job_post_skill import job_post_skills
+from app.models.job_post_skill import JobPostSkill
 from app.models.base import BaseModel
 from app.models.address import Address
 from app.models.skill import Skill
@@ -32,18 +32,24 @@ class JobPost(BaseModel):
     address = db.relationship(
         Address, backref="job_posts")
 
-    skills = db.relationship(
-        Skill,
-        secondary=job_post_skills,
-        backref="job_posts"
-    )
+    job_post_skills = db.relationship(JobPostSkill, back_populates="job_post")
+    skills = db.relationship(Skill, secondary="job_post_skills", viewonly=True)
 
     created_at = db.Column(
-        db.DateTime(timezone=True), default=BaseModel.set_utc_now, nullable=False)
+        db.DateTime(timezone=True),
+        default=BaseModel.set_utc_now,
+        nullable=False
+    )
     updated_at = db.Column(
-        db.DateTime(timezone=True), default=BaseModel.set_utc_now, onupdate=BaseModel.set_utc_now, nullable=True)
+        db.DateTime(timezone=True),
+        default=BaseModel.set_utc_now,
+        onupdate=BaseModel.set_utc_now,
+        nullable=True
+    )
     deleted_at = db.Column(
-        db.DateTime(timezone=True), nullable=True)
+        db.DateTime(timezone=True),
+        nullable=True
+    )
 
     def __repr__(self):
         return f"<JobPost id={self.id} title={self.title}>"
