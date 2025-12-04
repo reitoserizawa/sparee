@@ -15,6 +15,12 @@ class BaseModel(db.Model):
             db.session.rollback()
             raise e
 
+    @classmethod
+    def active(cls):
+        if hasattr(cls, "deleted_at"):
+            return cls.query.filter(cls.deleted_at.is_(None))
+        return cls.query
+
     @staticmethod
     def set_utc_now() -> datetime:
         return datetime.now(timezone.utc)
