@@ -2,11 +2,13 @@ from app.database import db
 from app.queries import SoftDeleteQuery
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
+from typing import Type
 
 
 class BaseModel(db.Model):
-    __abstract__ = True
-    query_class = SoftDeleteQuery
+    __abstract__: bool = True
+    query_class: Type[SoftDeleteQuery] = SoftDeleteQuery
+    query: SoftDeleteQuery
 
     def save(self) -> None:
         try:
