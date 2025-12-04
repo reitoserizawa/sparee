@@ -8,8 +8,5 @@ class JobCategory(BaseModel):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
 
-    created_at = db.Column(
-        db.DateTime, default=BaseModel.set_utc_now, nullable=False)
-
     def __repr__(self):
         return f"<JobCategory id={self.id} name={self.name}>"
