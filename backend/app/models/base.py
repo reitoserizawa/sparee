@@ -1,10 +1,12 @@
 from app.database import db
+from app.queries import SoftDeleteQuery
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
 
 
 class BaseModel(db.Model):
     __abstract__ = True
+    query_class = SoftDeleteQuery
 
     def save(self) -> None:
         try:
@@ -14,12 +16,6 @@ class BaseModel(db.Model):
         except SQLAlchemyError as e:
             db.session.rollback()
             raise e
-
-    @classmethod
-    def active(cls):
-        if hasattr(cls, "deleted_at"):
-            return cls.query.filter(cls.deleted_at.is_(None))
-        return cls.query
 
     @staticmethod
     def set_utc_now() -> datetime:
