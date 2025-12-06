@@ -10,7 +10,7 @@ class BaseModel(db.Model):
     query_class: Type[SoftDeleteQuery] = SoftDeleteQuery
     query: SoftDeleteQuery
 
-    def save(self) -> None:
+    def save(self) -> BaseModel:
         try:
             db.session.add(self)
             db.session.commit()
