@@ -1,7 +1,6 @@
 from app.database import db
 from app.models.base import BaseModel
 from app.models.user_skill import UserSkill
-from app.models.skill import Skill
 
 
 class User(BaseModel):
@@ -13,7 +12,7 @@ class User(BaseModel):
     password = db.Column(db.String(255), nullable=False)
 
     user_skills = db.relationship(UserSkill, back_populates="user")
-    skills = db.relationship(Skill, secondary="user_skills", viewonly=True)
+    skills = db.relationship("Skill", secondary="user_skills", viewonly=True)
 
     created_at = db.Column(
         db.DateTime(timezone=True),
