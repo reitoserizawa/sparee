@@ -1,7 +1,7 @@
-from flask_sqlalchemy import BaseQuery
+from flask_sqlalchemy.query import Query
 
 
-class SoftDeleteQuery(BaseQuery):
+class SoftDeleteQuery(Query):
     def __new__(cls, *args, **kwargs):
         return super(SoftDeleteQuery, cls).__new__(cls)
 
