@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from app.config import DataBaseConfig
 from app.database import db
+from app.routes import register_blueprints
 
 load_dotenv()
 
@@ -14,9 +15,7 @@ def create_app():
 
     app.config.from_object(DataBaseConfig)
     db.init_app(app)
-
-    from .routes import main
-    app.register_blueprint(main)
+    register_blueprints(app)
 
     with app.app_context():
         from . import models
