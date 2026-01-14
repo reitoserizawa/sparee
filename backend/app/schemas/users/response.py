@@ -1,11 +1,9 @@
-from marshmallow import Schema, fields
-from ..skills.response import SkillResponseSchema
+from marshmallow import fields
+from .base import UserBaseSchema
 
 
-class UserResponseSchema(Schema):
+class UserResponseSchema(UserBaseSchema):
     id = fields.Int()
-    username = fields.Str()
-    email = fields.Email()
 
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
