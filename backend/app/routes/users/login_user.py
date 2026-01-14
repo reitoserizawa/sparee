@@ -3,7 +3,7 @@ from marshmallow import ValidationError
 
 from app.schemas.users.login import UserLoginSchema
 from app.services.user_service import UserService
-from utils.load_dict import load_dict
+from app.utils.load_dict import load_dict
 
 bp = Blueprint("login", __name__, url_prefix="/api/users")
 

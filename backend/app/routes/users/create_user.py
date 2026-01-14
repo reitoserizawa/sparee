@@ -4,8 +4,7 @@ from marshmallow import ValidationError
 from app.schemas.users.create import UserCreateSchema
 from app.schemas.users.response import UserResponseSchema
 from app.services.user_service import UserService
-
-from utils.load_dict import load_dict
+from app.utils.load_dict import load_dict
 
 bp = Blueprint("users", __name__, url_prefix="/api/users")
 
