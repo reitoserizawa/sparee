@@ -1,5 +1,6 @@
-from app.routes.users import create_user_bp
+from app.routes.users import USER_BLUEPRINTS
 
 
 def register_blueprints(app):
-    app.register_blueprint(create_user_bp)
+    for bp in USER_BLUEPRINTS:
+        app.register_blueprint(bp)
