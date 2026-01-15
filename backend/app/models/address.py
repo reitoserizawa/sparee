@@ -20,13 +20,17 @@ class Address(BaseModel):
     location = db.Column(
         Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
-    def __init__(self, street: str, city: str, state: str, postal_code: str, lat: Optional[float], lng: Optional[float], country: str = "USA") -> None:
-        self.street = street
-        self.city = city
-        self.state = state
-        self.postal_code = postal_code
-        self.country = country
-        self.set_location(lng=lng, lat=lat)
+    @property
+    def lat(self) -> Optional[float]:
+        if self.location:
+            return self.location.y
+        return None
+
+    @property
+    def lng(self) -> Optional[float]:
+        if self.location:
+            return self.location.x
+        return None
 
     def set_location(self, lng: Optional[float], lat: Optional[float]) -> None:
         if lng is not None and lat is not None:
