@@ -1,0 +1,25 @@
+from flask import Blueprint, request, jsonify
+from marshmallow import ValidationError
+
+from app.schemas.companies.create import CompanyCreateSchema
+from app.schemas.companies.response import CompanyResponseSchema
+from app.services.company_service import CompanyService
+from app.utils.load_dict import load_dict
+
+bp = Blueprint("companies", __name__, url_prefix="/api/companies")
+
+create_schema = CompanyCreateSchema()
+response_schema = CompanyResponseSchema()
+company_service = CompanyService()
+
+
+@bp.route("", methods=["POST"])
+def create_company():
+    try:
+        payload = load_dict(create_schema, request.json)
+    except ValidationError as err:
+        return {"errors": err.messages}, 400
+
+    company = company_service.create_company(payload)
+
+    return jsonify(response_schema.dump(company)), 201
