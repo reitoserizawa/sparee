@@ -20,6 +20,12 @@ class Address(BaseModel):
     location = db.Column(
         Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
+    geocode_status = db.Column(
+        db.Enum("pending", "success", "failed", name="geocode_status"),
+        default="pending",
+        nullable=False
+    )
+
     @property
     def lat(self) -> Optional[float]:
         if self.location:
