@@ -19,6 +19,13 @@ class BaseModel(db.Model):
             db.session.rollback()
             raise e
 
+    @classmethod
+    def get_or_raise(cls, id: int) -> "BaseModel":
+        instance = cls.query.get(id)
+        if not instance:
+            raise ValueError(f"{cls.__name__} with id {id} not found")
+        return instance
+
     @staticmethod
     def set_utc_now() -> datetime:
         return datetime.now(timezone.utc)
