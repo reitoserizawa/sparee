@@ -38,6 +38,10 @@ class Address(BaseModel):
             return self.location.x
         return None
 
+    @property
+    def full_address(self) -> str:
+        return f"{self.street}, {self.city}, {self.state}, {self.postal_code}, {self.country}"
+
     def set_location(self, lng: Optional[float], lat: Optional[float]) -> None:
         if lng is not None and lat is not None:
             self.location = from_shape(Point(lng, lat), srid=4326)
