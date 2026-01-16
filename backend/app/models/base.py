@@ -2,7 +2,7 @@ from app.database import db
 from app.queries import SoftDeleteQuery
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
-from typing import Type
+from typing import Type, List
 
 
 class BaseModel(db.Model):
@@ -25,6 +25,10 @@ class BaseModel(db.Model):
         if not instance:
             raise ValueError(f"{cls.__name__} with id {id} not found")
         return instance
+
+    @classmethod
+    def get_all(cls) -> List["BaseModel"]:
+        return cls.query.all()
 
     @staticmethod
     def set_utc_now() -> datetime:
