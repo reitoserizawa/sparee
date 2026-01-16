@@ -11,8 +11,3 @@ class AddressResponseSchema(AddressBaseSchema):
         if obj.location:
             return {"lat": obj.lat, "lng": obj.lng}
         return None
-
-
-class AddressListResponseSchema(AddressResponseSchema):
-    class Meta:
-        many = True
