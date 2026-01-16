@@ -5,8 +5,14 @@ from app.queue import geocode_queue
 
 from app.jobs.address_job import AddressJob
 
+from typing import cast, List
+
 
 class AddressService:
+    @staticmethod
+    def get_all() -> List[Address]:
+        return cast(List[Address], Address.get_all())
+
     def create_address(self, street: str, city: str, state: str, postal_code: str, country: str = "USA") -> Address:
         address = Address()
         address.street = street
