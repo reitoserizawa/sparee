@@ -1,12 +1,16 @@
 services:
     redis:
         image: redis:7
+        platform: linux/arm64
         ports:
             - '6379:6379'
 
     web:
         build: .
         command: python run.py
+        volumes:
+            - ./:/app
+        working_dir: /app
         env_file: .env
         environment:
             - REDIS_URL=redis://redis:6379/0
