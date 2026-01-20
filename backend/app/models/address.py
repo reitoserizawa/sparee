@@ -1,10 +1,10 @@
 from app.database import db
 from app.models.base import BaseModel
 from geoalchemy2 import Geometry
-from geoalchemy2.shape import from_shape
+from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point
 
-from typing import Optional
+from typing import Optional, cast
 
 
 class Address(BaseModel):
@@ -27,15 +27,10 @@ class Address(BaseModel):
     )
 
     @property
-    def lat(self) -> Optional[float]:
+    def coordinates(self) -> Optional[dict]:
         if self.location:
-            return self.location.y
-        return None
-
-    @property
-    def lng(self) -> Optional[float]:
-        if self.location:
-            return self.location.x
+            geom = cast(Point, to_shape(self.location))
+            return {"lat": geom.y, "lng": geom.x}
         return None
 
     @property
