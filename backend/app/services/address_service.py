@@ -10,8 +10,21 @@ from typing import cast, List
 
 class AddressService:
     @staticmethod
+    def get_or_raise(address_id: int) -> Address:
+        return cast(Address, Address.get_or_raise(address_id))
+
+    @staticmethod
     def get_all() -> List[Address]:
         return cast(List[Address], Address.get_all())
+
+    @staticmethod
+    def enqueue_geocode(address_id: int):
+        geocode_queue.enqueue(
+            AddressJob.geocode_address_job,
+            address_id,
+            retry=Retry(max=3, interval=[10, 30, 60]),
+            job_timeout=30,
+        )
 
     def create_address(self, street: str, city: str, state: str, postal_code: str, country: str = "USA") -> Address:
         address = Address()
@@ -22,10 +35,6 @@ class AddressService:
         address.country = country
         address.save()
 
-        geocode_queue.enqueue(
-            AddressJob.geocode_address_job,
-            address,
-            retry=Retry(max=3),
-            job_timeout=30,
-        )
+        self.enqueue_geocode(address.id)
+
         return address
