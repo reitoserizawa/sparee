@@ -1,6 +1,7 @@
-from marshmallow import Schema, fields
+from marshmallow import fields
+from .base import SkillBaseSchema
 
 
-class SkillResponseSchema(Schema):
-    id = fields.Int()
-    name = fields.Str()
+class SkillResponseSchema(SkillBaseSchema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(dump_only=True)

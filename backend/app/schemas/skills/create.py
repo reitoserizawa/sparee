@@ -1,5 +1,6 @@
+from marshmallow import fields
 from .base import SkillBaseSchema
 
 
 class SkillCreateSchema(SkillBaseSchema):
-    pass
+    name = fields.Str(required=True)
