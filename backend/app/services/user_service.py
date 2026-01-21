@@ -5,7 +5,7 @@ from app.utils.security import Security
 
 class UserService:
     def authenticate(self, email: str, password: str) -> User | None:
-        user = User.query.filter_by(email=email).first()
+        user = User.get_by_email(email=email)
         if user and Security.verify_password(password, user.password):
             return user
         return None
