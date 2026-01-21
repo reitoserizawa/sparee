@@ -1,8 +1,14 @@
+from typing import cast
+
 from app.models.company import Company
 from app.services.address_service import AddressService
 
 
 class CompanyService:
+    @staticmethod
+    def get_or_raise(company_id: int) -> Company:
+        return cast(Company, Company.get_or_raise(company_id))
+
     def create_company(self, data) -> Company:
         # create address first
         address_data = data.pop("address")
