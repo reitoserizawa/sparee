@@ -1,3 +1,5 @@
+from typing import Type, List, TypeVar
+
 from app.database import db
 from app.models.job_post_skill import JobPostSkill
 from app.models.base import BaseModel
@@ -5,6 +7,8 @@ from app.models.address import Address
 from app.models.skill import Skill
 from app.models.company import Company
 from app.models.job_category import JobCategory
+
+T = TypeVar("T", bound="JobPost")
 
 
 class JobPost(BaseModel):
@@ -50,6 +54,10 @@ class JobPost(BaseModel):
         db.DateTime(timezone=True),
         nullable=True
     )
+
+    @classmethod
+    def get_by_company(cls: Type[T], company: Company) -> List[T]:
+        return cls.query.filter_by(company_id=company.id).all()
 
     def __repr__(self):
         return f"<JobPost id={self.id} title={self.title}>"
