@@ -34,7 +34,7 @@ class AddressJob:
 
             geojson = response.json()
             features = geojson.get("features", [])
-            print(features)
+
             if not features:
                 address.geocode_status = "failed"
                 address.save()
