@@ -4,13 +4,13 @@ from app.utils.security import Security
 
 
 class UserService:
-    def authenticate(self, email: str, password: str):
+    def authenticate(self, email: str, password: str) -> User | None:
         user = User.query.filter_by(email=email).first()
         if user and Security.verify_password(password, user.password):
             return user
         return None
 
-    def generate_token(self, user):
+    def generate_token(self, user) -> str:
         import jwt
         from datetime import datetime, timedelta, timezone
         secret = current_app.config["SECRET_KEY"]
