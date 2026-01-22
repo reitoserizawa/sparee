@@ -2,7 +2,7 @@ from app.database import db
 from app.queries import SoftDeleteQuery
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
-from typing import Type, List, TypeVar
+from typing import Type, List, TypeVar, Optional
 
 T = TypeVar("T", bound="BaseModel")
 
@@ -27,6 +27,10 @@ class BaseModel(db.Model):
         if not instance:
             raise ValueError(f"{cls.__name__} with id {id} not found")
         return instance
+
+    @classmethod
+    def get_from_id(cls: Type[T], id: int) -> Optional[T]:
+        return cls.query.get(id)
 
     @classmethod
     def get_all(cls: Type[T]) -> List[T]:
