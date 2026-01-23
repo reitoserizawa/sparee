@@ -3,6 +3,7 @@ from typing import Type, Optional, TypeVar
 from app.database import db
 from app.models.base import BaseModel
 from app.models.user_skill import UserSkill
+from app.models.user_message import UserMessage
 
 T = TypeVar("T", bound="User")
 
@@ -17,6 +18,12 @@ class User(BaseModel):
 
     user_skills = db.relationship(UserSkill, back_populates="user")
     skills = db.relationship("Skill", secondary="user_skills", viewonly=True)
+
+    user_messages = db.relationship(
+        UserMessage,
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
 
     created_at = db.Column(
         db.DateTime(timezone=True),

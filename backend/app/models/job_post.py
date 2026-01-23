@@ -7,6 +7,7 @@ from app.models.address import Address
 from app.models.skill import Skill
 from app.models.company import Company
 from app.models.job_category import JobCategory
+from app.models.user_message import UserMessage
 
 T = TypeVar("T", bound="JobPost")
 
@@ -38,6 +39,11 @@ class JobPost(BaseModel):
 
     job_post_skills = db.relationship(JobPostSkill, back_populates="job_post")
     skills = db.relationship(Skill, secondary="job_post_skills", viewonly=True)
+    user_messages = db.relationship(
+        UserMessage,
+        back_populates="job_post",
+        cascade="all, delete-orphan"
+    )
 
     created_at = db.Column(
         db.DateTime(timezone=True),
