@@ -1,8 +1,10 @@
-from flask import g, request, current_app
+from flask import g, request
 from app.services.user_service import UserService
+from typing import Optional
+from flask.typing import ResponseReturnValue
 
 
-def load_user(request):
+def load_user() -> Optional[ResponseReturnValue]:
     g.user = None
 
     auth = request.headers.get('Authorization')
