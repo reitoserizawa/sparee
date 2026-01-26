@@ -6,6 +6,7 @@ from .job_post_skill import JobPostSkill
 from .skill import Skill
 from .user import User
 from .user_skill import UserSkill
+from .company_member import CompanyMember
 from .base import BaseModel
 
 __all__ = [
@@ -17,5 +18,6 @@ __all__ = [
     "Skill",
     "User",
     "UserSkill",
+    "CompanyMember",
     "BaseModel",
 ]
