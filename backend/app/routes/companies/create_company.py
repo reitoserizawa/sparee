@@ -5,6 +5,7 @@ from app.schemas.companies.create import CompanyCreateSchema
 from app.schemas.companies.response import CompanyResponseSchema
 from app.services.company_service import CompanyService
 from app.utils.load_dict import load_dict
+from app.decorators.user_required import user_required
 
 bp = Blueprint("companies", __name__, url_prefix="/api/companies")
 
@@ -14,6 +15,7 @@ company_service = CompanyService()
 
 
 @bp.route("", methods=["POST"])
+@user_required
 def create_company():
     try:
         payload = load_dict(create_schema, request.json)
