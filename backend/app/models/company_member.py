@@ -17,5 +17,5 @@ class CompanyMember(BaseModel):
 
     __table_args__ = (
         db.UniqueConstraint("user_id", "company_id",
-                            name="unique_user_company"),
+                            name="unique_user_per_company"),
     )
