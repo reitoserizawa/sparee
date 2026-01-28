@@ -11,11 +11,6 @@ class Message(BaseModel):
     timestamp = db.Column(db.DateTime, index=True,
                           default=BaseModel.set_utc_now)
 
-    deleted_at = db.Column(
-        db.DateTime(timezone=True),
-        nullable=True
-    )
-
     user_messages = db.relationship(
         "UserMessage",
         back_populates="message",
