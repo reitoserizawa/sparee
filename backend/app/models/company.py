@@ -1,6 +1,7 @@
 from app.database import db
 from app.models.base import BaseModel
 from app.models.address import Address
+from app.models.company_member import CompanyMember
 
 
 class Company(BaseModel):
@@ -10,6 +11,12 @@ class Company(BaseModel):
     name = db.Column(db.String(255), nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey('addresses.id'))
     address = db.relationship(Address, backref="companies")
+
+    members = db.relationship(
+        CompanyMember,
+        back_populates="company",
+        cascade="all, delete-orphan"
+    )
 
     created_at = db.Column(
         db.DateTime(timezone=True),

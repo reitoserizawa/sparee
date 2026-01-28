@@ -1,9 +1,11 @@
 from typing import Type, Optional, TypeVar
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from app.database import db
 from app.models.base import BaseModel
 from app.models.user_skill import UserSkill
 from app.models.user_message import UserMessage
+from app.models.company_member import CompanyMember
 
 T = TypeVar("T", bound="User")
 
@@ -24,6 +26,13 @@ class User(BaseModel):
         back_populates="user",
         cascade="all, delete-orphan"
     )
+
+    associated_companies = db.relationship(
+        CompanyMember,
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+    companies = association_proxy("associated_companies", "company")
 
     created_at = db.Column(
         db.DateTime(timezone=True),
