@@ -8,9 +8,14 @@ class CompanyMember(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id"), primary_key=True)
-    user = db.relationship("User", back_populates="company_memberships")
+        "users.id"), nullable=False)
+    user = db.relationship("User", back_populates="associated_companies")
 
     company_id = db.Column(db.Integer, db.ForeignKey(
-        "companies.id"), primary_key=True)
+        "companies.id"), nullable=False)
     company = db.relationship("Company", back_populates="members")
+
+    __table_args__ = (
+        db.UniqueConstraint("user_id", "company_id",
+                            name="unique_user_company"),
+    )
