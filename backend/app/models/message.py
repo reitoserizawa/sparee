@@ -7,6 +7,7 @@ class Message(BaseModel):
     __tablename__ = "messages"
 
     id = db.Column(db.Integer, primary_key=True)
+
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True,
                           default=BaseModel.set_utc_now)
