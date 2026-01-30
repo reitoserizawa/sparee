@@ -1,9 +1,12 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.users.create import UserCreateSchema
 from app.schemas.users.response import UserResponseSchema
 from app.services.user_service import UserService
+
+from app.decorators.with_session import with_session
 from app.utils.load_dict import load_dict
 
 bp = Blueprint("users", __name__, url_prefix="/api/users")
@@ -14,12 +17,13 @@ user_service = UserService()
 
 
 @bp.route("", methods=["POST"])
-def create_user():
+@with_session
+async def create_user(session: AsyncSession):
     try:
         payload = load_dict(create_schema, request.json)
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-    user = user_service.create_user(payload)
+    user = await user_service.create_user(session, payload)
 
     return jsonify(response_schema.dump(user)), 201

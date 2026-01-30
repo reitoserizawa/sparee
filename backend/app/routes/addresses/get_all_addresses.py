@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.decorators.with_session import with_session
 from app.services.address_service import AddressService
 from app.schemas.addresses.response import AddressResponseSchema
 
@@ -9,6 +11,7 @@ address_service = AddressService()
 
 
 @bp.route("/", methods=["GET"])
-def get_all_addresses():
-    addresses = address_service.get_all()
+@with_session
+async def get_all_addresses(session: AsyncSession):
+    addresses = await address_service.get_all(session)
     return jsonify(response_schema.dump(addresses)), 200
