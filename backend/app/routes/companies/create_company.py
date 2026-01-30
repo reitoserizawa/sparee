@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from marshmallow import ValidationError
 
 from app.schemas.companies.create import CompanyCreateSchema
@@ -22,6 +22,7 @@ def create_company():
     except ValidationError as err:
         return {"errors": err.messages}, 400
 
-    company = company_service.create_company(payload)
+    user = g.user
+    company = company_service.create_company(data=payload, user=user)
 
     return jsonify(response_schema.dump(company)), 201
