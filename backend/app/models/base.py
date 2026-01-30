@@ -37,7 +37,18 @@ class BaseModel(db.Model):
         return cls.query.all()
 
     @classmethod
-    def filter_by_kwargs(cls: Type[T], **kwargs) -> List[T]:
+    def find_one_by(cls: Type[T], **kwargs) -> Optional[T]:
+        return cls.query.filter_by(**kwargs).first()
+
+    @classmethod
+    def find_one_by_or_raise(cls: Type[T], **kwargs) -> T:
+        instance = cls.find_one_by(**kwargs)
+        if not instance:
+            raise ValueError(f"{cls.__name__} not found for {kwargs}")
+        return instance
+
+    @classmethod
+    def filter_by(cls: Type[T], **kwargs) -> List[T]:
         return cls.query.filter_by(**kwargs).all()
 
     @staticmethod
