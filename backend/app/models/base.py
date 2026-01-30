@@ -24,14 +24,14 @@ class BaseModel(Base):
             raise
 
     @classmethod
-    async def get_or_raise(cls: Type[T], id: int, session: AsyncSession) -> T:
+    async def get_or_raise(cls: Type[T], session: AsyncSession, id: int) -> T:
         result = await session.get(cls, id)
         if not result:
             raise ValueError(f"{cls.__name__} with id {id} not found")
         return result
 
     @classmethod
-    async def get_from_id(cls: Type[T], id: int, session: AsyncSession) -> Optional[T]:
+    async def get_from_id(cls: Type[T], session: AsyncSession, id: int) -> Optional[T]:
         return await session.get(cls, id)
 
     @classmethod
