@@ -50,3 +50,4 @@ urllib3==2.6.3
 Werkzeug==3.1.4
 SQLAlchemy[asyncio]>=2.0
 asyncpg==0.31.0
+uvicorn[standard]>=0.23
