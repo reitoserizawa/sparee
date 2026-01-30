@@ -1,12 +1,9 @@
 from typing import Type, Optional, TypeVar
-from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Text, Float
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.base import BaseModel
-from app.models.user_skill import UserSkill
-from app.models.user_message import UserMessage
-from app.models.company_member import CompanyMember
 
 T = TypeVar("T", bound="User")
 
@@ -19,17 +16,17 @@ class User(BaseModel):
     email = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
 
-    user_skills = relationship(UserSkill, back_populates="user")
+    user_skills = relationship("UserSkill", back_populates="user")
     skills = relationship("Skill", secondary="user_skills", viewonly=True)
 
     user_messages = relationship(
-        UserMessage,
+        "UserMessage",
         back_populates="user",
         cascade="all, delete-orphan"
     )
 
     associated_companies = relationship(
-        CompanyMember,
+        "CompanyMember",
         back_populates="user",
         cascade="all, delete-orphan"
     )

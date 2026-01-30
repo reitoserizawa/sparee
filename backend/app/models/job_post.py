@@ -3,13 +3,8 @@ from typing import Type, List, TypeVar
 from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Text, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.job_post_skill import JobPostSkill
 from app.models.base import BaseModel
-from app.models.address import Address
-from app.models.skill import Skill
 from app.models.company import Company
-from app.models.job_category import JobCategory
-from app.models.user_message import UserMessage
 
 T = TypeVar("T", bound="JobPost")
 
@@ -24,12 +19,12 @@ class JobPost(BaseModel):
     job_category_id = Column(Integer, ForeignKey(
         'job_categories.id'), nullable=False)
     job_category = relationship(
-        JobCategory, backref="job_posts")
+        "JobCategory", backref="job_posts")
 
     company_id = Column(Integer, ForeignKey(
         'companies.id'), nullable=False)
     company = relationship(
-        Company, backref="job_posts")
+        "Company", backref="job_posts")
 
     salary = Column(Float, nullable=False)
     salary_type = Column(String(20), default="hourly")
@@ -37,12 +32,12 @@ class JobPost(BaseModel):
     address_id = Column(Integer, ForeignKey(
         'addresses.id'), nullable=True)
     address = relationship(
-        Address, backref="job_posts")
+        "Address", backref="job_posts")
 
-    job_post_skills = relationship(JobPostSkill, back_populates="job_post")
-    skills = relationship(Skill, secondary="job_post_skills", viewonly=True)
+    job_post_skills = relationship("JobPostSkill", back_populates="job_post")
+    skills = relationship("Skill", secondary="job_post_skills", viewonly=True)
     user_messages = relationship(
-        UserMessage,
+        "UserMessage",
         back_populates="job_post",
         cascade="all, delete-orphan"
     )

@@ -1,10 +1,12 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.base import BaseModel
-from app.models.address import Address
-from app.models.company_member import CompanyMember
-from app.models.user import User
+
+if TYPE_CHECKING:
+    from app.models.company_member import CompanyMember
+    from app.models.user import User
 
 
 class Company(BaseModel):
@@ -13,10 +15,10 @@ class Company(BaseModel):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
     address_id = Column(Integer, ForeignKey('addresses.id'))
-    address = relationship(Address, backref="companies")
+    address = relationship("Address", backref="companies")
 
     members = relationship(
-        CompanyMember,
+        "CompanyMember",
         back_populates="company",
         cascade="all, delete-orphan"
     )
@@ -40,5 +42,5 @@ class Company(BaseModel):
     def __repr__(self) -> str:
         return f"<Company id={self.id} name={self.name}>"
 
-    async def add_member(self, session: AsyncSession, user: User) -> CompanyMember:
+    async def add_member(self, session: AsyncSession, user: "User") -> "CompanyMember":
         return await CompanyMember.add_member_or_raise(session, user, self)
