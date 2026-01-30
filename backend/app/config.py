@@ -12,7 +12,7 @@ class DataBaseConfig(object):
     DATABASE_NAME = os.getenv("DATABASE_NAME")
 
     SQLALCHEMY_DATABASE_URI = (
-        f"postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}"
+        f"postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}"
         f"@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
