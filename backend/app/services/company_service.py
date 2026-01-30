@@ -1,7 +1,10 @@
 from typing import cast
 
 from app.models.company import Company
+from app.models.company_member import CompanyMember
+from app.models.user import User
 from app.services.address_service import AddressService
+from app.services.company_member_service import CompanyMemberService
 
 
 class CompanyService:
@@ -9,7 +12,7 @@ class CompanyService:
     def get_or_raise(company_id: int) -> Company:
         return cast(Company, Company.get_or_raise(company_id))
 
-    def create_company(self, data) -> Company:
+    def create_company(self, data, user) -> Company:
         # create address first
         address_data = data.pop("address")
         address = AddressService().create_address(
@@ -24,5 +27,9 @@ class CompanyService:
         company.name = data["name"]
         company.address_id = address.id
         company.save()
+        self.add_member(company, user)
 
         return company
+
+    def add_member(self, company: Company, user: User) -> CompanyMember:
+        return CompanyMemberService().add_member(company=company, user=user)
