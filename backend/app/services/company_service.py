@@ -1,5 +1,6 @@
 from typing import cast
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.company import Company
 from app.models.company_member import CompanyMember
 from app.models.user import User
@@ -9,13 +10,14 @@ from app.services.company_member_service import CompanyMemberService
 
 class CompanyService:
     @staticmethod
-    def get_or_raise(company_id: int) -> Company:
-        return cast(Company, Company.get_or_raise(company_id))
+    async def get_or_raise(session: AsyncSession, company_id: int) -> Company:
+        return await Company.get_or_raise(session, company_id)
 
-    def create_company(self, data, user) -> Company:
-        # create address first
+    @staticmethod
+    async def create_company(session: AsyncSession, data, user) -> Company:
         address_data = data.pop("address")
-        address = AddressService().create_address(
+        address = await AddressService.create_address(
+            session,
             street=address_data["street"],
             city=address_data["city"],
             state=address_data["state"],
@@ -23,13 +25,12 @@ class CompanyService:
             country=address_data.get("country", "USA")
         )
 
-        company = Company()
-        company.name = data["name"]
-        company.address_id = address.id
-        company.save()
-        self.add_member(company, user)
+        company = Company(name=data["name"], address_id=address.id)
+        await company.save(session)
+        await CompanyService.add_member(session, company, user)
 
         return company
 
-    def add_member(self, company: Company, user: User) -> CompanyMember:
-        return CompanyMemberService().add_member(company=company, user=user)
+    @staticmethod
+    async def add_member(session: AsyncSession, company: Company, user: User) -> CompanyMember:
+        return await CompanyMemberService.add_member(session=session, company=company, user=user)

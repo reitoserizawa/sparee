@@ -1,3 +1,4 @@
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.job_post import JobPost
 from app.models.company import Company
 from app.services.address_service import AddressService
@@ -5,14 +6,16 @@ from app.services.address_service import AddressService
 
 class JobPostService:
     @staticmethod
-    def get_from_company(company: Company) -> list[JobPost]:
-        return JobPost.get_by_company(company)
+    async def get_from_company(session: AsyncSession, company: Company) -> list[JobPost]:
+        return await JobPost.get_by_company(session, company)
 
-    def create_job_post(self, company, data) -> JobPost:
+    @staticmethod
+    async def create_job_post(session: AsyncSession, company: Company, data) -> JobPost:
         address_data = data.pop("address", None)
         address = None
         if address_data:
-            address = AddressService().create_address(
+            address = await AddressService.create_address(
+                session,
                 street=address_data["street"],
                 city=address_data["city"],
                 state=address_data["state"],
@@ -21,14 +24,17 @@ class JobPostService:
             )
         else:
             address = company.address
-        job_post = JobPost()
-        job_post.title = data["title"]
-        job_post.description = data["description"]
-        job_post.salary = data["salary"]
-        job_post.salary_type = data.get("salary_type", None)
-        job_post.job_category_id = data["job_category_id"]
-        job_post.company_id = company.id
-        job_post.address_id = address.id
-        job_post.save()
+
+        job_post = JobPost(
+            session,
+            title=data["title"],
+            description=data["description"],
+            salary=data["salary"],
+            salary_type=data.get("salary_type", None),
+            job_category_id=data["job_category_id"],
+            company_id=company.id,
+            address_id=address.id
+        )
+        await job_post.save(session)
 
         return job_post
