@@ -1,6 +1,7 @@
-from app.database import db
 from app.models.base import BaseModel
+from sqlalchemy import Column, Integer, String, Enum
 from geoalchemy2 import Geometry
+from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point
 
@@ -10,26 +11,26 @@ from typing import Optional, cast
 class Address(BaseModel):
     __tablename__ = "addresses"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    street = db.Column(db.String(255), nullable=False)
-    city = db.Column(db.String(100), nullable=False)
-    state = db.Column(db.String(100), nullable=False)
-    postal_code = db.Column(db.String(20), nullable=False)
-    country = db.Column(db.String(100), nullable=False, default="USA")
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    street = Column(String(255), nullable=False)
+    city = Column(String(100), nullable=False)
+    state = Column(String(100), nullable=False)
+    postal_code = Column(String(20), nullable=False)
+    country = Column(String(100), nullable=False, default="USA")
 
-    location = db.Column(
+    location = Column(
         Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
-    geocode_status = db.Column(
-        db.Enum("pending", "success", "failed", name="geocode_status"),
+    geocode_status = Column(
+        Enum("pending", "success", "failed", name="geocode_status"),
         default="pending",
         nullable=False
     )
 
     @property
     def coordinates(self) -> Optional[dict]:
-        if self.location:
-            geom = cast(Point, to_shape(self.location))
+        if self.location is not None:
+            geom = cast(Point, to_shape(cast(WKBElement, self.location)))
             return {"lat": geom.y, "lng": geom.x}
         return None
 

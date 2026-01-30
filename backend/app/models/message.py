@@ -1,22 +1,22 @@
-from app.database import db
+from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
-from app.models.user_message import UserMessage
 
 
 class Message(BaseModel):
     __tablename__ = "messages"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
 
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True,
-                          default=BaseModel.set_utc_now)
+    body = Column(String(140))
+    timestamp = Column(DateTime, index=True,
+                       default=BaseModel.set_utc_now)
 
-    user_messages = db.relationship(
+    user_messages = relationship(
         "UserMessage",
         back_populates="message",
         cascade="all, delete-orphan"
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<Message id={self.id} body={self.body}>'

@@ -1,6 +1,8 @@
 from typing import Type, List, TypeVar
 
-from app.database import db
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Text, Float
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.job_post_skill import JobPostSkill
 from app.models.base import BaseModel
 from app.models.address import Address
@@ -15,55 +17,55 @@ T = TypeVar("T", bound="JobPost")
 class JobPost(BaseModel):
     __tablename__ = 'job_posts'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=False)
 
-    job_category_id = db.Column(db.Integer, db.ForeignKey(
+    job_category_id = Column(Integer, ForeignKey(
         'job_categories.id'), nullable=False)
-    job_category = db.relationship(
+    job_category = relationship(
         JobCategory, backref="job_posts")
 
-    company_id = db.Column(db.Integer, db.ForeignKey(
+    company_id = Column(Integer, ForeignKey(
         'companies.id'), nullable=False)
-    company = db.relationship(
+    company = relationship(
         Company, backref="job_posts")
 
-    salary = db.Column(db.Float, nullable=False)
-    salary_type = db.Column(db.String(20), default="hourly")
+    salary = Column(Float, nullable=False)
+    salary_type = Column(String(20), default="hourly")
 
-    address_id = db.Column(db.Integer, db.ForeignKey(
+    address_id = Column(Integer, ForeignKey(
         'addresses.id'), nullable=True)
-    address = db.relationship(
+    address = relationship(
         Address, backref="job_posts")
 
-    job_post_skills = db.relationship(JobPostSkill, back_populates="job_post")
-    skills = db.relationship(Skill, secondary="job_post_skills", viewonly=True)
-    user_messages = db.relationship(
+    job_post_skills = relationship(JobPostSkill, back_populates="job_post")
+    skills = relationship(Skill, secondary="job_post_skills", viewonly=True)
+    user_messages = relationship(
         UserMessage,
         back_populates="job_post",
         cascade="all, delete-orphan"
     )
 
-    created_at = db.Column(
-        db.DateTime(timezone=True),
+    created_at = Column(
+        DateTime(timezone=True),
         default=BaseModel.set_utc_now,
         nullable=False
     )
-    updated_at = db.Column(
-        db.DateTime(timezone=True),
+    updated_at = Column(
+        DateTime(timezone=True),
         default=BaseModel.set_utc_now,
         onupdate=BaseModel.set_utc_now,
         nullable=True
     )
-    deleted_at = db.Column(
-        db.DateTime(timezone=True),
+    deleted_at = Column(
+        DateTime(timezone=True),
         nullable=True
     )
 
     @classmethod
-    def get_by_company(cls: Type[T], company: Company) -> List[T]:
-        return cls.query.filter_by(company_id=company.id).all()
+    async def get_by_company(cls: Type[T], session: AsyncSession, company: Company) -> List[T]:
+        return await cls.filter_by(session=session, company_id=company.id)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<JobPost id={self.id} title={self.title}>"

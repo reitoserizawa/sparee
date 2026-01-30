@@ -1,14 +1,15 @@
-from app.database import db
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
 
 class UserSkill(BaseModel):
     __tablename__ = "user_skills"
 
-    user_id = db.Column(db.Integer, db.ForeignKey(
+    user_id = Column(Integer, ForeignKey(
         "users.id"), primary_key=True)
-    user = db.relationship("User", back_populates="user_skills")
+    user = relationship("User", back_populates="user_skills")
 
-    skill_id = db.Column(db.Integer, db.ForeignKey(
+    skill_id = Column(Integer, ForeignKey(
         "skills.id"), primary_key=True)
-    skill = db.relationship("Skill", back_populates="user_skills")
+    skill = relationship("Skill", back_populates="user_skills")
