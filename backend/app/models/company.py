@@ -2,6 +2,7 @@ from app.database import db
 from app.models.base import BaseModel
 from app.models.address import Address
 from app.models.company_member import CompanyMember
+from app.models.user import User
 
 
 class Company(BaseModel):
@@ -34,5 +35,8 @@ class Company(BaseModel):
         nullable=True
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Company id={self.id} name={self.name}>"
+
+    def add_member(self, user: User) -> CompanyMember:
+        return CompanyMember.add_member_or_raise(user, self)
