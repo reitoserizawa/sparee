@@ -1,112 +1,165 @@
+from app.models import BaseModel
+from app import create_app
+import os
+import sys
 import logging
 from logging.config import fileConfig
 
-from flask import current_app
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
+from geoalchemy2 import alembic_helpers
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# -------------------------------------------------
+# Fix PYTHONPATH so `import app` works
+# -------------------------------------------------
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, BASE_DIR)
+
+# -------------------------------------------------
+# Create Flask app + context
+# -------------------------------------------------
+
+flask_app = create_app()
+app_ctx = flask_app.app_context()
+
+# -------------------------------------------------
+# Alembic config
+# -------------------------------------------------
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
-fileConfig(config.config_file_name)
-logger = logging.getLogger('alembic.env')
+if config.config_file_name:
+    fileConfig(config.config_file_name)
+
+logger = logging.getLogger("alembic.env")
+
+target_metadata = BaseModel.metadata
+
+# -------------------------------------------------
+# Sync DB URL (Alembic MUST be sync)
+# -------------------------------------------------
 
 
-def get_engine():
-    try:
-        # this works with Flask-SQLAlchemy<3 and Alchemical
-        return current_app.extensions['migrate'].db.get_engine()
-    except (TypeError, AttributeError):
-        # this works with Flask-SQLAlchemy>=3
-        return current_app.extensions['migrate'].db.engine
+def process_revision_directives(context, revision, directives):
+    if getattr(config.cmd_opts, "autogenerate", False):
+        script = directives[0]
+        if script.upgrade_ops.is_empty():
+            directives[:] = []
+            logger.info("No schema changes detected.")
 
 
-def get_engine_url():
-    try:
-        return get_engine().url.render_as_string(hide_password=False).replace(
-            '%', '%%')
-    except AttributeError:
-        return str(get_engine().url).replace('%', '%%')
+def get_sync_url():
+    url = flask_app.config["SQLALCHEMY_DATABASE_URI"]
+    return url.replace(
+        "postgresql+asyncpg://",
+        "postgresql+psycopg2://",
+    )
 
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-config.set_main_option('sqlalchemy.url', get_engine_url())
-target_db = current_app.extensions['migrate'].db
+config.set_main_option("sqlalchemy.url", get_sync_url())
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+# -------------------------------------------------
+# Offline migrations
+# -------------------------------------------------
+
+POSTGIS_TABLE_PREFIXES = (
+    "spatial_ref_sys",
+    "tiger_",
+    "direction_",
+    "zip_",
+    "county",
+    "countysub",
+    "state_",
+    "state",
+    "street_",
+    "place_",
+    "geom_",
+    "tgr_",
+    "tabblock",
+    "secondary_unit_lookup",
+)
+
+GEOCODER_TABLES = {
+    "addr",
+    "addrfeat",
+    "bg",
+    "cousub",
+    "edges",
+    "faces",
+    "featnames",
+    "layer",
+    "place",
+    "tract",
+    "zcta5",
+    "topology",
+    "pagc_gaz",
+    "pagc_lex",
+    "pagc_rules",
+    "loader_platform",
+    "loader_variables",
+    "loader_lookuptables",
+    "geocode_settings",
+    "geocode_settings_default",
+    "secondary_unit_lookup",
+}
+
+IGNORED_INDEXES = {
+    "secondary_unit_lookup_abbrev_idx",
+}
 
 
-def get_metadata():
-    if hasattr(target_db, 'metadatas'):
-        return target_db.metadatas[None]
-    return target_db.metadata
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table":
+        # Ignore PostGIS / TIGER / geocoder tables
+        if name.startswith(POSTGIS_TABLE_PREFIXES) or name in GEOCODER_TABLES:
+            return False
+
+    elif type_ == "index":
+        if name in IGNORED_INDEXES:
+            return False
+
+    return True
 
 
 def run_migrations_offline():
-    """Run migrations in 'offline' mode.
-
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
-
-    """
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url, target_metadata=get_metadata(), literal_binds=True
+        url=get_sync_url(),
+        target_metadata=target_metadata,
+        literal_binds=True,
+        include_object=include_object,
+        compare_type=True,
     )
 
     with context.begin_transaction():
         context.run_migrations()
 
+# -------------------------------------------------
+# Online migrations
+# -------------------------------------------------
+
 
 def run_migrations_online():
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
-
-    # this callback is used to prevent an auto-migration from being generated
-    # when there are no changes to the schema
-    # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
-    def process_revision_directives(context, revision, directives):
-        if getattr(config.cmd_opts, 'autogenerate', False):
-            script = directives[0]
-            if script.upgrade_ops.is_empty():
-                directives[:] = []
-                logger.info('No changes in schema detected.')
-
-    conf_args = current_app.extensions['migrate'].configure_args
-    if conf_args.get("process_revision_directives") is None:
-        conf_args["process_revision_directives"] = process_revision_directives
-
-    connectable = get_engine()
+    connectable = engine_from_config(
+        {"sqlalchemy.url": get_sync_url()},
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
-            target_metadata=get_metadata(),
-            **conf_args
+            target_metadata=target_metadata,
+            include_object=include_object,
+            render_item=alembic_helpers.render_item,
+            process_revision_directives=process_revision_directives,
         )
 
         with context.begin_transaction():
             context.run_migrations()
 
 
+# -------------------------------------------------
+# Run
+# -------------------------------------------------
 if context.is_offline_mode():
     run_migrations_offline()
 else:
