@@ -52,3 +52,4 @@ SQLAlchemy[asyncio]>=2.0
 asyncpg==0.31.0
 uvicorn[standard]>=0.23
 gunicorn
+hypercorn

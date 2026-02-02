@@ -20,4 +20,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Default command (can be overridden in docker-compose)
-CMD ["gunicorn", "run:app", "--bind", "0.0.0.0:5000"]
+# CMD ["hypercorn", "run:app", "--bind", "0.0.0.0:5000"]
+CMD ["hypercorn", "run:app", "--bind", "0.0.0.0:5000", "--reload"]

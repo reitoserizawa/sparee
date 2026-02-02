@@ -7,7 +7,7 @@ services:
 
     web:
         build: .
-        command: gunicorn run:app --bind 0.0.0.0:5000 --reload
+        command: hypercorn run:app --bind 0.0.0.0:5000 --reload
         volumes:
             - ./:/app
         working_dir: /app
