@@ -53,3 +53,4 @@ asyncpg==0.31.0
 uvicorn[standard]>=0.23
 gunicorn
 hypercorn
+asgiref
