@@ -124,9 +124,8 @@ def run_migrations_offline():
     context.configure(
         url=get_sync_url(),
         target_metadata=target_metadata,
-        literal_binds=True,
+        literal_binds=os.getenv("DEBUG", "false").lower() == "true",
         include_object=include_object,
-        compare_type=True,
     )
 
     with context.begin_transaction():
