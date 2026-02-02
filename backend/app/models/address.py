@@ -1,11 +1,18 @@
 from app.models.base import BaseModel
 from sqlalchemy import Column, Integer, String, Enum
+from enum import Enum as PyEnum
 from geoalchemy2 import Geometry
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point
 
 from typing import Optional, cast
+
+
+class AddressStatus(PyEnum):
+    PENDING = "pending"
+    SUCCESS = "success"
+    FAILED = "failed"
 
 
 class Address(BaseModel):
@@ -22,8 +29,8 @@ class Address(BaseModel):
         Geometry(geometry_type='POINT', srid=4326), nullable=True)
 
     geocode_status = Column(
-        Enum("pending", "success", "failed", name="geocode_status"),
-        default="pending",
+        Enum(AddressStatus, name="geocode_status"),
+        default=AddressStatus.PENDING,
         nullable=False
     )
 
@@ -37,6 +44,9 @@ class Address(BaseModel):
     @property
     def full_address(self) -> str:
         return f"{self.street}, {self.city}, {self.state}, {self.postal_code}, {self.country}"
+
+    def set_status(self, status: AddressStatus):
+        self.geocode_status = status
 
     def set_location(self, lng: Optional[float], lat: Optional[float]) -> None:
         if lng is not None and lat is not None:
