@@ -11,7 +11,7 @@ click==8.3.1
 croniter==6.0.0
 cryptography==46.0.3
 dotenv==0.9.9
-Flask==3.1.2
+Flask[async]
 Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.1.1
 GeoAlchemy2==0.18.1
@@ -51,3 +51,4 @@ Werkzeug==3.1.4
 SQLAlchemy[asyncio]>=2.0
 asyncpg==0.31.0
 uvicorn[standard]>=0.23
+gunicorn
