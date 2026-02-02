@@ -1,6 +1,7 @@
 from app.config import DataBaseConfig
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.pool import NullPool
 from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 
@@ -10,6 +11,7 @@ Base = declarative_base()
 async_engine = create_async_engine(
     DataBaseConfig.SQLALCHEMY_DATABASE_URI,
     echo=True,
+    poolclass=NullPool,
     future=True
 )
 
