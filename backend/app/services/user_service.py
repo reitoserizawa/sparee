@@ -32,6 +32,10 @@ class UserService:
             return None
 
     @staticmethod
+    async def get_from_email(session: AsyncSession, email: str) -> User | None:
+        return await User.get_by_email(session, email=email)
+
+    @staticmethod
     async def authenticate(session: AsyncSession, email: str, password: str) -> User | None:
         user = await User.get_by_email(session, email=email)
         if user is not None and Security.verify_password(password, cast(str, user.password)):
@@ -41,7 +45,6 @@ class UserService:
     @staticmethod
     async def create_user(session: AsyncSession, data) -> User:
         user = User(
-            session,
             username=data["username"],
             email=data["email"],
             password=Security.hash_password(data["password"])
