@@ -4,8 +4,8 @@ from flask import g, abort
 
 def user_required(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    async def wrapper(*args, **kwargs):
         if not g.user:
             abort(401)
-        return f(*args, **kwargs)
-    return decorated_function
+        return await f(*args, **kwargs)
+    return wrapper
