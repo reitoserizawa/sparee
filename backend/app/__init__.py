@@ -1,7 +1,6 @@
 from flask import Flask
 from dotenv import load_dotenv
 import os
-from app.middlewares.load_user import load_user
 from app.config import DataBaseConfig
 from app.database import db
 from app.errors.handlers import register_error_handlers
@@ -16,7 +15,6 @@ def create_app():
     app.config['DEBUG'] = os.getenv("DEBUG", "false").lower() == "true"
 
     app.config.from_object(DataBaseConfig)
-    app.before_request(load_user)
     register_error_handlers(app)
     db.init_app(app)
     register_blueprints(app)
