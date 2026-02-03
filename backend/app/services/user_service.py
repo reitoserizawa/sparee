@@ -13,22 +13,12 @@ class UserService:
 
     @staticmethod
     async def get_from_jwt(session: AsyncSession, token: str) -> User | None:
-        secret = current_app.config["SECRET_KEY"]
-
-        if not secret:
-            raise JWTConfigurationError(None)
-
         try:
-            payload = jwt.decode(
-                token,
-                secret,
-                algorithm="HS256",
-                options={'required': ['exp', 'sub']}
-            )
-            user_id = payload.get('sub')
-
-            return await User.get_from_id(session, id=user_id)
-        except (jwt.ExpiredSignatureError or jwt.InvalidTokenError):
+            payload = Security.decode_jwt(token)
+            user_id = int(payload['sub'])
+            user = await User.get_from_id(session, id=user_id)
+            return user
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
             return None
 
     @staticmethod
