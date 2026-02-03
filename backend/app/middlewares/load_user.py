@@ -1,15 +1,18 @@
 from flask import g, request
 from app.services.user_service import UserService
-from typing import Optional
-from flask.typing import ResponseReturnValue
+
+user_service = UserService()
 
 
-def load_user() -> Optional[ResponseReturnValue]:
+async def load_user():
     g.user = None
 
-    auth = request.headers.get('Authorization')
-    if not auth or not auth.startswith('Bearer '):
+    auth = request.headers.get("Authorization")
+    if not auth or not auth.startswith("Bearer "):
         return
 
-    token = auth.split(' ', 1)[1]
-    g.user = UserService().get_from_jwt(token)
+    token = auth.split(" ", 1)[1]
+    session = g.session
+    user = await user_service.get_from_jwt(session, token)
+    if user:
+        g.user = user
