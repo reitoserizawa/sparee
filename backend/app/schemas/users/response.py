@@ -1,17 +1,26 @@
-from marshmallow import fields
-from .base import UserBaseSchema
+from typing import List
+from datetime import datetime
+from pydantic import Field
+from .base import UserBaseModel
 
 
-class UserResponseSchema(UserBaseSchema):
-    id = fields.Int(dump_only=True)
+class UserResponseModel(UserBaseModel):
+    id: int
+    created_at: datetime = Field(..., read_only=True)
+    updated_at: datetime = Field(..., read_only=True)
+    skills: List[str] = []
 
-    username = fields.Str(dump_only=True)
-    email = fields.Email(dump_only=True)
+    class Config:
+        from_attributes = True
 
-    created_at = fields.DateTime(dump_only=True)
-    updated_at = fields.DateTime(dump_only=True)
-
-    skills = fields.Method("get_skill_names")
-
-    def get_skill_names(self, obj):
-        return [skill.name for skill in obj.skills]
+    @classmethod
+    def from_orm_obj(cls, obj):
+        skills = [skill.name for skill in getattr(obj, "skills", []) or []]
+        return cls(
+            id=obj.id,
+            username=obj.username,
+            email=obj.email,
+            created_at=obj.created_at,
+            updated_at=obj.updated_at,
+            skills=skills
+        )

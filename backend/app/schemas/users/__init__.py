@@ -1,7 +1,7 @@
-from .create import UserCreateSchema
-from .update import UserUpdateSchema
-from .response import UserResponseSchema
-from .login import UserLoginSchema
+from .create import UserCreateModel
+from .update import UserUpdateModel
+from .response import UserResponseModel
+from .login import UserLoginModel
 
-__all__ = ["UserCreateSchema", "UserUpdateSchema",
-           "UserResponseSchema", "UserLoginSchema"]
+__all__ = ["UserCreateModel", "UserUpdateModel",
+           "UserResponseModel", "UserLoginModel"]

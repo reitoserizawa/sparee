@@ -1,12 +1,8 @@
-from marshmallow import fields
-from .base import UserBaseSchema
+from pydantic import EmailStr, Field
+from .base import UserBaseModel
 
 
-class UserCreateSchema(UserBaseSchema):
-    username = fields.Str(required=True)
-    email = fields.Email(required=True)
-    password = fields.Str(
-        required=True,
-        load_only=True,
-        validate=lambda p: len(p) >= 8
-    )
+class UserCreateModel(UserBaseModel):
+    username: str = Field(...)
+    email: EmailStr = Field(...)
+    password: str = Field(..., write_only=True)

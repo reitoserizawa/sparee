@@ -1,6 +1,6 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel, EmailStr
 
 
-class UserBaseSchema(Schema):
-    username = fields.Str()
-    email = fields.Email()
+class UserBaseModel(BaseModel):
+    username: str
+    email: EmailStr

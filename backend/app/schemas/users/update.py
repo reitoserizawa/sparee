@@ -1,10 +1,8 @@
-from marshmallow import fields
-from marshmallow.validate import Length
-from .base import UserBaseSchema
+from pydantic import EmailStr, Field
+from .base import UserBaseModel
 
 
-class UserUpdateSchema(UserBaseSchema):
-    username = fields.Str(required=False)
-    email = fields.Email(required=False)
-    password = fields.Str(required=False, load_only=True,
-                          validate=Length(min=8))
+class UserUpdateModel(UserBaseModel):
+    username: str
+    email: EmailStr
+    password: str = Field(write_only=True)
