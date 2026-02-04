@@ -9,7 +9,14 @@ load_dotenv()
 def create_app() -> FastAPI:
     app = FastAPI(title="Your App")
     app.add_middleware(RequestLifecycleMiddleware)
-    app.include_router(router)
+    app.include_router(router, prefix="/api")
+
+    @app.on_event("startup")
+    async def on_startup():
+        from app.db.models.base import Base
+        from app.db.database import engine
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
     return app
 
 
