@@ -6,3 +6,6 @@ class UserUpdateModel(UserBaseModel):
     username: str
     email: EmailStr
     password: str = Field(write_only=True)
+
+    class Config:
+        extra = "forbid"
