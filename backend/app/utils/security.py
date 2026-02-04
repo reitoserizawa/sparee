@@ -1,4 +1,4 @@
-from flask import current_app
+import os
 from app.errors.jwt_configuration_error import JWTConfigurationError
 import bcrypt
 import jwt
@@ -8,7 +8,10 @@ from typing import Any
 class Security:
     @staticmethod
     def decode_jwt(token: str) -> Any:
-        secret = current_app.config["SECRET_KEY"]
+        secret = os.getenv("SECRET_KEY")
+
+        if not secret:
+            raise JWTConfigurationError(None)
 
         try:
             payload = jwt.decode(
@@ -33,7 +36,7 @@ class Security:
     @staticmethod
     def generate_token(user) -> str:
         from datetime import datetime, timedelta, timezone
-        secret = current_app.config["SECRET_KEY"]
+        secret = os.getenv("SECRET_KEY")
 
         if not secret:
             raise JWTConfigurationError(None)
