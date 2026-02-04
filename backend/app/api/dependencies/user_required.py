@@ -1,12 +1,8 @@
-from fastapi import Depends, HTTPException, status
-from app.db.session import get_db
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException, status, Request
 
 
-async def user_required(session: AsyncSession = Depends(get_db)):
-    # Replace this with your actual user-loading logic
-    # For example, decode JWT from header, then fetch user from DB
-    user = getattr(session, "user", None)
+async def user_required(request: Request):
+    user = getattr(request.state, "user", None)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
