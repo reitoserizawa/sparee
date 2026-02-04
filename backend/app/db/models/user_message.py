@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Enum, UniqueConstraint
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+from app.db.models.base import BaseModel
 
 
 class UserMessage(BaseModel):

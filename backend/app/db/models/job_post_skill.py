@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+from app.db.models.base import BaseModel
 
 
 class JobPostSkill(BaseModel):

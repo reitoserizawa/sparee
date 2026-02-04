@@ -1,5 +1,4 @@
-from app.models import BaseModel
-from app import create_app
+from app.db.database import Base
 import os
 import sys
 import logging
@@ -9,57 +8,34 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from geoalchemy2 import alembic_helpers
 
-# -------------------------------------------------
-# Fix PYTHONPATH so `import app` works
-# -------------------------------------------------
+# Add app folder to path
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, BASE_DIR)
 
-# -------------------------------------------------
-# Create Flask app + context
-# -------------------------------------------------
+# Import your Base for metadata
 
-flask_app = create_app()
-app_ctx = flask_app.app_context()
+target_metadata = Base.metadata
 
-# -------------------------------------------------
 # Alembic config
-# -------------------------------------------------
 config = context.config
-
 if config.config_file_name:
     fileConfig(config.config_file_name)
-
 logger = logging.getLogger("alembic.env")
 
-target_metadata = BaseModel.metadata
+# -------------------
+# Database URLs
+# -------------------
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL not set")
+SYNC_DATABASE_URL = DATABASE_URL.replace(
+    "postgresql+asyncpg://", "postgresql+psycopg2://")
 
-# -------------------------------------------------
-# Sync DB URL (Alembic MUST be sync)
-# -------------------------------------------------
+config.set_main_option("sqlalchemy.url", SYNC_DATABASE_URL)
 
-
-def process_revision_directives(context, revision, directives):
-    if getattr(config.cmd_opts, "autogenerate", False):
-        script = directives[0]
-        if script.upgrade_ops.is_empty():
-            directives[:] = []
-            logger.info("No schema changes detected.")
-
-
-def get_sync_url():
-    url = flask_app.config["SQLALCHEMY_DATABASE_URI"]
-    return url.replace(
-        "postgresql+asyncpg://",
-        "postgresql+psycopg2://",
-    )
-
-
-config.set_main_option("sqlalchemy.url", get_sync_url())
-
-# -------------------------------------------------
-# Offline migrations
-# -------------------------------------------------
+# -------------------
+# Include / ignore objects
+# -------------------
 
 POSTGIS_TABLE_PREFIXES = (
     "spatial_ref_sys",
@@ -120,14 +96,17 @@ def include_object(object, name, type_, reflected, compare_to):
     return True
 
 
+# -------------------
+# Migration functions
+# -------------------
+
 def run_migrations_offline():
     context.configure(
-        url=get_sync_url(),
+        url=SYNC_DATABASE_URL,
         target_metadata=target_metadata,
-        literal_binds=os.getenv("DEBUG", "false").lower() == "true",
+        literal_binds=True,
         include_object=include_object,
     )
-
     with context.begin_transaction():
         context.run_migrations()
 
@@ -138,7 +117,7 @@ def run_migrations_offline():
 
 def run_migrations_online():
     connectable = engine_from_config(
-        {"sqlalchemy.url": get_sync_url()},
+        {"sqlalchemy.url": SYNC_DATABASE_URL},
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
@@ -149,7 +128,6 @@ def run_migrations_online():
             target_metadata=target_metadata,
             include_object=include_object,
             render_item=alembic_helpers.render_item,
-            process_revision_directives=process_revision_directives,
         )
 
         with context.begin_transaction():

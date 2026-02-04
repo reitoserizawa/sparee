@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from app.models.base import BaseModel
+from app.db.models.base import BaseModel
 
 
 class JobCategory(BaseModel):

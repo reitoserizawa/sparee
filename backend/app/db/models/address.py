@@ -1,4 +1,4 @@
-from app.models.base import BaseModel
+from app.db.models.base import BaseModel
 from sqlalchemy import Column, Integer, String, Enum
 from enum import Enum as PyEnum
 from geoalchemy2 import Geometry

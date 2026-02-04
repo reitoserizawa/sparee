@@ -3,9 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.base import BaseModel
-
-T = TypeVar("T", bound="User")
+from app.db.models.base import BaseModel
 
 
 class User(BaseModel):
@@ -49,8 +47,8 @@ class User(BaseModel):
     )
 
     @classmethod
-    async def get_by_email(cls: Type[T], session: AsyncSession, email: str) -> Optional[T]:
+    async def get_by_email(cls: Type["User"], session: AsyncSession, email: str) -> Optional["User"]:
         return await cls.find_one_by(session=session, email=email)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<User id={self.id} username={self.username} email={self.email}>"

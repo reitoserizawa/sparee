@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+from app.db.models.base import BaseModel
 
 
 class Skill(BaseModel):

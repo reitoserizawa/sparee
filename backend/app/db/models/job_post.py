@@ -1,12 +1,10 @@
-from typing import Type, List, TypeVar
+from typing import Type, Sequence
 
 from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, Text, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.base import BaseModel
-from app.models.company import Company
-
-T = TypeVar("T", bound="JobPost")
+from app.db.models.base import BaseModel
+from app.db.models.company import Company
 
 
 class JobPost(BaseModel):
@@ -59,7 +57,7 @@ class JobPost(BaseModel):
     )
 
     @classmethod
-    async def get_by_company(cls: Type[T], session: AsyncSession, company: Company) -> List[T]:
+    async def get_by_company(cls: Type["JobPost"], session: AsyncSession, company: Company) -> Sequence["JobPost"]:
         return await cls.filter_by(session=session, company_id=company.id)
 
     def __repr__(self) -> str:
