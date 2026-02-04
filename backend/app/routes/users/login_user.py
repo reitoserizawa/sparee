@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 
 from app.schemas.users.login import UserLoginSchema
 from app.services.user_service import UserService
+from app.utils.security import Security
 
 from app.utils.load_dict import load_dict
 
@@ -24,5 +25,5 @@ async def login_user():
     if not user:
         return jsonify(errors=["Invalid email or password"]), 401
 
-    token = user_service.generate_token(user)
+    token = Security.generate_token(user)
     return jsonify({"user": user.username, "token": token}), 200
