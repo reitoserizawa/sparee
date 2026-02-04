@@ -1,4 +1,5 @@
 from flask import current_app
+from app.errors.jwt_configuration_error import JWTConfigurationError
 import bcrypt
 import jwt
 from typing import Any
@@ -28,3 +29,15 @@ class Security:
     @staticmethod
     def verify_password(password: str, hashed: str) -> bool:
         return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+
+    @staticmethod
+    def generate_token(user) -> str:
+        from datetime import datetime, timedelta, timezone
+        secret = current_app.config["SECRET_KEY"]
+
+        if not secret:
+            raise JWTConfigurationError(None)
+
+        payload = {"sub": str(user.id), "exp": datetime.now(timezone.utc) +
+                   timedelta(hours=1)}
+        return jwt.encode(payload, secret, algorithm="HS256")

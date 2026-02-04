@@ -1,12 +1,9 @@
 from typing import cast
 
-from flask import current_app
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
 from app.models.user import User
 from app.utils.security import Security
-
-from app.errors.jwt_configuration_error import JWTConfigurationError
 
 
 class UserService:
@@ -41,14 +38,3 @@ class UserService:
         )
         await user.save(session)
         return user
-
-    def generate_token(self, user) -> str:
-        from datetime import datetime, timedelta, timezone
-        secret = current_app.config["SECRET_KEY"]
-
-        if not secret:
-            raise JWTConfigurationError(None)
-
-        payload = {"sub": user.id, "exp": datetime.now(timezone.utc) +
-                   timedelta(hours=1)}
-        return jwt.encode(payload, secret, algorithm="HS256")
