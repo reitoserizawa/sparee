@@ -1,29 +1,31 @@
-from flask import Blueprint, request, jsonify, g
-from marshmallow import ValidationError
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.users.login import UserLoginSchema
+from app.schemas.users.login import UserLoginModel
 from app.services.user_service import UserService
 from app.utils.security import Security
+from app.db.session import get_session
 
-from app.utils.load_dict import load_dict
-
-bp = Blueprint("login", __name__, url_prefix="/api/users")
-
-login_schema = UserLoginSchema()
+router = APIRouter()
 user_service = UserService()
 
 
-@bp.route("/login", methods=["POST"])
-async def login_user():
-    session = g.session
-    try:
-        payload = load_dict(login_schema, request.json)
-    except ValidationError as err:
-        return jsonify(errors=err.messages), 400
-
-    user = await user_service.authenticate(session, payload["email"], payload["password"])
+@router.post("")
+async def login_user(
+    payload: UserLoginModel,
+    session: AsyncSession = Depends(get_session)
+):
+    # Authenticate user
+    user = await user_service.authenticate(
+        session, email=payload.email, password=payload.password
+    )
     if not user:
-        return jsonify(errors=["Invalid email or password"]), 401
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
 
+    # Generate JWT token
     token = Security.generate_token(user)
-    return jsonify({"user": user.username, "token": token}), 200
+
+    return {"user": user.username, "token": token}

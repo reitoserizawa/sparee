@@ -1,34 +1,28 @@
-from flask import Blueprint, request, jsonify, g
-from marshmallow import ValidationError
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.users.create import UserCreateSchema
-from app.schemas.users.response import UserResponseSchema
+from app.schemas.users.create import UserCreateModel
+from app.schemas.users.response import UserResponseModel
 from app.services.user_service import UserService
+from app.db.session import get_session
 
-from app.errors.custom_exception import APIError
-from app.utils.load_dict import load_dict
-
-bp = Blueprint("users", __name__, url_prefix="/api/users")
-
-create_schema = UserCreateSchema()
-response_schema = UserResponseSchema()
+router = APIRouter()
 user_service = UserService()
 
 
-@bp.route("", methods=["POST"])
-async def create_user():
-    session = g.session
-    try:
-        payload = load_dict(create_schema, request.json)
-    except ValidationError as err:
-        raise APIError(message=str(err), status_code=400)
-
-    existing = await user_service.get_from_email(session, email=payload["email"])
+@router.post("/", status_code=201, response_model=UserResponseModel)
+async def create_user(
+    payload: UserCreateModel,
+    session: AsyncSession = Depends(get_session)
+):
+    # Check if email already exists
+    existing = await user_service.get_from_email(session, email=payload.email)
     if existing:
-        raise APIError(
-            message=f"Email {payload['email']} already exists",
-            status_code=400
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Email {payload.email} already exists"
         )
+
     user = await user_service.create_user(session, payload)
 
-    return jsonify(response_schema.dump(user)), 201
+    return UserResponseModel.from_orm_obj(user)
