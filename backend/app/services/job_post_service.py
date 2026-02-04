@@ -1,12 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.job_post import JobPost
-from app.models.company import Company
+from app.db.models.job_post import JobPost
+from app.db.models.company import Company
 from app.services.address_service import AddressService
+
+from typing import Sequence
 
 
 class JobPostService:
     @staticmethod
-    async def get_from_company(session: AsyncSession, company: Company) -> list[JobPost]:
+    async def get_from_company(session: AsyncSession, company: Company) -> Sequence[JobPost]:
         return await JobPost.get_by_company(session, company)
 
     @staticmethod

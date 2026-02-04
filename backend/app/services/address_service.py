@@ -1,12 +1,12 @@
 from rq import Retry
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.address import Address
-from app.queue import geocode_queue
+from app.db.models.address import Address
+from app.workers.job_queue import geocode_queue
 
-from app.jobs.address_job import AddressJob
+from app.workers.jobs.address_job import AddressJob
 
-from typing import cast, List
+from typing import cast, Sequence
 
 
 class AddressService:
@@ -15,12 +15,14 @@ class AddressService:
         return await Address.get_or_raise(session, address_id)
 
     @staticmethod
-    async def get_all(session: AsyncSession) -> List[Address]:
+    async def get_all(session: AsyncSession) -> Sequence[Address]:
         return await Address.get_all(session)
 
     @staticmethod
     def enqueue_geocode(address_id: int):
+        from app.workers.worker import run_async_job
         geocode_queue.enqueue(
+            run_async_job,
             AddressJob.geocode_address_job,
             address_id,
             retry=Retry(max=3, interval=[10, 30, 60]),

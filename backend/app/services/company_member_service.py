@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.models.company_member import CompanyMember
-from app.models.company import Company
-from app.models.user import User
+from app.db.models.company_member import CompanyMember
+from app.db.models.company import Company
+from app.db.models.user import User
 
 
 class CompanyMemberService:

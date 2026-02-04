@@ -5,15 +5,19 @@ from app.services.address_service import AddressService
 from app.services.company_member_service import CompanyMemberService
 
 if TYPE_CHECKING:
-    from app.models.company_member import CompanyMember
-    from app.models.user import User
-    from app.models.company import Company
+    from app.db.models.company_member import CompanyMember
+    from app.db.models.user import User
+    from app.db.models.company import Company
 
 
 class CompanyService:
     @staticmethod
     async def get_or_raise(session: AsyncSession, company_id: int) -> "Company":
-        return await Company.get_or_raise(session, company_id)
+        return await Company.get_or_raise(session=session, id=company_id)
+
+    @staticmethod
+    async def get_from_user(session: AsyncSession, user: "User") -> "Company":
+        return await Company.get_from_user(session=session, user=user)
 
     @staticmethod
     async def create_company(session: AsyncSession, data, user) -> "Company":

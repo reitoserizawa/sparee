@@ -2,7 +2,7 @@ from typing import cast
 
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
-from app.models.user import User
+from app.db.models.user import User
 from app.utils.security import Security
 
 
