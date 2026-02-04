@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.utils.security import Security
 from app.schemas.users.create import UserCreateModel
 from app.schemas.users.response import UserResponseModel
 from app.services.user_service import UserService
@@ -24,5 +25,6 @@ async def create_user(
         )
 
     user = await user_service.create_user(session, payload)
+    token = Security.generate_token(user)
 
-    return UserResponseModel.from_orm_obj(user)
+    return {"user": user.username, "token": token}
