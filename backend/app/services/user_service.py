@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
 from app.db.models.user import User
 from app.utils.security import Security
+from app.schemas.users.create import UserCreateModel
 
 
 class UserService:
@@ -30,11 +31,11 @@ class UserService:
         return None
 
     @staticmethod
-    async def create_user(session: AsyncSession, data) -> User:
+    async def create_user(session: AsyncSession, data: UserCreateModel) -> User:
         user = User(
-            username=data["username"],
-            email=data["email"],
-            password=Security.hash_password(data["password"])
+            username=data.username,
+            email=data.email,
+            password=Security.hash_password(data.password)
         )
         await user.save(session)
         return user
