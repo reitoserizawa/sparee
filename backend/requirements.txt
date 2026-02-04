@@ -57,6 +57,7 @@ psycopg2-binary
 geoalchemy2
 python-dotenv
 pydantic
+pydantic[email]
 pydantic-settings
 passlib[bcrypt]
 python-jose[cryptography]
