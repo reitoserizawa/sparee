@@ -1,8 +1,8 @@
-from marshmallow import fields
-from .base import CompanyBaseSchema
-from ..addresses.create import AddressCreateSchema
+from pydantic import Field
+from .base import CompanyBaseModel
+from ..addresses.create import AddressCreateModel
 
 
-class CompanyCreateSchema(CompanyBaseSchema):
-    name = fields.Str(required=True)
-    address = fields.Nested(AddressCreateSchema, required=True)
+class CompanyCreateModel(CompanyBaseModel):
+    name: str = Field(...)
+    address: AddressCreateModel = Field(...)

@@ -1,5 +1,5 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel
 
 
-class CompanyBaseSchema(Schema):
-    name = fields.Str()
+class CompanyBaseModel(BaseModel):
+    name: str

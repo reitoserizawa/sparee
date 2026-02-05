@@ -1,5 +1,5 @@
 
-from .create import CompanyCreateSchema
-from .response import CompanyResponseSchema
+from .create import CompanyCreateModel
+from .response import CompanyResponseModel
 
-__all__ = ["CompanyCreateSchema", "CompanyResponseSchema"]
+__all__ = ["CompanyCreateModel", "CompanyResponseModel"]

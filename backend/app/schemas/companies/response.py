@@ -1,11 +1,12 @@
-from marshmallow import fields
-from .base import CompanyBaseSchema
-from ..addresses.response import AddressResponseSchema
+from pydantic import Field
+from datetime import datetime
+from .base import CompanyBaseModel
+from ..addresses.response import AddressResponseModel
 
 
-class CompanyResponseSchema(CompanyBaseSchema):
-    id = fields.Int(dump_only=True)
-    address = fields.Nested(AddressResponseSchema, dump_only=True)
+class CompanyResponseModel(CompanyBaseModel):
+    id: int = Field(..., read_only=True)
+    address: AddressResponseModel = Field(..., read_only=True)
 
-    created_at = fields.DateTime(dump_only=True)
-    updated_at = fields.DateTime(dump_only=True)
+    created_at: datetime = Field(..., read_only=True)
+    updated_at: datetime = Field(..., read_only=True)
