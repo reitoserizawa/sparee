@@ -1,6 +1,7 @@
 from typing import Optional, Sequence, Type, TypeVar, Any
 from datetime import datetime, timezone
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import Select
 from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.exc import SQLAlchemyError
@@ -28,6 +29,20 @@ class BaseModel(Base):
         if hasattr(self, "deleted_at"):
             self.deleted_at = datetime.now(timezone.utc)
             await self.save(session)
+
+    async def with_relations(
+        self: "BaseModel",
+        session: AsyncSession,
+        relations: Optional[list[str]] = None
+    ) -> "BaseModel":
+        query = select(self.__class__).where(self.__class__.id == self.id)
+        if relations:
+            for rel in relations:
+                query = query.options(selectinload(
+                    getattr(self.__class__, rel)))
+
+        result = await session.execute(query)
+        return result.scalar_one()
 
     @classmethod
     def _soft_delete_filter(cls: Type[T], stmt: Select) -> Select:
