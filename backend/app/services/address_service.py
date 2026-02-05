@@ -1,7 +1,7 @@
 from rq import Retry
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.models.address import Address
+from app.db.models.address import Address, AddressStatus
 from app.workers.job_queue import geocode_queue
 
 from app.workers.jobs.address_job import AddressJob
@@ -37,6 +37,7 @@ class AddressService:
             state=state,
             postal_code=postal_code,
             country=country,
+            geocode_status=AddressStatus.pending
         )
         await address.save(session)
 

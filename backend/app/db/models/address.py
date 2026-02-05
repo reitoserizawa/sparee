@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 
 class AddressStatus(PyEnum):
-    PENDING = "pending"
-    SUCCESS = "success"
-    FAILED = "failed"
+    pending = "pending"
+    success = "success"
+    failed = "failed"
 
 
 class Address(BaseModel):
@@ -38,7 +38,7 @@ class Address(BaseModel):
 
     geocode_status: Mapped[AddressStatus] = mapped_column(
         SAEnum(AddressStatus, name="geocode_status"),
-        default=AddressStatus.PENDING,
+        default=AddressStatus.pending,
         nullable=False
     )
 
