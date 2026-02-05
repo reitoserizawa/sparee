@@ -1,6 +1,6 @@
-from marshmallow import fields
-from .base import SkillBaseSchema
+from pydantic import Field
+from .base import SkillBaseModel
 
 
-class SkillCreateSchema(SkillBaseSchema):
-    name = fields.Str(required=True)
+class SkillCreateModel(SkillBaseModel):
+    name: str = Field(...)

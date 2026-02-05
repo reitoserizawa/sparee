@@ -1,5 +1,5 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel
 
 
-class SkillBaseSchema(Schema):
-    name = fields.Str()
+class SkillBaseModel(BaseModel):
+    name: str
