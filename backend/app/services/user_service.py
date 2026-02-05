@@ -24,7 +24,7 @@ class UserService:
     @staticmethod
     async def authenticate(session: AsyncSession, data: UserLoginModel) -> User | None:
         user = await User.get_by_email(session, email=data.email)
-        if user is not None and Security.verify_password(password=data.password, hashed=user.password):
+        if user is not None and Security.verify_password(password=data.password.get_secret_value(), hashed=user.password):
             return user
         return None
 
@@ -33,7 +33,7 @@ class UserService:
         user = User(
             username=data.username,
             email=data.email,
-            password=Security.hash_password(data.password)
+            password=Security.hash_password(data.password.get_secret_value())
         )
         await user.save(session)
         return user
