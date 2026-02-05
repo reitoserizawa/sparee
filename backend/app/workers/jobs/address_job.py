@@ -1,5 +1,4 @@
 import os
-import asyncio
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,14 +17,13 @@ class AddressJob:
             return
 
         api_key = os.getenv("MAPBOX_API_KEY")
-        status = AddressStatus.FAILED
+        status = AddressStatus.failed
 
         if api_key:
             async with AsyncClient() as client:
                 query = address.full_address
                 response = await client.get(
-                    "https://api.mapbox.com/geocoding/v5/mapbox.places/"
-                    f"{query}.json",
+                    f"https://api.mapbox.com/geocoding/v5/mapbox.places/{query}.json",
                     params={"access_token": api_key},
                     timeout=10
                 )
@@ -37,18 +35,17 @@ class AddressJob:
                         lng, lat = features[0]["geometry"]["coordinates"]
                         address.location = from_shape(
                             Point(lng, lat), srid=4326)
-                        status = AddressStatus.SUCCESS
+                        status = AddressStatus.success
 
         address.geocode_status = status
         await address.save(session)
 
     @staticmethod
     def geocode_address_job(address_id: int):
-        """Sync wrapper for RQ: runs the async function inside an event loop."""
         from app.db.session import AsyncSessionLocal
 
         async def _run():
             async with AsyncSessionLocal() as session:
                 await AddressJob.geocode_address_async(session, address_id)
 
-        asyncio.run(_run())
+        return _run()
