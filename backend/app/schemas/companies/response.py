@@ -5,8 +5,8 @@ from ..addresses.response import AddressResponseModel
 
 
 class CompanyResponseModel(CompanyBaseModel):
-    id: int = Field(..., read_only=True)
-    address: AddressResponseModel = Field(..., read_only=True)
+    id: int = Field(..., frozen=True)
+    address: AddressResponseModel
 
-    created_at: datetime = Field(..., read_only=True)
-    updated_at: datetime = Field(..., read_only=True)
+    created_at: datetime
+    updated_at: datetime
