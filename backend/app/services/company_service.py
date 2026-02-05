@@ -36,7 +36,7 @@ class CompanyService:
         await company.save(session)
         await CompanyService.add_member(session, company, user)
 
-        return company
+        return await company.with_address(session)
 
     @staticmethod
     async def add_member(session: AsyncSession, company: "Company", user: "User") -> "CompanyMember":

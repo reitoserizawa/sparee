@@ -17,4 +17,4 @@ async def create_company(payload: CompanyCreateModel, session: AsyncSession = De
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    return CompanyResponseModel.from_orm(company)
+    return company
