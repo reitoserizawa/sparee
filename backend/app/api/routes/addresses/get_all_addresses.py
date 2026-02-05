@@ -1,15 +1,15 @@
-from flask import Blueprint, jsonify, g
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.services.address_service import AddressService
-from app.schemas.addresses.response import AddressResponseSchema
+from app.schemas.addresses import AddressResponseModel
+from app.db.session import get_session
 
-bp = Blueprint("addresses", __name__, url_prefix="/api/addresses")
-
-response_schema = AddressResponseSchema(many=True)
+router = APIRouter()
 address_service = AddressService()
 
 
-@bp.route("/", methods=["GET"])
-async def get_all_addresses():
-    session = g.session
+@router.get("/", status_code=200, response_model=list[AddressResponseModel])
+async def get_all_addresses(session: AsyncSession = Depends(get_session)):
     addresses = await address_service.get_all(session)
-    return jsonify(response_schema.dump(addresses)), 200
+    return addresses

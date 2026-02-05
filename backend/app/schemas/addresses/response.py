@@ -12,4 +12,5 @@ class AddressResponseModel(AddressBaseModel):
         return self.coordinates if self.coordinates else None
 
     class Config:
+        orm_mode = True
         from_attributes = True
