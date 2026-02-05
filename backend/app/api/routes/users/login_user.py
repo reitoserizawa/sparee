@@ -17,7 +17,7 @@ async def login_user(
 ):
     # Authenticate user
     user = await user_service.authenticate(
-        session, email=payload.email, password=payload.password
+        session, data=payload
     )
     if not user:
         raise HTTPException(
