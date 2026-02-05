@@ -1,9 +1,9 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel
 
 
-class AddressBaseSchema(Schema):
-    street = fields.Str()
-    city = fields.Str()
-    state = fields.Str()
-    postal_code = fields.Str()
-    country = fields.Str()
+class AddressBaseModel(BaseModel):
+    street: str
+    city: str
+    state: str
+    postal_code: str
+    country: str

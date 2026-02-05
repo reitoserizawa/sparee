@@ -1,4 +1,4 @@
-from .create import AddressCreateSchema
-from .response import AddressResponseSchema
+from .create import AddressCreateModel
+from .response import AddressResponseModel
 
-__all__ = ["AddressCreateSchema", "AddressResponseSchema"]
+__all__ = ["AddressCreateModel", "AddressResponseModel"]

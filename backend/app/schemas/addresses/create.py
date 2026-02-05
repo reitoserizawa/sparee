@@ -1,16 +1,13 @@
-from marshmallow import fields, post_load
-from .base import AddressBaseSchema
+from pydantic import Field
+from .base import AddressBaseModel
 
 
-class AddressCreateSchema(AddressBaseSchema):
-    street = fields.Str(required=True)
-    city = fields.Str(required=True)
-    state = fields.Str(required=True)
-    postal_code = fields.Str(required=True)
-    country = fields.Str(required=True)
+class AddressCreateModel(AddressBaseModel):
+    street: str = Field(...)
+    city: str = Field(...)
+    state: str = Field(...)
+    postal_code: str = Field(...)
+    country: str = Field(...)
 
-    @post_load
-    def make_address(self, data, **kwargs):
-        data.pop("lat", None)
-        data.pop("lng", None)
-        return data
+    class Config:
+        extra = "forbid"
