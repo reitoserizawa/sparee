@@ -1,11 +1,13 @@
-from typing import TYPE_CHECKING, Optional
-from sqlalchemy import Column, Integer, ForeignKey, String, DateTime
-from sqlalchemy.orm import relationship
+from typing import TYPE_CHECKING, Optional, Type
+from sqlalchemy import Integer, ForeignKey, String, DateTime
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
+from datetime import datetime
 
 
 if TYPE_CHECKING:
+    from app.db.models.address import Address
     from app.db.models.company_member import CompanyMember
     from app.db.models.user import User
 
@@ -13,29 +15,30 @@ if TYPE_CHECKING:
 class Company(BaseModel):
     __tablename__ = 'companies'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(255), nullable=False)
-    address_id = Column(Integer, ForeignKey('addresses.id'))
-    address = relationship("Address", backref="companies")
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    address_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey('addresses.id'), nullable=True)
+    address: Mapped["Address"] = relationship("Address", backref="companies")
 
-    members = relationship(
+    members: Mapped[list["CompanyMember"]] = relationship(
         "CompanyMember",
         back_populates="company",
         cascade="all, delete-orphan"
     )
 
-    created_at = Column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=BaseModel.set_utc_now,
         nullable=False
     )
-    updated_at = Column(
+    updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=BaseModel.set_utc_now,
         onupdate=BaseModel.set_utc_now,
-        nullable=True
     )
-    deleted_at = Column(
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True
     )
@@ -44,10 +47,11 @@ class Company(BaseModel):
         return f"<Company id={self.id} name={self.name}>"
 
     @classmethod
-    async def get_from_user(cls, session: AsyncSession, user: "User") -> Optional["Company"]:
-        return await cls.find_one_by(
+    async def get_from_user(cls: Type["Company"], session: AsyncSession, user: "User") -> Optional["Company"]:
+        return await cls.find_one_via_join(
             session=session,
-            user_id=user.id
+            join_model=CompanyMember,
+            where=CompanyMember.user_id == user.id
         )
 
     async def add_member(self, session: AsyncSession, user: "User") -> "CompanyMember":

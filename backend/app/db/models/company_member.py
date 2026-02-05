@@ -1,27 +1,29 @@
-from typing import Optional, TypeVar, Type
+from typing import Optional, Type, TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy import Integer, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
-from app.db.models.user import User
-from app.db.models.company import Company
 
-T = TypeVar("T", bound="CompanyMember")
+if TYPE_CHECKING:
+    from app.db.models.user import User
+    from app.db.models.company import Company
 
 
 class CompanyMember(BaseModel):
     __tablename__ = "company_members"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
-    user_id = Column(Integer, ForeignKey(
-        "users.id"), nullable=False)
-    user = relationship("User", back_populates="associated_companies")
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id"), nullable=False)
+    user: Mapped["User"] = relationship(
+        "User", back_populates="associated_companies")
 
-    company_id = Column(Integer, ForeignKey(
-        "companies.id"), nullable=False)
-    company = relationship("Company", back_populates="members")
+    company_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("companies.id"), nullable=False)
+    company: Mapped["Company"] = relationship(
+        "Company", back_populates="members")
 
     __table_args__ = (
         UniqueConstraint("user_id", "company_id",
@@ -29,7 +31,7 @@ class CompanyMember(BaseModel):
     )
 
     @classmethod
-    async def get_from_user_and_company(cls: Type[T], session: AsyncSession, user: User, company: Company) -> Optional["CompanyMember"]:
+    async def get_from_user_and_company(cls: Type["CompanyMember"], session: AsyncSession, user: "User", company: "Company") -> Optional["CompanyMember"]:
         member = await cls.find_one_by(
             session=session,
             user_id=user.id,
@@ -38,7 +40,7 @@ class CompanyMember(BaseModel):
         return member
 
     @classmethod
-    async def add_member_or_raise(cls: Type[T], session: AsyncSession, user: User, company: Company) -> "CompanyMember":
+    async def add_member_or_raise(cls: Type["CompanyMember"], session: AsyncSession, user: "User", company: "Company") -> "CompanyMember":
         existing = await cls.get_from_user_and_company(session=session, user=user, company=company)
 
         if existing:
