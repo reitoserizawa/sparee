@@ -4,9 +4,9 @@ from .base import UserBaseModel
 
 
 class UserResponseModel(UserBaseModel):
-    id: int
-    created_at: datetime = Field(..., read_only=True)
-    updated_at: datetime = Field(..., read_only=True)
+    id: int = Field(..., frozen=True)
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True

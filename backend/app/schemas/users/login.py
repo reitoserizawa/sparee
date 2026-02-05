@@ -1,9 +1,9 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, SecretStr
 
 
 class UserLoginModel(BaseModel):
     email: EmailStr = Field(...)
-    password: str = Field(..., write_only=True)
+    password: SecretStr = Field(...)
 
     class Config:
         extra = "forbid"

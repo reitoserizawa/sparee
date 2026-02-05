@@ -1,11 +1,9 @@
-from pydantic import EmailStr, Field
+from pydantic import SecretStr
 from .base import UserBaseModel
 
 
 class UserUpdateModel(UserBaseModel):
-    username: str
-    email: EmailStr
-    password: str = Field(write_only=True)
+    password: SecretStr
 
     class Config:
         extra = "forbid"
