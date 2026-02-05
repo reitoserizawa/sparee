@@ -1,28 +1,20 @@
-from flask import Blueprint, request, jsonify, g
-from marshmallow import ValidationError
-from app.schemas.companies.create import CompanyCreateSchema
-from app.schemas.companies.response import CompanyResponseSchema
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.schemas.companies import CompanyCreateModel, CompanyResponseModel
 from app.services.company_service import CompanyService
-from app.utils.load_dict import load_dict
-from app.decorators.user_required import user_required
+from app.db.models.user import User
+from app.api.dependencies.user_required import user_required
+from app.db.session import get_session
 
-bp = Blueprint("companies", __name__, url_prefix="/api/companies")
-
-create_schema = CompanyCreateSchema()
-response_schema = CompanyResponseSchema()
+router = APIRouter()
 company_service = CompanyService()
 
 
-@bp.route("", methods=["POST"])
-@user_required
-async def create_company():
-    session = g.session
+@router.post("/", status_code=201, response_model=CompanyResponseModel)
+async def create_company(payload: CompanyCreateModel, session: AsyncSession = Depends(get_session), user: User = Depends(user_required)):
     try:
-        payload = load_dict(create_schema, request.json)
-    except ValidationError as err:
-        return {"errors": err.messages}, 400
+        company = await company_service.create_company(session, data=payload, user=user)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    user = g.user
-    company = await company_service.create_company(session, data=payload, user=user)
-
-    return jsonify(response_schema.dump(company)), 201
+    return CompanyResponseModel.from_orm(company)
