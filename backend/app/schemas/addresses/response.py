@@ -8,5 +8,6 @@ class AddressResponseModel(AddressBaseModel):
     coordinates: Optional[dict] = Field(None, frozen=True)
     full_address: str = Field(..., frozen=True)
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
