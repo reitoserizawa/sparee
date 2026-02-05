@@ -20,7 +20,10 @@ class Company(BaseModel):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     address_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey('addresses.id'), nullable=True)
-    address: Mapped["Address"] = relationship("Address", backref="companies")
+    address: Mapped[Optional["Address"]] = relationship(
+        "Address",
+        back_populates="companies"
+    )
 
     members: Mapped[list["CompanyMember"]] = relationship(
         "CompanyMember",
