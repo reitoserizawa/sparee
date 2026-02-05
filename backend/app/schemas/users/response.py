@@ -1,6 +1,11 @@
 from datetime import datetime
-from pydantic import Field
+from pydantic import Field, BaseModel
 from .base import UserBaseModel
+
+
+class UserTokenResponseModel(BaseModel):
+    user: str = Field(..., frozen=True)
+    token: str = Field(..., frozen=True)
 
 
 class UserResponseModel(UserBaseModel):
