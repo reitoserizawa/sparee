@@ -57,5 +57,8 @@ class Company(BaseModel):
             where=CompanyMember.user_id == user.id
         )
 
+    async def with_address(self, session: AsyncSession) -> "Company":
+        return await self.with_relations(session=session, relations=["address"])
+
     async def add_member(self, session: AsyncSession, user: "User") -> "CompanyMember":
         return await CompanyMember.add_member_or_raise(session=session, user=user, company=self)
