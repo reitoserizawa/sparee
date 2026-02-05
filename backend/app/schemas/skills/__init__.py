@@ -1,4 +1,4 @@
-from .create import SkillCreateSchema
-from .response import SkillResponseSchema
+from .create import SkillCreateModel
+from .response import SkillResponseModel
 
-__all__ = ["SkillCreateSchema", "SkillResponseSchema"]
+__all__ = ["SkillCreateModel", "SkillResponseModel"]
