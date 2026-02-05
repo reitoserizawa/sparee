@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.utils.security import Security
 from app.schemas.users.create import UserCreateModel
-from app.schemas.users.response import UserResponseModel
+from app.schemas.users.response import UserTokenResponseModel
 from app.services.user_service import UserService
 from app.db.session import get_session
 
@@ -11,7 +11,7 @@ router = APIRouter()
 user_service = UserService()
 
 
-@router.post("/", status_code=201, response_model=UserResponseModel)
+@router.post("/", status_code=201, response_model=UserTokenResponseModel)
 async def create_user(
     payload: UserCreateModel,
     session: AsyncSession = Depends(get_session)

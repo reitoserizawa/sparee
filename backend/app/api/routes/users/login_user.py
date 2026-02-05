@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.users.login import UserLoginModel
+from app.schemas.users import UserLoginModel, UserTokenResponseModel
 from app.services.user_service import UserService
 from app.utils.security import Security
 from app.db.session import get_session
@@ -10,7 +10,7 @@ router = APIRouter()
 user_service = UserService()
 
 
-@router.post("")
+@router.post("", status_code=200, response_model=UserTokenResponseModel)
 async def login_user(
     payload: UserLoginModel,
     session: AsyncSession = Depends(get_session)
