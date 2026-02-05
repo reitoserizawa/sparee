@@ -11,10 +11,12 @@ class UserService:
     async def get_from_jwt(session: AsyncSession, token: str) -> User | None:
         try:
             payload = Security.decode_jwt(token)
+            if not payload:
+                return None
             user_id = int(payload['sub'])
             user = await User.get_from_id(session, id=user_id)
             return user
-        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, KeyError, ValueError):
             return None
 
     @staticmethod
