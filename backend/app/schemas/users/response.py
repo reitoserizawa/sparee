@@ -1,5 +1,5 @@
-from datetime import datetime
 from pydantic import Field, BaseModel
+from datetime import datetime
 from .base import UserBaseModel
 
 
@@ -12,9 +12,6 @@ class UserResponseModel(UserBaseModel):
     id: int = Field(..., frozen=True)
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
     model_config = {
         "from_attributes": True
