@@ -1,14 +1,14 @@
-from marshmallow import fields
-from .base import JobPostBaseSchema
-from ..addresses.create import AddressCreateSchema
+from pydantic import Field
+from .base import JobPostBaseModel
+from ..addresses.create import AddressCreateModel
 
 
-class JobPostCreateSchema(JobPostBaseSchema):
-    title = fields.Str(required=True)
-    description = fields.Str(required=True)
-    salary = fields.Float(required=True)
-    salary_type = fields.Str(required=False)
+class JobPostCreateModel(JobPostBaseModel):
+    title: str = Field(...)
+    description: str = Field(...)
+    salary: float = Field(...)
+    salary_type: str = Field(default=None)
     # has a default salary type value in the model
-    job_category_id = fields.Int(required=True)
-    address = fields.Nested(AddressCreateSchema, required=False)
+    job_category_id: int = Field(default=None)
+    address: AddressCreateModel | None = Field(default=None)
     # use company address if not provided

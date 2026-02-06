@@ -1,8 +1,8 @@
-from marshmallow import Schema, fields
+from pydantic import BaseModel
 
 
-class JobPostBaseSchema(Schema):
-    title = fields.Str()
-    description = fields.Str()
-    salary = fields.Float()
-    salary_type = fields.Str()
+class JobPostBaseModel(BaseModel):
+    title: str
+    description: str
+    salary: float
+    salary_type: str

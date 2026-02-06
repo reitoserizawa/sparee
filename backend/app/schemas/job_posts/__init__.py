@@ -1,4 +1,4 @@
-from .create import JobPostCreateSchema
-from .response import JobPostResponseSchema
+from .create import JobPostCreateModel
+from .response import JobPostResponseModel
 
-__all__ = ["JobPostCreateSchema", "JobPostResponseSchema"]
+__all__ = ["JobPostCreateModel", "JobPostResponseModel"]
