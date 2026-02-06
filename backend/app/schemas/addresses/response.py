@@ -1,4 +1,4 @@
-from pydantic import Field, computed_field
+from pydantic import Field
 from .base import AddressBaseModel
 from typing import Optional
 

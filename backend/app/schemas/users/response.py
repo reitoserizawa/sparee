@@ -16,12 +16,6 @@ class UserResponseModel(UserBaseModel):
     class Config:
         from_attributes = True
 
-    @classmethod
-    def from_orm_obj(cls, obj):
-        return cls(
-            id=obj.id,
-            username=obj.username,
-            email=obj.email,
-            created_at=obj.created_at,
-            updated_at=obj.updated_at,
-        )
+    model_config = {
+        "from_attributes": True
+    }
