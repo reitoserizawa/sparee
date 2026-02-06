@@ -1,7 +1,7 @@
-from marshmallow import fields
-from .base import JobCategoryBaseSchema
+from pydantic import Field
+from .base import JobCategoryBaseModel
 
 
-class JobCategoryResponseSchema(JobCategoryBaseSchema):
-    id = fields.Int(dump_only=True)
-    name = fields.Str(dump_only=True)
+class JobCategoryResponseModel(JobCategoryBaseModel):
+    id: int = Field(..., frozen=True)
+    name: str = Field(..., frozen=True)

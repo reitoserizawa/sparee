@@ -1,5 +1,6 @@
-from marshmallow import Schema, fields
+
+from pydantic import BaseModel
 
 
-class JobCategoryBaseSchema(Schema):
-    name = fields.Str()
+class JobCategoryBaseModel(BaseModel):
+    name: str

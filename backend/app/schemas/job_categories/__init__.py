@@ -1,3 +1,3 @@
-from .response import JobCategoryResponseSchema
+from .response import JobCategoryResponseModel
 
-__all__ = ["JobCategoryResponseSchema"]
+__all__ = ["JobCategoryResponseModel"]
