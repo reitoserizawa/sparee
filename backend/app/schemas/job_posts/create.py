@@ -12,3 +12,6 @@ class JobPostCreateModel(JobPostBaseModel):
     job_category_id: int = Field(default=None)
     address: AddressCreateModel | None = Field(default=None)
     # use company address if not provided
+
+    class Config:
+        extra = "forbid"
