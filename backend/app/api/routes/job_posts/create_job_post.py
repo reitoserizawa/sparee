@@ -1,29 +1,21 @@
-from flask import Blueprint, request, jsonify, g
-from marshmallow import ValidationError
-
-from app.schemas.job_posts.create import JobPostCreateSchema
-from app.schemas.job_posts.response import JobPostResponseSchema
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.db.session import get_session
+from app.db.models import Company
+from app.schemas.job_posts import JobPostCreateModel, JobPostResponseModel
 from app.services.job_post_service import JobPostService
+from app.api.dependencies import company_required
 
-from app.decorators.company_required import company_required
-from app.utils.load_dict import load_dict
 
-bp = Blueprint("job_posts", __name__, url_prefix="/api/job_posts")
-
-create_schema = JobPostCreateSchema()
-response_schema = JobPostResponseSchema()
+router = APIRouter()
 job_post_service = JobPostService()
 
 
-@bp.route("", methods=["POST"])
-@company_required
-async def create_job_post():
-    session = g.session
+@router.post("/", status_code=201, response_model=JobPostResponseModel)
+async def create_job_post(payload: JobPostCreateModel, session: AsyncSession = Depends(get_session), company: Company = Depends(company_required)):
     try:
-        payload = load_dict(create_schema, request.json)
-    except ValidationError as err:
-        return {"errors": err.messages}, 400
-    company = g.company
-    job_post = await job_post_service.create_job_post(session, company, payload)
+        job_post = await job_post_service.create_job_post(session, company, payload)
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
 
-    return jsonify(response_schema.dump(job_post)), 201
+    return job_post

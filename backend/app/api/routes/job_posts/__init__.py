@@ -1,3 +1,5 @@
-from .create_job_post import bp as create_job_post_bp
+from fastapi import APIRouter
+from .create_job_post import router as create_job_post_router
 
-JOB_POSTS_BLUEPRINTS = [create_job_post_bp]
+router = APIRouter()
+router.include_router(create_job_post_router, prefix="", tags=["job_posts"])
