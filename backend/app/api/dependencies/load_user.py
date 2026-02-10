@@ -7,7 +7,7 @@ async def load_user(
     request: Request,
     session: AsyncSession,
 ):
-    authorization: str = request.headers.get("Authorization")
+    authorization = request.headers.get("Authorization")
     if not authorization or not authorization.startswith("Bearer "):
         return None
 
