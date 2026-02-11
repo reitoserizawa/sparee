@@ -1,16 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 import jwt
 from app.db.models.user import User
-from app.utils.security import Security
+from app.utils.security import Security, TokenType
 from app.schemas.users import UserCreateModel, UserLoginModel
 
 
 class UserService:
 
     @staticmethod
-    async def get_from_jwt(session: AsyncSession, token: str) -> User | None:
+    async def get_from_jwt(session: AsyncSession, token: str, token_type: TokenType) -> User | None:
         try:
-            payload = Security.decode_jwt(token)
+            payload = Security.decode_jwt(token=token, token_type=token_type)
             if not payload:
                 return None
             user_id = int(payload['sub'])

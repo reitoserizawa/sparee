@@ -1,5 +1,6 @@
 from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.utils.security import TokenType
 from app.services.user_service import UserService
 
 
@@ -12,5 +13,5 @@ async def load_user(
         return None
 
     token = authorization.split(" ", 1)[1]
-    user = await UserService.get_from_jwt(session=session, token=token)
+    user = await UserService.get_from_jwt(session=session, token=token, token_type=TokenType.ACCESS)
     return user
