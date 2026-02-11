@@ -25,3 +25,11 @@ export interface FormProviderProps<State> {
     onSubmit: (data: State) => void;
     className?: string;
 }
+
+export interface FormInputProps<State> {
+    name: keyof State;
+    validators?: ((value: unknown, data: Partial<unknown>) => string[])[];
+    placeholder?: string;
+    type?: string;
+    label?: string;
+}
