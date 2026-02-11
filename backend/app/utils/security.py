@@ -20,7 +20,7 @@ class Security:
 
     @staticmethod
     def decode_jwt(token: str, token_type: TokenType) -> Any:
-        secret = os.getenv("SECRET_KEY") if token_type == TokenType.ACCESS else os.getenv(
+        secret = os.getenv("SECRET_KEY") if token_type.value == TokenType.ACCESS.value else os.getenv(
             "REFRESH_SECRET_KEY")
 
         if not secret:
@@ -51,12 +51,12 @@ class Security:
     @staticmethod
     def generate_token(user: User, token_type: TokenType) -> str:
         from datetime import datetime, timedelta, timezone
-        secret = os.getenv("SECRET_KEY") if token_type == TokenType.ACCESS else os.getenv(
+        secret = os.getenv("SECRET_KEY") if token_type.value == TokenType.ACCESS.value else os.getenv(
             "REFRESH_SECRET_KEY")
 
         if not secret:
             raise JWTConfigurationError(None)
 
         payload = {"sub": str(user.id), "type": token_type.value, "exp": datetime.now(timezone.utc) +
-                   timedelta(hours=Security.ACCESS_EXPIRE_HOURS if token_type == TokenType.ACCESS else Security.REFRESH_EXPIRE_DAYS * 24)}
+                   timedelta(hours=Security.ACCESS_EXPIRE_HOURS if token_type.value == TokenType.ACCESS.value else Security.REFRESH_EXPIRE_DAYS * 24)}
         return jwt.encode(payload, secret, algorithm="HS256")
