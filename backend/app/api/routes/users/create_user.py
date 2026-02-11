@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.utils.security import Security, TokenType
@@ -13,6 +13,7 @@ user_service = UserService()
 
 @router.post("/", status_code=201, response_model=UserTokenResponseModel)
 async def create_user(
+    response: Response,
     payload: UserCreateModel,
     session: AsyncSession = Depends(get_session)
 ):
@@ -25,6 +26,16 @@ async def create_user(
         )
 
     user = await user_service.create_user(session, payload)
-    token = Security.generate_token(user=user, token_type=TokenType.ACCESS)
+    refresh_token = Security.generate_token(user, TokenType.REFRESH)
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=60 * 60 * 24 * Security.REFRESH_EXPIRE_DAYS,
+    )
+    access_token = Security.generate_token(
+        user=user, token_type=TokenType.ACCESS)
 
-    return {"user": user.username, "token": token}
+    return {"user": user.username, "token": access_token}
