@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING, Optional, Type, Sequence
 from sqlalchemy import Integer, ForeignKey, String, DateTime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -50,8 +50,8 @@ class Company(BaseModel):
         return f"<Company id={self.id} name={self.name}>"
 
     @classmethod
-    async def get_from_user(cls: Type["Company"], session: AsyncSession, user: "User") -> Optional["Company"]:
-        return await cls.find_one_via_join(
+    async def get_from_user(cls: Type["Company"], session: AsyncSession, user: "User") -> Optional[Sequence["Company"]]:
+        return await cls.filter_via_join(
             session=session,
             join_model=CompanyMember,
             where=[CompanyMember.user_id == user.id]

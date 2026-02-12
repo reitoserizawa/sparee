@@ -10,7 +10,8 @@ async def company_required(
     session: AsyncSession = Depends(get_session),
     user: User = Depends(user_required)
 ):
-    company = await CompanyService.get_from_user(session=session, user=user)
-    if not company:
-        raise HTTPException(status_code=401, detail="Company access required")
-    return company
+    companies = await CompanyService.get_from_user(session=session, user=user)
+    if not companies:
+        raise HTTPException(
+            status_code=401, detail="User does not belong to any company")
+    return companies

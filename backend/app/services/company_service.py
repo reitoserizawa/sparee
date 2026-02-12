@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.services.address_service import AddressService
@@ -17,7 +17,7 @@ class CompanyService:
         return await Company.get_or_raise(session=session, id=company_id)
 
     @staticmethod
-    async def get_from_user(session: AsyncSession, user: "User") -> "Company":
+    async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["Company"]]:
         return await Company.get_from_user(session=session, user=user)
 
     @staticmethod
