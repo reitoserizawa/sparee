@@ -72,6 +72,7 @@ class JobPost(BaseModel):
 
     @classmethod
     async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Sequence["JobPost"]:
+        # fix after adding job post date field
         return await cls.filter_via_join(session=session, join_model=cls.address, where=[Address.location.isnot(None)], order_by=[Address.location.op("<->")(user_point), cls.created_at.desc()], limit=limit)
 
     def __repr__(self) -> str:
