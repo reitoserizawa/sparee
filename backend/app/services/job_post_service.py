@@ -12,17 +12,17 @@ if TYPE_CHECKING:
 
 class JobPostService:
     @staticmethod
-    async def get_from_company(session: AsyncSession, company: Company) -> Sequence[JobPost]:
+    async def get_from_company(session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
         return await JobPost.get_by_company(session=session, company=company)
 
     @staticmethod
-    async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Sequence[JobPost]:
+    async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Sequence["JobPost"]:
         user_point = ST_SetSRID(ST_MakePoint(lng, lat), 4326)
 
         return await JobPost.filter_by_nearest(session=session, user_point=user_point, limit=20)
 
     @staticmethod
-    async def create_job_post(session: AsyncSession, company: Company, data: JobPostCreateModel) -> JobPost:
+    async def create_job_post(session: AsyncSession, company: "Company", data: JobPostCreateModel) -> "JobPost":
         address_data = data.address
         address = None
         if address_data:
