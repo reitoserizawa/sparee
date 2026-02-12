@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Type, TypeVar, Any
+from typing import Optional, Sequence, Type, TypeVar, Any, Iterable
 from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -118,12 +118,14 @@ class BaseModel(Base):
         cls: Type[T],
         session: AsyncSession,
         join_model: Any,
-        where: Optional[ColumnElement[bool]] = None,
+        where: Optional[Iterable[ColumnElement[bool]]] = None,
+        order_by: Optional[Iterable[ColumnElement[Any]]] = None,
         include_deleted: bool = False
     ) -> Optional[T]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,
+            order_by=order_by,
             include_deleted=include_deleted
         )
 
@@ -135,12 +137,14 @@ class BaseModel(Base):
         cls: Type[T],
         session: AsyncSession,
         join_model: Any,
-        where: Optional[ColumnElement[bool]] = None,
+        where: Optional[Iterable[ColumnElement[bool]]] = None,
+        order_by: Optional[Iterable[ColumnElement[Any]]] = None,
         include_deleted: bool = False,
     ) -> Sequence[T]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,
+            order_by=order_by,
             include_deleted=include_deleted
         )
         result = await session.execute(stmt)
@@ -149,12 +153,14 @@ class BaseModel(Base):
     @classmethod
     def _set_stmt(cls: Type[T],
                   join_model: Any,
-                  where: Optional[ColumnElement[bool]] = None,
+                  where: Optional[Iterable[ColumnElement[bool]]] = None,
+                  order_by: Optional[Iterable[ColumnElement[Any]]] = None,
                   include_deleted: bool = False) -> Select:
         stmt: Select = select(cls).join(join_model)
         if where is not None:
-            stmt = stmt.where(where)
-
+            stmt = stmt.where(*where)
+        if order_by is not None:
+            stmt = stmt.order_by(*order_by)
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
 
