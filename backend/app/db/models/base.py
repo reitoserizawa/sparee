@@ -139,12 +139,16 @@ class BaseModel(Base):
         join_model: Any,
         where: Optional[Iterable[ColumnElement[bool]]] = None,
         order_by: Optional[Iterable[ColumnElement[Any]]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
         include_deleted: bool = False,
     ) -> Sequence[T]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,
             order_by=order_by,
+            limit=limit,
+            offset=offset,
             include_deleted=include_deleted
         )
         result = await session.execute(stmt)
@@ -155,12 +159,18 @@ class BaseModel(Base):
                   join_model: Any,
                   where: Optional[Iterable[ColumnElement[bool]]] = None,
                   order_by: Optional[Iterable[ColumnElement[Any]]] = None,
+                  limit: Optional[int] = None,
+                  offset: Optional[int] = None,
                   include_deleted: bool = False) -> Select:
         stmt: Select = select(cls).join(join_model)
         if where is not None:
             stmt = stmt.where(*where)
         if order_by is not None:
             stmt = stmt.order_by(*order_by)
+        if limit:
+            stmt = stmt.limit(limit)
+        if offset:
+            stmt = stmt.offset(offset)
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
 
