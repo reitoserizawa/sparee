@@ -18,9 +18,9 @@ class Company(BaseModel):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    address_id: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey('addresses.id'), nullable=True)
-    address: Mapped[Optional["Address"]] = relationship(
+    address_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey('addresses.id'))
+    address: Mapped["Address"] = relationship(
         "Address",
         back_populates="companies"
     )

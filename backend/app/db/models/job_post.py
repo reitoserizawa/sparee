@@ -37,7 +37,7 @@ class JobPost(BaseModel):
     salary_type: Mapped[str] = mapped_column(String(20), default="hourly")
 
     address_id: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey('addresses.id'), nullable=True)
+        Integer, ForeignKey('addresses.id'))
     address: Mapped["Address"] = relationship(
         "Address", backref="job_posts")
 

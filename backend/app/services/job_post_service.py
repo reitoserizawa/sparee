@@ -45,7 +45,7 @@ class JobPostService:
             salary_type=data.salary_type,
             job_category_id=data.job_category_id,
             company_id=company.id,
-            address_id=address.id if address else None
+            address_id=address.id
         )
         await job_post.save(session)
 
