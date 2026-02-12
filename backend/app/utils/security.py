@@ -49,7 +49,7 @@ class Security:
         return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
 
     @staticmethod
-    def generate_token(user: User, token_type: TokenType) -> str:
+    def generate_token(user: "User", token_type: TokenType) -> str:
         from datetime import datetime, timedelta, timezone
         secret = os.getenv("SECRET_KEY") if token_type.value == TokenType.ACCESS.value else os.getenv(
             "REFRESH_SECRET_KEY")
