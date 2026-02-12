@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy import Integer, ForeignKey, String, DateTime, Text, Float
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.elements import ColumnElement
 from app.db.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -67,7 +68,11 @@ class JobPost(BaseModel):
 
     @classmethod
     async def get_by_company(cls: Type["JobPost"], session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
-        return await cls.find_one_by(session=session, company_id=company.id)
+        return await cls.filter_by(session=session, company_id=company.id)
+
+    @classmethod
+    async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Sequence["JobPost"]:
+        return await cls.filter_via_join(session=session, join_model=cls.address, where=[Address.location.isnot(None)], order_by=[Address.location.op("<->")(user_point), cls.created_at.desc()], limit=limit)
 
     def __repr__(self) -> str:
         return f"<JobPost id={self.id} title={self.title}>"
