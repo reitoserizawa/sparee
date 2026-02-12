@@ -62,5 +62,8 @@ class User(BaseModel):
     async def get_by_email(cls: Type["User"], session: AsyncSession, email: str) -> Optional["User"]:
         return await cls.find_one_by(session=session, email=email)
 
+    async def with_companies(self, session: AsyncSession) -> "User":
+        return await self.with_relations(session=session, relations=["associated_companies"])
+
     def __repr__(self) -> str:
         return f"<User id={self.id} username={self.username} email={self.email}>"
