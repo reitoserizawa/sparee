@@ -54,7 +54,7 @@ class Company(BaseModel):
         return await cls.find_one_via_join(
             session=session,
             join_model=CompanyMember,
-            where=CompanyMember.user_id == user.id
+            where=[CompanyMember.user_id == user.id]
         )
 
     async def with_address(self, session: AsyncSession) -> "Company":
