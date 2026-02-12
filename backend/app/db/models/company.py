@@ -51,6 +51,7 @@ class Company(BaseModel):
 
     @classmethod
     async def get_from_user(cls: Type["Company"], session: AsyncSession, user: "User") -> Optional[Sequence["Company"]]:
+        from app.db.models.company_member import CompanyMember
         return await cls.filter_via_join(
             session=session,
             join_model=CompanyMember,
