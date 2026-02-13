@@ -1,3 +1,4 @@
+from collections import deque
 from typing import Optional, Sequence, Type, TypeVar, Any, Iterable
 from datetime import datetime, timezone
 from sqlalchemy import select
@@ -9,6 +10,7 @@ from app.db.database import Base
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
+from sqlalchemy.orm import Load
 
 T = TypeVar("T", bound="BaseModel")
 
@@ -37,12 +39,40 @@ class BaseModel(Base):
     ) -> "BaseModel":
         query = select(self.__class__).where(self.__class__.id == self.id)
         if relations:
-            for rel in relations:
-                query = query.options(selectinload(
-                    getattr(self.__class__, rel)))
+            loaders = self._with_relations_helper(relations)
+            query = query.options(*loaders)
 
         result = await session.execute(query)
         return result.scalar_one()
+
+    def _with_relations_helper(self, relations: list[str]) -> list[Load]:
+        loaders = []
+
+        for path in relations:
+            parts = path.split(".")
+            model = type(self)
+
+            # first loader
+            try:
+                attr = getattr(model, parts[0])
+            except AttributeError:
+                raise ValueError(f"Invalid relationship path: {path}")
+
+            loader = selectinload(attr)
+            model = attr.property.mapper.class_
+
+            # chain nested loaders
+            for part in parts[1:]:
+                try:
+                    attr = getattr(model, part)
+                except AttributeError:
+                    raise ValueError(f"Invalid relationship path: {path}")
+                loader = loader.selectinload(attr)
+                model = attr.property.mapper.class_
+
+            loaders.append(loader)
+
+        return loaders
 
     @classmethod
     def _soft_delete_filter(cls: Type[T], stmt: Select) -> Select:
