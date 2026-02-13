@@ -59,7 +59,7 @@ class User(BaseModel):
     )
 
     @classmethod
-    async def get_by_email(cls: Type["User"], session: AsyncSession, email: str) -> Optional["User"]:
+    async def get_from_email(cls: Type["User"], session: AsyncSession, email: str) -> Optional["User"]:
         return await cls.find_one_by(session=session, email=email)
 
     async def with_companies(self, session: AsyncSession) -> "User":

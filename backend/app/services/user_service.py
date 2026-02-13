@@ -15,19 +15,22 @@ class UserService:
                 return None
             user_id = int(payload['sub'])
             user = await User.get_from_id(session, id=user_id)
-            return user
+            user_with_companies = await user.with_companies(session) if user else None
+            return user_with_companies
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, KeyError, ValueError):
             return None
 
     @staticmethod
     async def get_from_email(session: AsyncSession, email: str) -> User | None:
-        return await User.get_by_email(session, email=email)
+        user = await User.get_from_email(session, email=email)
+        user_with_companies = await user.with_companies(session) if user else None
+        return user_with_companies
 
     @staticmethod
     async def authenticate(session: AsyncSession, data: UserLoginModel) -> User | None:
-        user = await User.get_by_email(session, email=data.email)
+        user = await User.get_from_email(session, email=data.email)
         if user is not None and Security.verify_password(password=data.password.get_secret_value(), hashed=user.password):
-            return user
+            return await user.with_companies(session) if user else None
         return None
 
     @staticmethod
