@@ -59,9 +59,10 @@ class BaseModel(Base):
                 raise ValueError(f"Invalid relationship path: {path}")
 
             loader = selectinload(attr)
-            model = attr.property.mapper.class_
 
-            # chain nested loaders
+            # model used in the next iteration of the loop
+            model = attr.property.mapper.class_
+            # subsequent loaders
             for part in parts[1:]:
                 try:
                     attr = getattr(model, part)
