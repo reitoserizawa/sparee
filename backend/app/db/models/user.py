@@ -63,7 +63,7 @@ class User(BaseModel):
         return await cls.find_one_by(session=session, email=email)
 
     async def with_companies(self, session: AsyncSession) -> "User":
-        return await self.with_relations(session=session, relations=["associated_companies"])
+        return await self.with_relations(session=session, relations=["associated_companies.company"])
 
     def __repr__(self) -> str:
         return f"<User id={self.id} username={self.username} email={self.email}>"

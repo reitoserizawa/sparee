@@ -22,7 +22,8 @@ class Company(BaseModel):
         Integer, ForeignKey('addresses.id'))
     address: Mapped["Address"] = relationship(
         "Address",
-        back_populates="companies"
+        back_populates="companies",
+        lazy="selectin"
     )
 
     members: Mapped[list["CompanyMember"]] = relationship(
