@@ -39,13 +39,13 @@ class BaseModel(Base):
     ) -> "BaseModel":
         query = select(self.__class__).where(self.__class__.id == self.id)
         if relations:
-            loaders = self._with_relations_helper(relations)
+            loaders = self._generate_nested_loaders(relations)
             query = query.options(*loaders)
 
         result = await session.execute(query)
         return result.scalar_one()
 
-    def _with_relations_helper(self, relations: list[str]) -> list[Load]:
+    def _generate_nested_loaders(self, relations: list[str]) -> list[Load]:
         loaders = []
 
         for path in relations:
@@ -72,7 +72,6 @@ class BaseModel(Base):
                 model = attr.property.mapper.class_
 
             loaders.append(loader)
-
         return loaders
 
     @classmethod
