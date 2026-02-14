@@ -59,6 +59,11 @@ class Company(BaseModel):
             where=[CompanyMember.user_id == user.id]
         )
 
+    async def is_member(self, session: AsyncSession, user: "User") -> bool:
+        from app.db.models.company_member import CompanyMember
+        member = await CompanyMember.get_from_user_and_company(session=session, user=user, company=self)
+        return member is not None
+
     async def with_address(self, session: AsyncSession) -> "Company":
         return await self.with_relations(session=session, relations=["address"])
 
