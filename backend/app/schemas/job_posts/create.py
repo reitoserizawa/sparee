@@ -10,7 +10,7 @@ class JobPostCreateModel(JobPostBaseModel):
     salary_type: str = Field(default='hourly')
     company_id: int = Field(...)
     # has a default salary type value in the model
-    job_category_id: int
+    job_category_id: int = Field(...)
     address: AddressCreateModel | None = Field(default=None)
     # use company address if not provided
 
