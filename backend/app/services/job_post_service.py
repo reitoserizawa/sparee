@@ -21,9 +21,10 @@ class JobPostService:
 
     @staticmethod
     async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Sequence["JobPost"]:
+        from app.db.models.job_post import JobPost
         user_point = ST_SetSRID(ST_MakePoint(lng, lat), 4326)
-
-        return await JobPost.filter_by_nearest(session=session, user_point=user_point, limit=20)
+        job_posts = await JobPost.filter_by_nearest(session=session, user_point=user_point, limit=20)
+        return job_posts
 
     @staticmethod
     async def create_job_post(session: AsyncSession, data: JobPostCreateModel, user: "User") -> "JobPost":
