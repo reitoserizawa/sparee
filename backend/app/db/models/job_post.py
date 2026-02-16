@@ -14,6 +14,8 @@ if TYPE_CHECKING:
     from app.db.models.skill import Skill
     from app.db.models.user_message import UserMessage
 
+JOB_POST_DETAIL_RELATIONS = ["company", "address"]
+
 
 class JobPost(BaseModel):
     __tablename__ = 'job_posts'
@@ -74,6 +76,9 @@ class JobPost(BaseModel):
     async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Sequence["JobPost"]:
         # fix after adding job post date field
         return await cls.filter_via_join(session=session, join_model=cls.address, where=[Address.location.isnot(None)], order_by=[Address.location.op("<->")(user_point), cls.created_at.desc()], limit=limit)
+
+    async def with_detail_relations(self, session: AsyncSession) -> "JobPost":
+        return await self.with_relations(session=session, relations=JOB_POST_DETAIL_RELATIONS)
 
     def __repr__(self) -> str:
         return f"<JobPost id={self.id} title={self.title}>"

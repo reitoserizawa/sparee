@@ -1,17 +1,17 @@
-from typing import Optional, Sequence, TYPE_CHECKING
+from typing import Sequence, TYPE_CHECKING
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2.functions import ST_SetSRID, ST_MakePoint
 from app.services.address_service import AddressService
 from app.schemas.job_posts.create import JobPostCreateModel
-from backend.app.db.models.job_category import JobCategory
-from backend.app.schemas.addresses.create import AddressCreateModel
+from app.schemas.addresses.create import AddressCreateModel
 
 if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.job_post import JobPost
     from app.db.models.company import Company
     from app.db.models.address import Address
+    from app.db.models.job_category import JobCategory
 
 
 class JobPostService:
@@ -26,13 +26,13 @@ class JobPostService:
         return await JobPost.filter_by_nearest(session=session, user_point=user_point, limit=20)
 
     @staticmethod
-    async def create_job_post(session: AsyncSession, data: JobPostCreateModel, user: User) -> "JobPost":
+    async def create_job_post(session: AsyncSession, data: JobPostCreateModel, user: "User") -> "JobPost":
+        from app.db.models.job_post import JobPost
         company = await JobPostService._get_company_for_member(session=session, company_id=data.company_id, user=user)
         address = await JobPostService._create_address(session=session, address_data=data.address) if data.address else company.address
         job_category = await JobPostService._get_job_category(session=session, job_category_id=data.job_category_id)
 
         job_post = JobPost(
-            session,
             title=data.title,
             description=data.description,
             salary=data.salary,
@@ -42,11 +42,13 @@ class JobPostService:
             address_id=address.id
         )
         await job_post.save(session)
+        job_post_with_relations = await job_post.with_detail_relations(session=session)
 
-        return job_post
+        return job_post_with_relations
 
     @staticmethod
-    async def _get_company_for_member(session: AsyncSession, company_id: int, user: User) -> "Company":
+    async def _get_company_for_member(session: AsyncSession, company_id: int, user: "User") -> "Company":
+        from app.db.models.company import Company
         company = await Company.get_from_id(session=session, id=company_id)
         if not company or not await company.is_member(session=session, user=user):
             raise ValueError(
@@ -55,6 +57,7 @@ class JobPostService:
 
     @staticmethod
     async def _get_job_category(session: AsyncSession, job_category_id: int) -> "JobCategory":
+        from app.db.models.job_category import JobCategory
         job_category = await JobCategory.get_from_id(session=session, id=job_category_id)
         if not job_category:
             raise ValueError(
