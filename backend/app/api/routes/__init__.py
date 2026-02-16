@@ -12,4 +12,4 @@ router.include_router(
 router.include_router(
     addresses_router, prefix="/addresses", tags=["addresses"])
 router.include_router(
-    job_posts_router, prefix="/job_posts", tags=["job_posts"])
+    job_posts_router, prefix="/job-posts", tags=["job-posts"])
