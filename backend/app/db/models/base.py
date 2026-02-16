@@ -1,8 +1,7 @@
-from collections import deque
 from typing import Optional, Sequence, Type, TypeVar, Any, Iterable
 from datetime import datetime, timezone
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, InstrumentedAttribute
 from sqlalchemy.sql import Select
 from sqlalchemy.sql.elements import ColumnElement
 from sqlalchemy.exc import SQLAlchemyError
@@ -39,18 +38,19 @@ class BaseModel(Base):
     ) -> "BaseModel":
         query = select(self.__class__).where(self.__class__.id == self.id)
         if relations:
-            loaders = self._generate_nested_loaders(relations)
+            loaders = self.__class__._generate_nested_loaders(relations)
             query = query.options(*loaders)
 
         result = await session.execute(query)
         return result.scalar_one()
 
-    def _generate_nested_loaders(self, relations: list[str]) -> list[Load]:
+    @classmethod
+    def _generate_nested_loaders(cls, relations: list[str]) -> list[Load]:
         loaders = []
 
         for path in relations:
             parts = path.split(".")
-            model = type(self)
+            model = cls
 
             # first loader
             try:
@@ -150,12 +150,14 @@ class BaseModel(Base):
         join_model: Any,
         where: Optional[Iterable[ColumnElement[bool]]] = None,
         order_by: Optional[Iterable[ColumnElement[Any]]] = None,
+        relations: Optional[list[str]] = None,
         include_deleted: bool = False
     ) -> Optional[T]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,
             order_by=order_by,
+            relations=relations,
             include_deleted=include_deleted
         )
 
@@ -171,6 +173,7 @@ class BaseModel(Base):
         order_by: Optional[Iterable[ColumnElement[Any]]] = None,
         limit: Optional[int] = None,
         offset: Optional[int] = None,
+        relations: Optional[list[str]] = None,
         include_deleted: bool = False,
     ) -> Sequence[T]:
         stmt = cls._set_stmt(
@@ -179,6 +182,7 @@ class BaseModel(Base):
             order_by=order_by,
             limit=limit,
             offset=offset,
+            relations=relations,
             include_deleted=include_deleted
         )
         result = await session.execute(stmt)
@@ -191,6 +195,7 @@ class BaseModel(Base):
                   order_by: Optional[Iterable[ColumnElement[Any]]] = None,
                   limit: Optional[int] = None,
                   offset: Optional[int] = None,
+                  relations: Optional[list[str]] = None,
                   include_deleted: bool = False) -> Select:
         stmt: Select = select(cls).join(join_model)
         if where is not None:
@@ -201,6 +206,9 @@ class BaseModel(Base):
             stmt = stmt.limit(limit)
         if offset:
             stmt = stmt.offset(offset)
+        if relations:
+            loaders = cls._generate_nested_loaders(relations=relations)
+            stmt = stmt.options(*loaders)
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
 
