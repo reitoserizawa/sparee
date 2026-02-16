@@ -28,7 +28,7 @@ class JobPostService:
     @staticmethod
     async def create_job_post(session: AsyncSession, data: JobPostCreateModel, user: User) -> "JobPost":
         company = await JobPostService._get_company_for_member(session=session, company_id=data.company_id, user=user)
-        address = await JobPostService._form_address(session=session, address_data=data.address) if data.address else company.address
+        address = await JobPostService._create_address(session=session, address_data=data.address) if data.address else company.address
         job_category = await JobPostService._get_job_category(session=session, job_category_id=data.job_category_id)
 
         job_post = JobPost(
@@ -62,7 +62,7 @@ class JobPostService:
         return job_category
 
     @staticmethod
-    async def _form_address(session: AsyncSession, address_data: "AddressCreateModel") -> "Address":
+    async def _create_address(session: AsyncSession, address_data: "AddressCreateModel") -> "Address":
         return await AddressService.create_address(
             session,
             street=address_data.street,
