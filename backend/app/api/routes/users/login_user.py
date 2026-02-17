@@ -39,4 +39,4 @@ async def login_user(
     access_token = Security.generate_token(
         user=user, token_type=TokenType.ACCESS)
 
-    return {"user": user.username, "token": access_token}
+    return {"username": user.username, "token": access_token}
