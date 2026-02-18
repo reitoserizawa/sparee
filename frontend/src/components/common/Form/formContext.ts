@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import { createContext, useContext } from 'react';
 import type { FormContextType } from './types';
 
-export const FormContext = React.createContext<FormContextType<unknown> | null>(null);
+export const FormContext = createContext<FormContextType<unknown> | null>(null);
 
 export const useStateContext = <State>() => {
     const context = useContext(FormContext);
