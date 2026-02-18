@@ -4,94 +4,75 @@ import type { FormProviderProps, FormState } from './types';
 
 const Form = <State,>({ children, initialValues, onSubmit, className }: FormProviderProps<State>) => {
     const [formState, setFormState] = useState<FormState<State>>({
-        data: initialValues || ({} as State),
+        data: initialValues ?? ({} as State),
         validators: {},
         errors: {},
     });
 
+    const updateField = (name: keyof State, value: string) => {
+        setFormState(prev => ({
+            ...prev,
+            data: {
+                ...prev.data,
+                [name]: value,
+            },
+        }));
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-
-        setFormState(prevValues => ({
-            ...prevValues,
-            data: {
-                ...prevValues.data,
-                [name as keyof State]: value,
-            },
-        }));
+        updateField(e.target.name as keyof State, e.target.value);
     };
 
-    const handleDateChange = (name: keyof State, date: Date | null) => {
-        setFormState(prevValues => ({
-            ...prevValues,
-            data: {
-                ...prevValues.data,
-                [name as keyof State]: date,
+    const registerInput = useCallback(({ name, validators }: { name: keyof State; validators?: ((value: Partial<State>) => string[])[] }) => {
+        setFormState(prev => ({
+            ...prev,
+            validators: {
+                ...prev?.validators,
+                [name]: validators || [],
+            },
+            errors: {
+                ...prev.errors,
+                [name]: [],
             },
         }));
-    };
 
-    const registerInput = useCallback(
-        ({
-            name,
-            validators,
-        }: {
-            name: keyof State;
-            validators?: ((value: unknown, data: Partial<State>) => string[])[];
-        }) => {
-            setFormState(state => ({
-                ...state,
-                validators: {
-                    ...state.validators,
-                    [name]: validators || [],
-                },
-                errors: {
-                    ...state.errors,
-                    [name]: [],
-                },
-            }));
+        return () => {
+            setFormState(prev => {
+                const restErrors = { ...prev.errors };
+                delete restErrors[name];
 
-            return () => {
-                setFormState(state => {
-                    const { data, errors, validators: currentValidators } = { ...state };
-                    delete data[name];
-                    delete errors[name];
-                    delete currentValidators[name];
-                    return {
-                        data,
-                        errors,
-                        validators: currentValidators,
-                    };
-                });
-            };
-        },
-        [],
-    );
+                const restValidators = { ...prev.validators };
+                delete restValidators[name];
+                return {
+                    ...prev,
+                    errors: restErrors,
+                    validators: restValidators,
+                };
+            });
+        };
+    }, []);
 
     const validate = (): boolean => {
-        const { validators, data } = formState;
+        const newErrors: Partial<Record<keyof State, string[]>> = {};
 
-        if (!validators || Object.keys(validators).length === 0) return true;
+        (Object.keys(formState.validators) as (keyof State)[]).forEach(name => {
+            const fieldValidators = formState.validators[name];
+            if (!fieldValidators) return;
 
-        const formErrors = Object.entries(validators).reduce(
-            (errors, [name, fieldValidators]) => {
-                if (!Array.isArray(fieldValidators)) return errors;
+            const value = formState.data[name] as Partial<State>;
+            const messages = fieldValidators.flatMap(validator => validator(value));
 
-                const messages = fieldValidators.reduce<string[]>((result, validator) => {
-                    const value = data[name as keyof typeof data];
-                    const err = validator(value, data);
-                    return [...result, ...err];
-                }, []);
-                if (messages.length > 0) errors[name] = messages;
-                return errors;
-            },
-            {} as Record<string, string[]>,
-        );
+            if (messages.length) {
+                newErrors[name] = messages;
+            }
+        });
 
-        if (Object.keys(formErrors).length === 0) return true;
+        if (Object.keys(newErrors).length) {
+            setFormState(prev => ({ ...prev, errors: newErrors }));
+            return false;
+        }
 
-        setFormState(state => ({ ...state, errors: formErrors }));
-        return false;
+        return true;
     };
 
     const onSubmitHandler = (e: React.FormEvent) => {
@@ -103,7 +84,7 @@ const Form = <State,>({ children, initialValues, onSubmit, className }: FormProv
     };
 
     return (
-        <FormContext.Provider value={{ formState, registerInput, handleChange, handleDateChange }}>
+        <FormContext.Provider value={{ formState, registerInput, handleChange }}>
             <form onSubmit={onSubmitHandler} className={className}>
                 {children}
             </form>

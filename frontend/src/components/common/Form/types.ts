@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type Validator<State> = (value: Partial<State>, data: Partial<State>) => string[];
+export type Validator<State> = (value: Partial<State>) => string[];
 
 export interface FormState<State> {
     data: State;

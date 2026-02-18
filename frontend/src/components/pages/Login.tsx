@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
 
-type FormState = {
-    email: string;
-    password: string;
-};
+import Form from '../common/Form';
+import FormInput from '../common/Form/FormInput';
+import type { UserLoginRequest } from '../../types/user';
+import requiredValidator from '../common/Form/validators/required';
+import { emailValidator } from '../common/Form/validators/email_validator';
 
-export default function LoginPage() {
-    const [form, setForm] = useState<FormState>({ email: '', password: '' });
+const LoginPage = (): React.ReactElement => {
+    const initialValues: UserLoginRequest = { email: '', password: '' };
+
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (data: UserLoginRequest) => {
         setLoading(true);
-
         try {
-            // 👉 replace with real API call
-            await new Promise(r => setTimeout(r, 1000));
-            alert(JSON.stringify(form, null, 2));
+            const response = await fetch(`${import.meta.env.VITE_API_URL}users/login`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            const responseData = await response.json();
+            if (!response.ok) {
+                throw new Error(responseData.detail || 'Login failed');
+            }
+            console.log('Login successful:', responseData);
         } finally {
             setLoading(false);
         }
@@ -33,39 +37,9 @@ export default function LoginPage() {
                     <h1 className='text-2xl font-semibold tracking-tight'>Welcome back</h1>
                     <p className='text-sm text-gray-500 mt-1'>Sign in to your account</p>
                 </div>
-
-                <form onSubmit={handleSubmit} className='space-y-4'>
-                    <div>
-                        <label className='block text-sm font-medium mb-1'>Email</label>
-                        <input
-                            name='email'
-                            type='email'
-                            required
-                            value={form.email}
-                            onChange={handleChange}
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black'
-                            placeholder='you@example.com'
-                        />
-                    </div>
-
-                    <div>
-                        <div className='flex items-center justify-between mb-1'>
-                            <label className='text-sm font-medium'>Password</label>
-                            <button type='button' className='text-xs text-gray-500 hover:text-black'>
-                                Forgot?
-                            </button>
-                        </div>
-                        <input
-                            name='password'
-                            type='password'
-                            required
-                            value={form.password}
-                            onChange={handleChange}
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black'
-                            placeholder='••••••••'
-                        />
-                    </div>
-
+                <Form<UserLoginRequest> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
+                    <FormInput<UserLoginRequest> name='email' label='Email*' type='text' validators={[requiredValidator(), emailValidator()]} />
+                    <FormInput<UserLoginRequest> name='password' label='Password*' type='password' validators={[requiredValidator()]} />
                     <button
                         type='submit'
                         disabled={loading}
@@ -73,7 +47,7 @@ export default function LoginPage() {
                     >
                         {loading ? 'Signing in...' : 'Sign in'}
                     </button>
-                </form>
+                </Form>
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
                     Don’t have an account?{' '}
@@ -84,4 +58,6 @@ export default function LoginPage() {
             </div>
         </div>
     );
-}
+};
+
+export default LoginPage;
