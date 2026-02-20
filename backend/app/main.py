@@ -15,17 +15,8 @@ ORIGINS = [
 ]
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    from app.db.models.base import Base
-    from app.db.database import engine
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-
-
 def create_app() -> FastAPI:
-    app = FastAPI(title="Sparee", lifespan=lifespan)
+    app = FastAPI(title="Sparee")
     if DEBUG:
         app.add_middleware(
             CORSMiddleware,

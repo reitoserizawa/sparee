@@ -1,3 +1,4 @@
+from app.db.models import *
 from app.db.database import Base
 import os
 import sys
@@ -11,6 +12,7 @@ from geoalchemy2 import alembic_helpers
 # Add app folder to path
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, BASE_DIR)
+
 
 # Import your Base for metadata
 
@@ -79,6 +81,7 @@ GEOCODER_TABLES = {
 }
 
 IGNORED_INDEXES = {
+    "idx_addresses_location",
     "secondary_unit_lookup_abbrev_idx",
 }
 
