@@ -1,7 +1,7 @@
 import asyncio
 from app.db.session import AsyncSessionLocal
 
-from .job_category_test import seed_job_categories
+from app.db.seeds.job_category_test import seed_job_categories
 
 
 async def run():
