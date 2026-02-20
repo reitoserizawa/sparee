@@ -79,7 +79,7 @@ class JobPost(BaseModel):
         from geoalchemy2 import Geography
 
         # fix after adding job post date field
-        return await cls.filter_via_join(session=session, join_model=cls.address, where=[Address.location.isnot(None)], order_by=[Address.location.op("<->")(user_point), cls.created_at.desc()], limit=limit, relations=JOB_POST_DETAIL_RELATIONS)
+        return await cls.filter_via_join(session=session, join_model=cls.address, where=[Address.location.isnot(None)], order_by=[ST_Distance(Address.location, user_point), cls.created_at.desc()], limit=limit, relations=JOB_POST_DETAIL_RELATIONS)
 
     async def with_detail_relations(self, session: AsyncSession) -> "JobPost":
         return await self.with_relations(session=session, relations=JOB_POST_DETAIL_RELATIONS)
