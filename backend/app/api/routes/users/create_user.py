@@ -38,4 +38,4 @@ async def create_user(
     access_token = Security.generate_token(
         user=user, token_type=TokenType.ACCESS)
 
-    return {"username": user.username, "token": access_token}
+    return {"username": user.username, "access_token": access_token}

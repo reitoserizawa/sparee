@@ -6,7 +6,7 @@ from ..companies.response import CompanyResponseModel
 
 class UserTokenResponseModel(BaseModel):
     username: str = Field(..., frozen=True)
-    token: str = Field(..., frozen=True)
+    access_token: str = Field(..., frozen=True)
 
 
 class UserResponseModel(UserBaseModel):
