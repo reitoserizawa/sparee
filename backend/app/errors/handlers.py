@@ -12,10 +12,7 @@ def register_error_handlers(app: FastAPI):
         return JSONResponse(
             status_code=err.status_code,
             content={
-                "error": {
-                    "message": err.message,
-                    "status_code": err.status_code,
-                }
+                "message": err.message,
             },
         )
 
@@ -26,10 +23,7 @@ def register_error_handlers(app: FastAPI):
         return JSONResponse(
             status_code=500,
             content={
-                "error": {
-                    "message": str(err),
-                    "status_code": 500,
-                }
+                "message": str(err),
             },
         )
 
@@ -38,10 +32,7 @@ def register_error_handlers(app: FastAPI):
         return JSONResponse(
             status_code=err.status_code,
             content={
-                "error": {
-                    "message": err.detail,
-                    "status_code": err.status_code,
-                }
+                "message": err.detail,
             },
         )
 
@@ -51,9 +42,6 @@ def register_error_handlers(app: FastAPI):
         return JSONResponse(
             status_code=500,
             content={
-                "error": {
-                    "message": "Internal server error",
-                    "status_code": 500,
-                }
+                "message": "Internal server error",
             },
         )
