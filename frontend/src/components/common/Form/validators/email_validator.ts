@@ -1,6 +1,6 @@
 import type { Validator } from '../types';
 
-export const emailValidator = <State>(): Validator<State> => {
+const emailValidator = <State>(): Validator<State> => {
     return value => {
         if (typeof value !== 'string') return ['Invalid value type'];
 
@@ -10,3 +10,5 @@ export const emailValidator = <State>(): Validator<State> => {
         return [];
     };
 };
+
+export default emailValidator;
