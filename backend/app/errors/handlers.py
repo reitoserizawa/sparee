@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import HTTPException
 
 from app.errors.custom_exception import APIError
 from app.errors.jwt_configuration_error import JWTConfigurationError
@@ -28,6 +29,18 @@ def register_error_handlers(app: FastAPI):
                 "error": {
                     "message": str(err),
                     "status_code": 500,
+                }
+            },
+        )
+
+    @app.exception_handler(HTTPException)
+    async def handle_http_exception(request: Request, err: HTTPException):
+        return JSONResponse(
+            status_code=err.status_code,
+            content={
+                "error": {
+                    "message": err.detail,
+                    "status_code": err.status_code,
                 }
             },
         )
