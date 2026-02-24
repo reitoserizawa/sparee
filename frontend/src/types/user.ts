@@ -5,7 +5,7 @@ export interface UserLoginRequest {
 
 export interface UserTokenResponse {
     username: string;
-    token: string;
+    access_token: string;
 }
 
 export interface UserResponse {
