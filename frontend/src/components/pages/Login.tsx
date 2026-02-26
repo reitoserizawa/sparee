@@ -6,18 +6,18 @@ import { isErrorWithMessage } from '../../services/helpers';
 import requiredValidator from '../common/Form/validators/required';
 import emailValidator from '../common/Form/validators/email_validator';
 
-import type { UserLoginRequest } from '../../types/user';
+import type { UserLoginFormState } from '../../types/user';
 
 import Form from '../common/Form';
 import FormInput from '../common/Form/FormInput';
 import Error from '../common/Error';
 
 const LoginPage = (): React.ReactElement => {
-    const initialValues: UserLoginRequest = { email: '', password: '' };
+    const initialValues: UserLoginFormState = { email: '', password: '' };
     const navigate = useNavigate();
     const [login, { isSuccess, isLoading, isError, error }] = useLoginMutation();
 
-    const handleSubmit = async (data: UserLoginRequest) => {
+    const handleSubmit = async (data: UserLoginFormState) => {
         await login(data);
         if (isSuccess) {
             navigate('/');
@@ -31,14 +31,14 @@ const LoginPage = (): React.ReactElement => {
                     <h1 className='text-2xl font-semibold tracking-tight'>Welcome back</h1>
                     <p className='text-sm text-gray-500 mt-1'>Sign in to your account</p>
                 </div>
-                <Form<UserLoginRequest> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
-                    <FormInput<UserLoginRequest>
+                <Form<UserLoginFormState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
+                    <FormInput<UserLoginFormState>
                         name='email'
                         label='Email*'
                         type='text'
                         validators={[requiredValidator(), emailValidator()]}
                     />
-                    <FormInput<UserLoginRequest>
+                    <FormInput<UserLoginFormState>
                         name='password'
                         label='Password*'
                         type='password'

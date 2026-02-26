@@ -1,10 +1,10 @@
 import baseApi from '../../services/baseApi';
-import type { UserLoginRequest, UserTokenResponse } from '../../types/user';
+import type { UserLoginFormState, UserTokenResponse } from '../../types/user';
 import { setCredentials } from './authSlice';
 
 const authApi = baseApi.injectEndpoints({
     endpoints: builder => ({
-        login: builder.mutation<UserTokenResponse, UserLoginRequest>({
+        login: builder.mutation<UserTokenResponse, UserLoginFormState>({
             query: credentials => ({
                 url: '/auth/login',
                 method: 'POST',
