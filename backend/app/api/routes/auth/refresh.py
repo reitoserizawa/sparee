@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,12 +25,13 @@ async def refresh_user(
     if not user:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
+    DEBUG = os.getenv("DEBUG", "true").lower() == "true",
     new_refresh = Security.generate_token(user, TokenType.REFRESH)
     response.set_cookie(
         key="refresh_token",
         value=new_refresh,
         httponly=True,
-        secure=True,
+        secure=not DEBUG,
         samesite="lax",
         max_age=60 * 60 * 24 * Security.REFRESH_EXPIRE_DAYS,
     )
