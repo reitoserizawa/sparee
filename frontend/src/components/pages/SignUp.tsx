@@ -1,42 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-type FormState = {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-};
+import { useRegisterMutation } from '../../features/auth/authApi';
+import requiredValidator from '../common/Form/validators/required';
+import emailValidator from '../common/Form/validators/email_validator';
+import { isErrorWithMessage } from '../../services/helpers';
 
-export default function SignUpPage() {
-    const [form, setForm] = useState<FormState>({
+import type { UserCreateFormState } from '../../types/user';
+
+import Form from '../common/Form';
+import FormInput from '../common/Form/FormInput';
+import Error from '../common/Error';
+
+export default function SignUpPage(): React.ReactElement {
+    const initialValues: UserCreateFormState = {
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
     };
+    const navigate = useNavigate();
+    const [register, { isSuccess, isLoading, isError, error }] = useRegisterMutation();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-
-        if (form.password !== form.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            // 👉 replace with real API call
-            await new Promise(r => setTimeout(r, 1000));
-            alert(JSON.stringify(form, null, 2));
-        } finally {
-            setLoading(false);
+    const handleSubmit = async (data: UserCreateFormState) => {
+        await register(data);
+        if (isSuccess) {
+            navigate('/');
         }
     };
 
@@ -48,69 +37,40 @@ export default function SignUpPage() {
                     <p className='text-sm text-gray-500 mt-1'>Sign up to get started</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className='space-y-4'>
-                    <div>
-                        <label className='block text-sm font-medium mb-1'>Name</label>
-                        <input
-                            name='name'
-                            type='text'
-                            required
-                            value={form.name}
-                            onChange={handleChange}
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black'
-                            placeholder='Jane Doe'
-                        />
-                    </div>
-
-                    <div>
-                        <label className='block text-sm font-medium mb-1'>Email</label>
-                        <input
-                            name='email'
-                            type='email'
-                            required
-                            value={form.email}
-                            onChange={handleChange}
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black'
-                            placeholder='you@example.com'
-                        />
-                    </div>
-
-                    <div>
-                        <label className='block text-sm font-medium mb-1'>Password</label>
-                        <input
-                            name='password'
-                            type='password'
-                            required
-                            value={form.password}
-                            onChange={handleChange}
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black'
-                            placeholder='••••••••'
-                        />
-                    </div>
-
-                    <div>
-                        <label className='block text-sm font-medium mb-1'>Confirm Password</label>
-                        <input
-                            name='confirmPassword'
-                            type='password'
-                            required
-                            value={form.confirmPassword}
-                            onChange={handleChange}
-                            className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black'
-                            placeholder='••••••••'
-                        />
-                    </div>
-
-                    {error && <p className='text-sm text-red-600'>{error}</p>}
-
+                <Form<UserCreateFormState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
+                    <FormInput<UserCreateFormState>
+                        name='name'
+                        label='Name*'
+                        type='text'
+                        validators={[requiredValidator()]}
+                    />
+                    <FormInput<UserCreateFormState>
+                        name='email'
+                        label='Email*'
+                        type='text'
+                        validators={[requiredValidator(), emailValidator()]}
+                    />
+                    <FormInput<UserCreateFormState>
+                        name='password'
+                        label='Password*'
+                        type='password'
+                        validators={[requiredValidator()]}
+                    />
+                    <FormInput<UserCreateFormState>
+                        name='confirmPassword'
+                        label='Confirm Password*'
+                        type='password'
+                        validators={[requiredValidator()]}
+                    />
+                    {isError && isErrorWithMessage(error) && <Error message={error?.data?.message} />}
                     <button
                         type='submit'
-                        disabled={loading}
+                        disabled={isLoading}
                         className='w-full rounded-lg bg-black text-white py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50'
                     >
-                        {loading ? 'Creating account...' : 'Sign up'}
+                        {isLoading ? 'Creating account...' : 'Sign in'}
                     </button>
-                </form>
+                </Form>
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
                     Already have an account?{' '}
