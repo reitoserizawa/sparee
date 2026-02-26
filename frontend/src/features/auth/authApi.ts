@@ -15,7 +15,18 @@ const authApi = baseApi.injectEndpoints({
                 dispatch(setCredentials(data));
             },
         }),
+        register: builder.mutation<UserTokenResponse, UserLoginFormState>({
+            query: credentials => ({
+                url: '/auth/register',
+                method: 'POST',
+                body: credentials,
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                const { data } = await queryFulfilled;
+                dispatch(setCredentials(data));
+            },
+        }),
     }),
 });
 
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation } = authApi;

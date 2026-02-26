@@ -3,6 +3,13 @@ export interface UserLoginFormState {
     password: string;
 }
 
+export interface UserCreateFormState {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
 export interface UserTokenResponse {
     username: string;
     access_token: string;
