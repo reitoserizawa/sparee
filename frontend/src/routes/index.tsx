@@ -4,18 +4,19 @@ import LoginPage from '../components/pages/Login';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
 import RegisterPage from '../components/pages/Register';
+import DashboardPage from '../components/pages/Dashboard';
 
 const AppRoutes = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route element={<PublicRoute isAuthenticated={false} />}>
+                <Route element={<PublicRoute />}>
                     <Route path='/login' element={<LoginPage />} />
                     <Route path='/register' element={<RegisterPage />} />
                 </Route>
-                <Route element={<PrivateRoute isAuthenticated={false} />}>
+                <Route element={<PrivateRoute />}>
                     <Route element={<Layout />}>
-                        <Route path='/' element={<div></div>} />
+                        <Route path='/' element={<DashboardPage />} />
                     </Route>
                 </Route>
             </Routes>
