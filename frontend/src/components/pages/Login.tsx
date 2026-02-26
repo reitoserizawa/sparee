@@ -15,12 +15,14 @@ import Error from '../common/Error';
 const LoginPage = (): React.ReactElement => {
     const initialValues: UserLoginFormState = { email: '', password: '' };
     const navigate = useNavigate();
-    const [login, { isSuccess, isLoading, isError, error }] = useLoginMutation();
+    const [login, { isLoading, isError, error }] = useLoginMutation();
 
     const handleSubmit = async (data: UserLoginFormState) => {
-        await login(data);
-        if (isSuccess) {
+        try {
+            await login(data).unwrap();
             navigate('/');
+        } catch (err) {
+            console.log(err);
         }
     };
 
