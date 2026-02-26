@@ -56,7 +56,7 @@ const LoginPage = (): React.ReactElement => {
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
                     Don’t have an account?{' '}
-                    <a href='#' className='text-black font-medium hover:underline'>
+                    <a href='/register' className='text-black font-medium hover:underline'>
                         Sign up
                     </a>
                 </p>
