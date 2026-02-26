@@ -12,7 +12,7 @@ import Form from '../common/Form';
 import FormInput from '../common/Form/FormInput';
 import Error from '../common/Error';
 
-export default function SignUpPage(): React.ReactElement {
+const RegisterPage = (): React.ReactElement => {
     const initialValues: UserCreateFormState = {
         name: '',
         email: '',
@@ -74,11 +74,13 @@ export default function SignUpPage(): React.ReactElement {
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
                     Already have an account?{' '}
-                    <a href='#' className='text-black font-medium hover:underline'>
+                    <a href='/login' className='text-black font-medium hover:underline'>
                         Sign in
                     </a>
                 </p>
             </div>
         </div>
     );
-}
+};
+
+export default RegisterPage;

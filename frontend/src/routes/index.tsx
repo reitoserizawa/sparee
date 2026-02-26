@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from '../components/layout';
 import LoginPage from '../components/pages/Login';
-import SignUpPage from '../components/pages/SignUp';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
+import RegisterPage from '../components/pages/Register';
 
 const AppRoutes = () => {
     return (
@@ -11,7 +11,7 @@ const AppRoutes = () => {
             <Routes>
                 <Route element={<PublicRoute isAuthenticated={false} />}>
                     <Route path='/login' element={<LoginPage />} />
-                    <Route path='/sign-up' element={<SignUpPage />} />
+                    <Route path='/register' element={<RegisterPage />} />
                 </Route>
                 <Route element={<PrivateRoute isAuthenticated={false} />}>
                     <Route element={<Layout />}>
