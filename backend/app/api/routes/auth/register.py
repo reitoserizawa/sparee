@@ -12,7 +12,7 @@ user_service = UserService()
 
 
 @router.post("/", status_code=201, response_model=UserTokenResponseModel)
-async def create_user(
+async def register(
     response: Response,
     payload: UserCreateModel,
     session: AsyncSession = Depends(get_session)
