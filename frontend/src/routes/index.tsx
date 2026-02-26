@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/layout';
 import LoginPage from '../components/pages/Login';
 import RegisterPage from '../components/pages/Register';
@@ -19,6 +19,7 @@ const AppRoutes = () => {
                         </Route>
                     </Route>
                 </Route>
+                <Route path='*' element={<Navigate to='/' replace />} />
             </Routes>
         </BrowserRouter>
     );
