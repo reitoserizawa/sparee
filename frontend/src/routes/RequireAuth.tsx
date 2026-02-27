@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
-import { useAppSelector } from '../../apps/hooks';
-import { selectCurrentUser } from './authSelector';
+import { useAppSelector } from '../apps/hooks';
+import { selectCurrentUser } from '../features/auth/authSelector';
 
 const RequireAuth: React.ElementType = () => {
     const isAuthenticated = useAppSelector(selectCurrentUser);

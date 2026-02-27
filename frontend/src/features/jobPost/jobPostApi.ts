@@ -1,4 +1,4 @@
-import baseApi from '../../services/baseApi';
+import baseApi from '../base/baseApi';
 import type { UserLocationState } from '../user/types';
 import type { JobPost } from './types';
 

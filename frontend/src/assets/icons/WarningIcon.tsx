@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IconProps } from '../types/icon';
+import type { IconProps } from './types';
 
 const WarningIcon: React.FC<IconProps> = ({ size = 24, color }) => (
     <svg height={size} width={size} fill={color} viewBox='0 -960 960 960'>

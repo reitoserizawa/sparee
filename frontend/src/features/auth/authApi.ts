@@ -1,10 +1,11 @@
-import baseApi from '../../services/baseApi';
-import type { UserLoginFormState, UserTokenResponse } from '../../types/user';
+import baseApi from '../base/baseApi';
 import { setCredentials } from './authSlice';
+
+import type { AuthResponse, UserLoginState, UserCreateState } from './types';
 
 const authApi = baseApi.injectEndpoints({
     endpoints: builder => ({
-        login: builder.mutation<UserTokenResponse, UserLoginFormState>({
+        login: builder.mutation<AuthResponse, UserLoginState>({
             query: credentials => ({
                 url: '/auth/login',
                 method: 'POST',
@@ -15,7 +16,7 @@ const authApi = baseApi.injectEndpoints({
                 dispatch(setCredentials(data));
             },
         }),
-        register: builder.mutation<UserTokenResponse, UserLoginFormState>({
+        register: builder.mutation<AuthResponse, UserCreateState>({
             query: credentials => ({
                 url: '/auth/register',
                 method: 'POST',
@@ -26,7 +27,7 @@ const authApi = baseApi.injectEndpoints({
                 dispatch(setCredentials(data));
             },
         }),
-        refresh: builder.mutation<UserTokenResponse, null>({
+        refresh: builder.mutation<AuthResponse, null>({
             query: () => ({
                 url: '/auth/refresh',
                 method: 'POST',

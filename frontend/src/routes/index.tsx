@@ -3,8 +3,8 @@ import Layout from '../components/layout';
 import LoginPage from '../components/pages/Login';
 import RegisterPage from '../components/pages/Register';
 import DashboardPage from '../components/pages/Dashboard';
-import PersistLogin from '../features/auth/PersistLogin';
-import RequireAuth from '../features/auth/RequireAuth';
+import PersistLogin from './PersistLogin';
+import RequireAuth from './RequireAuth';
 import JobBoardPage from '../components/pages/jobBoard';
 
 const AppRoutes = () => {

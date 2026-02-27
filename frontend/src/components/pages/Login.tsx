@@ -2,22 +2,22 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useLoginMutation } from '../../features/auth/authApi';
-import { isErrorWithMessage } from '../../services/helpers';
+import { isErrorWithMessage } from '../../features/base/helpers';
 import requiredValidator from '../common/Form/validators/required';
 import emailValidator from '../common/Form/validators/email_validator';
 
-import type { UserLoginFormState } from '../../types/user';
+import type { UserLoginState } from '../../features/auth/types';
 
 import Form from '../common/Form';
 import FormInput from '../common/Form/FormInput';
 import Error from '../common/Error';
 
 const LoginPage = (): React.ReactElement => {
-    const initialValues: UserLoginFormState = { email: '', password: '' };
+    const initialValues: UserLoginState = { email: '', password: '' };
     const navigate = useNavigate();
     const [login, { isLoading, isError, error }] = useLoginMutation();
 
-    const handleSubmit = async (data: UserLoginFormState) => {
+    const handleSubmit = async (data: UserLoginState) => {
         try {
             await login(data).unwrap();
             navigate('/');
@@ -33,14 +33,14 @@ const LoginPage = (): React.ReactElement => {
                     <h1 className='text-2xl font-semibold tracking-tight'>Welcome back</h1>
                     <p className='text-sm text-gray-500 mt-1'>Sign in to your account</p>
                 </div>
-                <Form<UserLoginFormState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
-                    <FormInput<UserLoginFormState>
+                <Form<UserLoginState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
+                    <FormInput<UserLoginState>
                         name='email'
                         label='Email*'
                         type='text'
                         validators={[requiredValidator(), emailValidator()]}
                     />
-                    <FormInput<UserLoginFormState>
+                    <FormInput<UserLoginState>
                         name='password'
                         label='Password*'
                         type='password'

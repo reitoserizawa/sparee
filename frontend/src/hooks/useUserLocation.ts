@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../apps/hooks';
-import { selectLocation } from './userSelector';
-import { setLocation } from './userSlice';
+import { useAppDispatch, useAppSelector } from '../apps/hooks';
+import { selectLocation } from '../features/user/userSelector';
+import { setLocation } from '../features/user/userSlice';
 
 const useUserLocation = () => {
     const { lng, lat } = useAppSelector(selectLocation);

@@ -4,16 +4,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '../../features/auth/authApi';
 import requiredValidator from '../common/Form/validators/required';
 import emailValidator from '../common/Form/validators/email_validator';
-import { isErrorWithMessage } from '../../services/helpers';
+import { isErrorWithMessage } from '../../features/base/helpers';
 
-import type { UserCreateFormState } from '../../types/user';
+import type { UserCreateState } from '../../features/auth/types';
 
 import Form from '../common/Form';
 import FormInput from '../common/Form/FormInput';
 import Error from '../common/Error';
 
 const RegisterPage = (): React.ReactElement => {
-    const initialValues: UserCreateFormState = {
+    const initialValues: UserCreateState = {
         name: '',
         email: '',
         password: '',
@@ -22,7 +22,7 @@ const RegisterPage = (): React.ReactElement => {
     const navigate = useNavigate();
     const [register, { isSuccess, isLoading, isError, error }] = useRegisterMutation();
 
-    const handleSubmit = async (data: UserCreateFormState) => {
+    const handleSubmit = async (data: UserCreateState) => {
         await register(data);
         if (isSuccess) {
             navigate('/');
@@ -37,26 +37,26 @@ const RegisterPage = (): React.ReactElement => {
                     <p className='text-sm text-gray-500 mt-1'>Sign up to get started</p>
                 </div>
 
-                <Form<UserCreateFormState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
-                    <FormInput<UserCreateFormState>
+                <Form<UserCreateState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
+                    <FormInput<UserCreateState>
                         name='name'
                         label='Name*'
                         type='text'
                         validators={[requiredValidator()]}
                     />
-                    <FormInput<UserCreateFormState>
+                    <FormInput<UserCreateState>
                         name='email'
                         label='Email*'
                         type='text'
                         validators={[requiredValidator(), emailValidator()]}
                     />
-                    <FormInput<UserCreateFormState>
+                    <FormInput<UserCreateState>
                         name='password'
                         label='Password*'
                         type='password'
                         validators={[requiredValidator()]}
                     />
-                    <FormInput<UserCreateFormState>
+                    <FormInput<UserCreateState>
                         name='confirmPassword'
                         label='Confirm Password*'
                         type='password'
