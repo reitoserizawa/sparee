@@ -20,10 +20,10 @@ def create_app() -> FastAPI:
     if DEBUG:
         app.add_middleware(
             CORSMiddleware,
-            allow_origins=ORIGINS,  # allow specific origins
+            allow_origins=ORIGINS,
             allow_credentials=True,
-            allow_methods=["*"],     # allow GET, POST, OPTIONS, etc.
-            allow_headers=["*"],     # allow all headers
+            allow_methods=["*"],
+            allow_headers=["*"],
         )
     app.add_middleware(RequestLifecycleMiddleware)
     app.include_router(router, prefix="/api")
