@@ -5,7 +5,7 @@ import RegisterPage from '../components/pages/Register';
 import DashboardPage from '../components/pages/Dashboard';
 import PersistLogin from '../features/auth/PersistLogin';
 import RequireAuth from '../features/auth/RequireAuth';
-import JobBoardPage from '../components/pages/JobBoard';
+import JobBoardPage from '../components/pages/jobBoard';
 
 const AppRoutes = () => {
     return (
