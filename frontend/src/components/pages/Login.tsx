@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useLoginMutation } from '../../features/auth/authApi';
 import { isErrorWithMessage } from '../../services/helpers';
@@ -58,9 +58,9 @@ const LoginPage = (): React.ReactElement => {
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
                     Don’t have an account?{' '}
-                    <a href='/register' className='text-black font-medium hover:underline'>
+                    <Link to='/register' className='text-black font-medium hover:underline'>
                         Sign up
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

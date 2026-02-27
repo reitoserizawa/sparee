@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { useRegisterMutation } from '../../features/auth/authApi';
 import requiredValidator from '../common/Form/validators/required';
@@ -74,9 +74,9 @@ const RegisterPage = (): React.ReactElement => {
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
                     Already have an account?{' '}
-                    <a href='/login' className='text-black font-medium hover:underline'>
+                    <Link to='/login' className='text-black font-medium hover:underline'>
                         Sign in
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>
