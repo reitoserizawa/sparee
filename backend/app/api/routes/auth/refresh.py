@@ -11,7 +11,7 @@ router = APIRouter()
 user_service = UserService()
 
 
-@router.post("/refresh", status_code=200, response_model=UserTokenResponseModel)
+@router.post("/", status_code=200, response_model=UserTokenResponseModel)
 async def refresh_user(
     request: Request,
     response: Response,
