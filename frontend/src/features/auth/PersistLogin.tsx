@@ -11,6 +11,7 @@ const PersistLogin: React.ElementType = () => {
 
     useEffect(() => {
         if (!isAuthenticated) {
+            // TODO: fix different domain error setting cookie (frontend and backend CORS issue)
             refresh(null);
         }
     }, [isAuthenticated, refresh]);
