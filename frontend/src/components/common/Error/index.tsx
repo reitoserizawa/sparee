@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ErrorState } from './types';
-import WarningIcon from '../../../assets/WarningIcon';
+import WarningIcon from '../../../assets/icons/WarningIcon';
 
 const Error: React.FC<ErrorState> = ({ message = 'Unknown error occured' }) => {
     return (
