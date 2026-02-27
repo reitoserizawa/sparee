@@ -1,6 +1,8 @@
 export interface UserState {
-    location: {
-        lng: number | null;
-        lat: number | null;
-    };
+    location: UserLocationState;
+}
+
+export interface UserLocationState {
+    lng: number | null;
+    lat: number | null;
 }
