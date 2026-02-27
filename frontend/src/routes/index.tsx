@@ -5,6 +5,7 @@ import RegisterPage from '../components/pages/Register';
 import DashboardPage from '../components/pages/Dashboard';
 import PersistLogin from '../features/auth/PersistLogin';
 import RequireAuth from '../features/auth/RequireAuth';
+import JobBoardPage from '../components/pages/JobBoard';
 
 const AppRoutes = () => {
     return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
                     <Route element={<RequireAuth />}>
                         <Route element={<Layout />}>
                             <Route path='/' element={<DashboardPage />} />
+                            <Route path='/jobs' element={<JobBoardPage />} />
                         </Route>
                     </Route>
                 </Route>
