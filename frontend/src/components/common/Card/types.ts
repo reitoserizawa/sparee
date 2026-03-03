@@ -1,7 +1,8 @@
 export interface CardProps {
     title: string;
-    company: string;
-    skills: string[];
-    salary: string;
-    location: string;
+    description: string;
+    company?: string;
+    skills?: string[];
+    salary: number;
+    location?: string;
 }
