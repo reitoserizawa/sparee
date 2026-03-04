@@ -1,7 +1,9 @@
 import React from 'react';
 import type { CardProps } from './types';
 
-const Card: React.FC<CardProps> = ({ title, company, skills, salary, location }) => {
+const JobPostCard: React.FC<CardProps> = ({ jobPost }) => {
+    const { title, company, skills, salary, location } = jobPost;
+
     return (
         <div className='w-80 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 p-6 shadow-xl text-white'>
             <div className='flex items-start gap-4'>
@@ -9,7 +11,7 @@ const Card: React.FC<CardProps> = ({ title, company, skills, salary, location })
 
                 <div className='flex-1'>
                     <h2 className='text-xl font-semibold leading-tight'>{title}</h2>
-                    <p className='text-sm opacity-90'>{company}</p>
+                    <p className='text-sm opacity-90'>{company?.name}</p>
                 </div>
             </div>
 
@@ -25,11 +27,11 @@ const Card: React.FC<CardProps> = ({ title, company, skills, salary, location })
             </div>
 
             <div className='mt-6 flex items-center justify-between text-sm font-medium'>
-                <span>${salary}/hour</span>
+                <span>${salary}</span>
                 <span className='opacity-90'>{location}</span>
             </div>
         </div>
     );
 };
 
-export default Card;
+export default JobPostCard;
