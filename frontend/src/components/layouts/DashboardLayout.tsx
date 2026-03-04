@@ -8,8 +8,8 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ header, sidebar, children }) => {
     return (
-        <div className='w-screen min-h-[calc(100vh-61px)] bg-gradient-to-br bg-gray-200 flex flex-col'>
-            <div className='max-w-7xl m-auto pt-7'>
+        <div className='w-screen-xl min-h-[calc(100vh-61px)] bg-gradient-to-br bg-gray-200 flex flex-col'>
+            <div className='max-w-7xl mx-auto pt-7'>
                 {header && (
                     <header className='flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-6'>
                         {header}
