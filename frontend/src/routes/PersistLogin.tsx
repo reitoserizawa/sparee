@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { useRefreshMutation } from '../features/auth/authApi';
-import { useAppSelector } from '../apps/hooks';
-import { selectCurrentUser } from '../features/auth/authSelector';
+import { useRefreshMutation } from '../store/features/auth/authApi';
+import { useAppSelector } from '../store/hooks';
+import { selectCurrentUser } from '../store/features/auth/authSelector';
 import FullscreenLoader from '../components/common/Loader/FullScreenLoader';
 
 const PersistLogin: React.ElementType = () => {

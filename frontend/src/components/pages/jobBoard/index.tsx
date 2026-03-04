@@ -1,6 +1,6 @@
-import { useAppSelector } from '../../../apps/hooks';
-import { useGetNearestJobPostsQuery } from '../../../features/jobPost/jobPostApi';
-import { selectLocation } from '../../../features/user/userSelector';
+import { useAppSelector } from '../../../store/hooks';
+import { useGetNearestJobPostsQuery } from '../../../store/features/jobPost/jobPostApi';
+import { selectLocation } from '../../../store/features/user/userSelector';
 import Card from '../../common/Card';
 
 const JobBoardPage = () => {

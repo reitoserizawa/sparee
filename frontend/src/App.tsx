@@ -1,7 +1,7 @@
 import React from 'react';
 import AppRouter from './routes';
 import { Provider } from 'react-redux';
-import store from './apps/store';
+import store from './store';
 
 const App: React.FC = () => {
     return (

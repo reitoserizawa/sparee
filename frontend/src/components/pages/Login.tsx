@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useLoginMutation } from '../../features/auth/authApi';
-import { isErrorWithMessage } from '../../features/base/helpers';
+import { useLoginMutation } from '../../store/features/auth/authApi';
+import { isErrorWithMessage } from '../../store/features/base/helpers';
 import requiredValidator from '../common/Form/validators/required';
 import emailValidator from '../common/Form/validators/email_validator';
 
-import type { UserLoginState } from '../../features/auth/types';
+import type { UserLoginState } from '../../store/features/auth/types';
 
 import Form from '../common/Form';
 import FormInput from '../common/Form/FormInput';
