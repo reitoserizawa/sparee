@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const NavBar: React.FC = () => {
     return (
-        <nav className='bg-neutral-primary fixed w-full z-20 top-0 start-0 border-b border-default'>
+        <nav className='bg-white fixed w-full z-20 top-0 start-0 border-b border-default'>
             <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
                 <span className='self-center text-xl text-heading font-semibold whitespace-nowrap'>Sparee</span>
                 <div className='hidden w-full md:block md:w-auto' id='navbar-default'>
