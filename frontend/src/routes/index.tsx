@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from '../components/layout';
 import LoginPage from '../components/pages/Login';
 import RegisterPage from '../components/pages/Register';
-import DashboardPage from '../components/pages/Dashboard';
+import DashboardPage from '../components/pages/dashboard';
 import PersistLogin from './PersistLogin';
 import RequireAuth from './RequireAuth';
 import JobBoardPage from '../components/pages/jobBoard';
+import RootLayout from '../components/layouts/RootLayout';
 
 const AppRoutes = () => {
     return (
@@ -15,7 +15,7 @@ const AppRoutes = () => {
                     <Route path='/login' element={<LoginPage />} />
                     <Route path='/register' element={<RegisterPage />} />
                     <Route element={<RequireAuth />}>
-                        <Route element={<Layout />}>
+                        <Route element={<RootLayout />}>
                             <Route path='/' element={<DashboardPage />} />
                             <Route path='/jobs' element={<JobBoardPage />} />
                         </Route>

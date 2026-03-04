@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 import useUserLocation from '../../hooks/useUserLocation';
 
-import NavBar from './NavBar';
+import NavBar from '../NavBar';
 
 const RootLayout: React.FC = () => {
     useUserLocation();
