@@ -15,10 +15,10 @@ const DashboardPage = () => {
             <div className='lg:col-span-3 space-y-6'>
                 <div>
                     <h2 className='text-2xl font-bold mb-6 flex items-center gap-3'>
-                        Featured Jobs
+                        Jobs Nearby
                         <span className='w-3 h-3 bg-yellow-400 rounded-full' />
                     </h2>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    <div className='h-60 w-full flex flex-row gap-4 overflow-x-auto'>
                         {jobPosts?.map((jobPost, idx) => (
                             <JobPostCard key={idx} jobPost={jobPost} />
                         ))}
