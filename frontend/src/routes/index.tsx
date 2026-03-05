@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '../components/pages/Login';
 import RegisterPage from '../components/pages/Register';
-import DashboardPage from '../components/pages/dashboard';
+import JobBoardPage from '../components/pages/jobBoard';
 import PersistLogin from './PersistLogin';
 import RequireAuth from './RequireAuth';
-import JobBoardPage from '../components/pages/jobBoard';
+import DashboardPage from '../components/pages/dashboard';
 import RootLayout from '../components/layouts/RootLayout';
 import JobPostDetailsPage from '../components/pages/jobPostDetails';
 
