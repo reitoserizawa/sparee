@@ -1,16 +1,21 @@
 from pydantic import Field
+from datetime import datetime
 from .base import JobPostBaseModel
 from ..companies.response import CompanyResponseModel
 from ..addresses.response import AddressResponseModel
+from ..job_categories import JobCategoryResponseModel
 
 
 class JobPostResponseModel(JobPostBaseModel):
     id: int = Field(..., frozen=True)
 
-    company: CompanyResponseModel | None = Field(default=None, frozen=True)
-    address: AddressResponseModel | None = Field(default=None, frozen=True)
-    # job_category: str | None = Field(default=None, frozen=True)
+    company: CompanyResponseModel = Field(frozen=True)
+    address: AddressResponseModel = Field(frozen=True)
+    job_category: JobCategoryResponseModel = Field(frozen=True)
     # skills: list[str] = Field(default_factory=list, frozen=True)
+
+    created_at: datetime
+    updated_at: datetime
 
     model_config = {
         "from_attributes": True
