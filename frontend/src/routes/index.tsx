@@ -6,6 +6,7 @@ import PersistLogin from './PersistLogin';
 import RequireAuth from './RequireAuth';
 import JobBoardPage from '../components/pages/jobBoard';
 import RootLayout from '../components/layouts/RootLayout';
+import JobPostDetailsPage from '../components/pages/jobPostDetails';
 
 const AppRoutes = () => {
     return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
                         <Route element={<RootLayout />}>
                             <Route path='/' element={<DashboardPage />} />
                             <Route path='/jobs' element={<JobBoardPage />} />
+                            <Route path='/job-posts/:jobPostId' element={<JobPostDetailsPage />} />
                         </Route>
                     </Route>
                 </Route>
