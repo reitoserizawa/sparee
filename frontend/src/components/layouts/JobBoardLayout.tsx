@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface DashboardLayoutProps {
+interface JobBoardLayoutProps {
     header?: React.ReactNode;
     sidebar?: React.ReactNode;
     children: React.ReactNode;
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ header, sidebar, children }) => {
+const JobBoardLayout: React.FC<JobBoardLayoutProps> = ({ header, sidebar, children }) => {
     return (
         <div className='w-screen-xl min-h-[calc(100vh-61px)] bg-gradient-to-br bg-gray-200 flex flex-col'>
             <div className='max-w-7xl mx-auto pt-7'>
@@ -26,4 +26,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ header, sidebar, chil
     );
 };
 
-export default DashboardLayout;
+export default JobBoardLayout;
