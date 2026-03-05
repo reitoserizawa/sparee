@@ -16,6 +16,13 @@ if TYPE_CHECKING:
 
 class JobPostService:
     @staticmethod
+    async def get_from_id(session: AsyncSession, id: int) -> "JobPost":
+        from app.db.models.job_post import JobPost
+        job_post = await JobPost.get_or_raise(session=session, id=id)
+        job_post_with_relations = await job_post.with_detail_relations(session=session)
+        return job_post_with_relations
+
+    @staticmethod
     async def get_from_company(session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
         return await JobPost.get_by_company(session=session, company=company)
 
