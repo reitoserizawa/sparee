@@ -9,7 +9,7 @@ const JobPostCard: React.FC<CardProps> = ({ jobPost }) => {
     const { name: companyName } = company;
 
     return (
-        <div className='h-60 w-90 rounded-2xl shrink-0  bg-gradient-to-br from-blue-500 to-cyan-500 p-6 shadow-xl text-white transform hover:-translate-y-1 transition-all duration-200'>
+        <div className='h-60 w-90 rounded-2xl shrink-0  bg-gradient-to-br from-blue-500 to-cyan-500 p-6 text-white transform hover:-translate-y-1 transition-all duration-200'>
             <div className='flex items-start gap-4'>
                 <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm'>
                     <EnterpriseIcon size={24} color='white' />
