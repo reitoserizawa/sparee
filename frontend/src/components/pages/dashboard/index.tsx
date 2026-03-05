@@ -18,7 +18,7 @@ const DashboardPage = () => {
                         Jobs Nearby
                         <span className='w-3 h-3 bg-yellow-400 rounded-full' />
                     </h2>
-                    <div className='h-60 w-full flex flex-row gap-4 overflow-x-auto'>
+                    <div className='h-65 w-full flex flex-row items-center gap-4 overflow-x-auto'>
                         {jobPosts?.map((jobPost, idx) => (
                             <JobPostCard key={idx} jobPost={jobPost} />
                         ))}
