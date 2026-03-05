@@ -5,7 +5,7 @@ const locations = ['New York', 'Los Angeles', 'San Francisco'];
 const Sidebar: React.ElementType = () => {
     return (
         <>
-            <div className='bg-white/10 backdrop-blur-xl rounded-3xl p-6'>
+            <div className='bg-white/50 backdrop-blur-xl rounded-3xl p-6'>
                 <h3 className='font-semibold mb-4'>Salary Range</h3>
                 <div className='space-y-3'>
                     <div className='flex items-center justify-between'>
@@ -38,7 +38,7 @@ const Sidebar: React.ElementType = () => {
             </div>
 
             {/* Locations */}
-            <div className='bg-white/10 backdrop-blur-xl rounded-3xl p-6'>
+            <div className='bg-white/50 backdrop-blur-xl rounded-3xl p-6'>
                 <h3 className='font-semibold mb-4'>Location</h3>
                 <div className='space-y-2'>
                     {locations.map(loc => (
@@ -54,7 +54,7 @@ const Sidebar: React.ElementType = () => {
             </div>
 
             {/* Hot Jobs Button */}
-            <button className='w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold py-4 px-6 rounded-2xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200'>
+            <button className='w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-semibold py-4 px-6 rounded-2xl  transform hover:-translate-y-1 transition-all duration-200'>
                 🔥 Hot Jobs
             </button>
         </>
