@@ -1,4 +1,9 @@
+export interface JobPostState {
+    jobPostId: number;
+}
+
 export interface JobPost {
+    id: number;
     title: string;
     description: string;
     company: Company;
@@ -7,6 +12,13 @@ export interface JobPost {
     location?: string;
     address: Address;
     salary_type: string;
+    job_category: JobPostCategory;
+    created_at: string;
+}
+
+interface JobPostCategory {
+    id: number;
+    name: string;
 }
 
 interface Company {
