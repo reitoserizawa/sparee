@@ -1,4 +1,4 @@
-from typing import Type, Optional, TYPE_CHECKING, List
+from typing import Type, Optional, TYPE_CHECKING
 from sqlalchemy import Integer, String, DateTime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from app.db.models.user_skill import UserSkill
     from app.db.models.company_member import CompanyMember
     from app.db.models.user_message import UserMessage
+    from app.db.models.job_application import JobApplication
 
 
 class User(BaseModel):
@@ -24,23 +25,29 @@ class User(BaseModel):
         String(255), nullable=False, unique=True)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
 
-    user_skills: Mapped[List["UserSkill"]] = relationship(
+    user_skills: Mapped[list["UserSkill"]] = relationship(
         "UserSkill", back_populates="user")
-    skills: Mapped[List["Skill"]] = relationship(
+    skills: Mapped[list["Skill"]] = relationship(
         "Skill", secondary="user_skills", viewonly=True)
 
-    user_messages: Mapped[List["UserMessage"]] = relationship(
+    user_messages: Mapped[list["UserMessage"]] = relationship(
         "UserMessage",
         back_populates="user",
         cascade="all, delete-orphan"
     )
 
-    associated_companies: Mapped[List["CompanyMember"]] = relationship(
+    associated_companies: Mapped[list["CompanyMember"]] = relationship(
         "CompanyMember",
         back_populates="user",
         cascade="all, delete-orphan"
     )
     companies = association_proxy("associated_companies", "company")
+
+    job_applications: Mapped[list["JobApplication"]] = relationship(
+        "JobApplication",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

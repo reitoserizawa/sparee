@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from app.db.models.job_category import JobCategory
     from app.db.models.skill import Skill
     from app.db.models.user_message import UserMessage
+    from app.db.models.job_application import JobApplication
 
 JOB_POST_DETAIL_RELATIONS = ["company", "address", "job_category"]
 
@@ -49,6 +50,12 @@ class JobPost(BaseModel):
         "Skill", secondary="job_post_skills", viewonly=True)
     user_messages: Mapped[list["UserMessage"]] = relationship(
         "UserMessage",
+        back_populates="job_post",
+        cascade="all, delete-orphan"
+    )
+
+    applications: Mapped[list["JobApplication"]] = relationship(
+        "JobApplication",
         back_populates="job_post",
         cascade="all, delete-orphan"
     )
