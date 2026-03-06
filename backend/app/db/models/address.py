@@ -2,7 +2,7 @@ from app.db.models.base import BaseModel
 from sqlalchemy import Integer, String, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from enum import Enum as PyEnum
-from geoalchemy2 import Geography, Geometry
+from geoalchemy2 import Geography
 from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point

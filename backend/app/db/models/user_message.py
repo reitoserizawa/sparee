@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 from datetime import datetime
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, Enum, UniqueConstraint
+from sqlalchemy import Integer, ForeignKey, DateTime, Enum, UniqueConstraint
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.models.base import BaseModel
 
