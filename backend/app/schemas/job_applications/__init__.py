@@ -1,3 +1,3 @@
-from .apply import JobApplicationApplyModel
+from .create import JobApplicationCreateModel
 
-__all__ = ["JobApplicationApplyModel"]
+__all__ = ["JobApplicationCreateModel"]
