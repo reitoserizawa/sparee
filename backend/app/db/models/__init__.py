@@ -9,6 +9,7 @@ from .user_skill import UserSkill
 from .company_member import CompanyMember
 from .message import Message
 from .user_message import UserMessage
+from .job_application import JobApplication
 from .base import BaseModel
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "CompanyMember",
     "Message",
     "UserMessage",
+    "JobApplication",
     "BaseModel",
 ]
