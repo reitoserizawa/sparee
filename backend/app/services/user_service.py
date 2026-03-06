@@ -6,6 +6,10 @@ from app.schemas.users import UserCreateModel, UserLoginModel
 
 
 class UserService:
+    @staticmethod
+    async def get_from_id(session: AsyncSession, id: int) -> User:
+        user = await User.get_or_raise(session=session, id=id)
+        return user
 
     @staticmethod
     async def get_from_jwt(session: AsyncSession, token: str, token_type: TokenType) -> User | None:
