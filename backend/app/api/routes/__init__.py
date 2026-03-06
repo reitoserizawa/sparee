@@ -4,6 +4,7 @@ from app.api.routes.companies import router as companies_router
 from app.api.routes.addresses import router as addresses_router
 from app.api.routes.job_posts import router as job_posts_router
 from app.api.routes.auth import router as auth_router
+from app.api.routes.job_applications import router as job_application_router
 
 router = APIRouter()
 
@@ -15,3 +16,6 @@ router.include_router(
     addresses_router, prefix="/addresses", tags=["addresses"])
 router.include_router(
     job_posts_router, prefix="/job-posts", tags=["job-posts"])
+router.include_router(
+    job_application_router, prefix="/job-applicatins", tags=["job-applications"]
+)
