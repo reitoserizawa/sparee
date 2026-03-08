@@ -11,7 +11,7 @@ router = APIRouter()
 user_service = UserService()
 
 
-@router.post("/", status_code=201, response_model=UserTokenResponseModel)
+@router.post("", status_code=201, response_model=UserTokenResponseModel)
 async def register(
     response: Response,
     payload: UserCreateModel,

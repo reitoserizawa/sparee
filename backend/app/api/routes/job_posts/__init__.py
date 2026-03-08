@@ -5,7 +5,7 @@ from .get_job_post_details import router as get_job_post_details_router
 
 router = APIRouter()
 router.include_router(get_job_post_details_router,
-                      prefix="", tags=["job-posts"])
+                      prefix="/{job_post_id}", tags=["job-posts"])
 router.include_router(create_job_post_router, prefix="", tags=["job-posts"])
 router.include_router(get_nearest_job_posts_router,
                       prefix="/nearest", tags=["job-posts"])
