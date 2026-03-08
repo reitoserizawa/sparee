@@ -12,7 +12,7 @@ router = APIRouter()
 job_post_service = JobPostService()
 
 
-@router.get("/", status_code=200, response_model=list[JobPostResponseModel])
+@router.get("", status_code=200, response_model=list[JobPostResponseModel])
 async def get_nearest_job_posts(
     lat: Optional[float] = None,
     lng: Optional[float] = None,

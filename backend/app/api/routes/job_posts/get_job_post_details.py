@@ -13,7 +13,7 @@ job_post_service = JobPostService()
 
 
 @router.get("/{job_post_id}", status_code=200, response_model=JobPostResponseModel)
-async def get_job_posts(
+async def get_job_post_details(
     job_post_id: int,
     user: User = Depends(user_required),
     session: AsyncSession = Depends(get_session),
