@@ -13,7 +13,7 @@ job_post_service = JobPostService()
 
 
 @router.get("/", status_code=200, response_model=list[JobPostResponseModel])
-async def get_job_posts(
+async def get_nearest_job_posts(
     lat: Optional[float] = None,
     lng: Optional[float] = None,
     user: User = Depends(user_required),
