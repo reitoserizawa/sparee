@@ -6,7 +6,7 @@ const jobPostApi = baseApi.injectEndpoints({
     endpoints: builder => ({
         getNearestJobPosts: builder.query<JobPost[], UserLocationState>({
             query: ({ lng, lat }) => ({
-                url: `/job-posts?lng=${lng}&lat=${lat}`,
+                url: `/job-posts/nearest?lng=${lng}&lat=${lat}`,
                 method: 'GET',
             }),
         }),
