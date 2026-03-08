@@ -17,5 +17,5 @@ router.include_router(
 router.include_router(
     job_posts_router, prefix="/job-posts", tags=["job-posts"])
 router.include_router(
-    job_application_router, prefix="/job-applicatins", tags=["job-applications"]
+    job_application_router, prefix="/job-applications", tags=["job-applications"]
 )
