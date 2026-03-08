@@ -1,4 +1,4 @@
-from typing import Type, TYPE_CHECKING, Sequence
+from typing import Type, TYPE_CHECKING, Sequence, Optional
 from enum import Enum as PyEnum
 from datetime import datetime
 from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint, Enum as SAEnum
@@ -64,7 +64,7 @@ class JobApplication(BaseModel):
     )
 
     @classmethod
-    async def get_from_user(cls: Type["JobApplication"], session: AsyncSession, user: "User") -> Sequence["JobApplication"]:
+    async def get_from_user(cls: Type["JobApplication"], session: AsyncSession, user: "User") -> Optional[Sequence["JobApplication"]]:
         return await cls.filter_by(session=session, user_id=user.id, relations=JOB_APPLICATION_DETAIL_RELATIONS)
 
     async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":

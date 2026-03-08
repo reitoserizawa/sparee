@@ -11,7 +11,8 @@ if TYPE_CHECKING:
 
 class JobApplicationService:
     @staticmethod
-    async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobApplication"]:
+    async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobApplication"] | None:
+        from app.db.models.job_application import JobApplication
         job_applications = await JobApplication.get_from_user(session=session, user=user)
         return job_applications
 

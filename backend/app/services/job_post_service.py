@@ -1,4 +1,4 @@
-from typing import Sequence, TYPE_CHECKING
+from typing import Sequence, TYPE_CHECKING, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2.functions import ST_SetSRID, ST_MakePoint
@@ -23,15 +23,15 @@ class JobPostService:
         return job_post_with_relations
 
     @staticmethod
-    async def get_from_company(session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
+    async def get_from_company(session: AsyncSession, company: "Company") -> Optional[Sequence["JobPost"]]:
         return await JobPost.get_from_company(session=session, company=company)
 
     @staticmethod
-    async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobPost"]:
+    async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
         return await JobPost.get_from_user(session=session, user=user)
 
     @staticmethod
-    async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Sequence["JobPost"]:
+    async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Optional[Sequence["JobPost"]]:
         from app.db.models.job_post import JobPost
         user_point = ST_SetSRID(ST_MakePoint(lng, lat), 4326)
         job_posts = await JobPost.filter_by_nearest(session=session, user_point=user_point, limit=20)

@@ -120,7 +120,7 @@ class BaseModel(Base):
         return result.scalar_one_or_none()
 
     @classmethod
-    async def get_all(cls: Type[T], session: AsyncSession, include_deleted: bool = False) -> Sequence[T]:
+    async def get_all(cls: Type[T], session: AsyncSession, include_deleted: bool = False) -> Optional[Sequence[T]]:
         stmt = select(cls)
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
@@ -136,7 +136,7 @@ class BaseModel(Base):
         return result.scalar_one_or_none()
 
     @classmethod
-    async def filter_by(cls: Type[T], session: AsyncSession, relations: Optional[list[str]] = None, include_deleted: bool = False, **kwargs) -> Sequence[T]:
+    async def filter_by(cls: Type[T], session: AsyncSession, relations: Optional[list[str]] = None, include_deleted: bool = False, **kwargs) -> Optional[Sequence[T]]:
         stmt = select(cls).filter_by(**kwargs)
         if relations:
             loaders = cls._generate_nested_loaders(relations)
@@ -179,7 +179,7 @@ class BaseModel(Base):
         offset: Optional[int] = None,
         relations: Optional[list[str]] = None,
         include_deleted: bool = False,
-    ) -> Sequence[T]:
+    ) -> Optional[Sequence[T]]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,

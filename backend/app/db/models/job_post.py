@@ -77,15 +77,15 @@ class JobPost(BaseModel):
     )
 
     @classmethod
-    async def get_from_company(cls: Type["JobPost"], session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
+    async def get_from_company(cls: Type["JobPost"], session: AsyncSession, company: "Company") -> Optional[Sequence["JobPost"]]:
         return await cls.filter_by(session=session, company_id=company.id)
 
     @classmethod
-    async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Sequence["JobPost"]:
+    async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
         return await cls.filter_by(session=session, user_id=user.id)
 
     @classmethod
-    async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Sequence["JobPost"]:
+    async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Optional[Sequence["JobPost"]]:
         from app.db.models.address import Address
 
         return await cls.filter_via_join(session=session, join_model=cls.address, where=[Address.location.isnot(None)], order_by=[Address.location.op("<->")(user_point), cls.created_at.desc()], limit=limit, relations=JOB_POST_DETAIL_RELATIONS)
