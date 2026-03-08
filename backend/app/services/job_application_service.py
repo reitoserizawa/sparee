@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class JobApplicationService:
     @staticmethod
-    async def create_job_application(session: AsyncSession, data: JobApplicationCreateModel, user: User) -> "JobApplication":
+    async def create_job_application(session: AsyncSession, data: JobApplicationCreateModel, user: "User") -> "JobApplication":
         job_post = await JobPostService.get_from_id(session=session, id=data.job_post_id)
         job_application = JobApplication(
             user_id=user.id,
