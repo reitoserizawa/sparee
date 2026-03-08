@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.services.job_post_service import JobPostService
@@ -11,6 +11,11 @@ if TYPE_CHECKING:
 
 class JobApplicationService:
     @staticmethod
+    async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobApplication"]:
+        job_applications = await JobApplication.get_from_user(session=session, user=user)
+        return job_applications
+
+    @staticmethod
     async def create_job_application(session: AsyncSession, data: JobApplicationCreateModel, user: "User") -> "JobApplication":
         job_post = await JobPostService.get_from_id(session=session, id=data.job_post_id)
         job_application = JobApplication(
@@ -18,4 +23,5 @@ class JobApplicationService:
             job_post_id=job_post.id
         )
         await job_application.save(session)
-        return job_application
+        job_application_with_details = await job_application.with_detail_relations(session=session)
+        return job_application_with_details

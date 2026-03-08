@@ -1,13 +1,16 @@
-from typing import TYPE_CHECKING, Optional
+from typing import Type, TYPE_CHECKING, Sequence
 from enum import Enum as PyEnum
 from datetime import datetime
-from sqlalchemy import Integer, ForeignKey, String, DateTime, UniqueConstraint, Enum as SAEnum
+from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint, Enum as SAEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
 
 if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.job_post import JobPost
+
+JOB_APPLICATION_DETAIL_RELATIONS = ["job_post"]
 
 
 class JobApplicationStatus(PyEnum):
@@ -59,3 +62,7 @@ class JobApplication(BaseModel):
             name="unique_user_per_job_post"
         ),
     )
+
+    @classmethod
+    async def get_from_user(cls: Type["JobApplication"], session: AsyncSession, user: "User") -> Sequence["JobApplication"]:
+        return await cls.filter_by(session=session, user_id=user.id, relations=JOB_APPLICATION_DETAIL_RELATIONS)
