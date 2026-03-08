@@ -8,6 +8,7 @@ from app.db.models.base import BaseModel
 
 if TYPE_CHECKING:
     from app.db.models.company import Company
+    from app.db.models.user import User
     from app.db.models.address import Address
     from app.db.models.job_post_skill import JobPostSkill
     from app.db.models.job_category import JobCategory
@@ -76,8 +77,12 @@ class JobPost(BaseModel):
     )
 
     @classmethod
-    async def get_by_company(cls: Type["JobPost"], session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
+    async def get_from_company(cls: Type["JobPost"], session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
         return await cls.filter_by(session=session, company_id=company.id)
+
+    @classmethod
+    async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Sequence["JobPost"]:
+        return await cls.filter_by(session=session, user_id=user.id)
 
     @classmethod
     async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Sequence["JobPost"]:

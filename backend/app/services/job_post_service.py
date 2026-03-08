@@ -24,7 +24,11 @@ class JobPostService:
 
     @staticmethod
     async def get_from_company(session: AsyncSession, company: "Company") -> Sequence["JobPost"]:
-        return await JobPost.get_by_company(session=session, company=company)
+        return await JobPost.get_from_company(session=session, company=company)
+
+    @staticmethod
+    async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobPost"]:
+        return await JobPost.get_from_user(session=session, user=user)
 
     @staticmethod
     async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Sequence["JobPost"]:
