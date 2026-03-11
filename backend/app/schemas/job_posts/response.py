@@ -14,6 +14,8 @@ class JobPostResponseModel(JobPostBaseModel):
     job_category: JobCategoryResponseModel = Field(frozen=True)
     # skills: list[str] = Field(default_factory=list, frozen=True)
 
+    application_status: str | None = Field(default=None, frozen=True)
+
     created_at: datetime
     updated_at: datetime
 
