@@ -5,3 +5,7 @@ export interface JobApplication {
     status: string;
     job_post: JobPost;
 }
+
+export interface JobApplicationCreate {
+    jobPostId: number;
+}

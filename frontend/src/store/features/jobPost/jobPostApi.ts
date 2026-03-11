@@ -9,12 +9,14 @@ const jobPostApi = baseApi.injectEndpoints({
                 url: `/job-posts/nearest?lng=${lng}&lat=${lat}`,
                 method: 'GET',
             }),
+            providesTags: result => (result ? result.map(({ id }) => ({ type: 'JobPost' as const, id })) : []),
         }),
         getJobPostDetails: builder.query<JobPost, JobPostState>({
             query: ({ jobPostId }) => ({
                 url: `/job-posts/${jobPostId}`,
                 method: 'GET',
             }),
+            providesTags: (result, error, { jobPostId }) => [{ type: 'JobPost', id: jobPostId }],
         }),
     }),
 });

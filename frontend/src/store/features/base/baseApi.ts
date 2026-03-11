@@ -17,6 +17,7 @@ export const baseQuery = fetchBaseQuery({
 const baseApi = createApi({
     reducerPath: 'api',
     baseQuery,
+    tagTypes: ['JobApplication', 'JobPost'],
     endpoints: () => ({}),
 });
 

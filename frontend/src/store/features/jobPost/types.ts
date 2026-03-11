@@ -13,6 +13,7 @@ export interface JobPost {
     address: Address;
     salary_type: string;
     job_category: JobPostCategory;
+    application_status?: string;
     created_at: string;
 }
 
