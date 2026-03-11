@@ -35,7 +35,12 @@ class JobPostService:
     async def get_from_company(session: AsyncSession, company: "Company") -> Optional[Sequence["JobPost"]]:
         return await JobPost.get_from_company(session=session, company=company)
 
+    @staticmethod
+    async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
+        return await JobPost.get_from_user(session=session, user=user)
+
     # TODO: add application_status prop by 1 query
+
     @staticmethod
     async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Optional[Sequence["JobPost"]]:
         from app.db.models.job_post import JobPost
