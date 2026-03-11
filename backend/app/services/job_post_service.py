@@ -37,6 +37,7 @@ class JobPostService:
 
     @staticmethod
     async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
+        from app.db.models.job_post import JobPost
         return await JobPost.get_from_user(session=session, user=user)
 
     # TODO: add application_status prop by 1 query
