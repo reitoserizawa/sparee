@@ -3,6 +3,7 @@ from typing import Sequence, TYPE_CHECKING, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2.functions import ST_SetSRID, ST_MakePoint
 from app.services.address_service import AddressService
+from app.services.job_application_service import JobApplicationService
 from app.schemas.job_posts.create import JobPostCreateModel
 from app.schemas.addresses.create import AddressCreateModel
 
@@ -16,20 +17,25 @@ if TYPE_CHECKING:
 
 class JobPostService:
     @staticmethod
-    async def get_from_id(session: AsyncSession, id: int) -> "JobPost":
+    async def get_from_id(session: AsyncSession, id: int, user: "User | None" = None) -> "JobPost":
         from app.db.models.job_post import JobPost
+
         job_post = await JobPost.get_or_raise(session=session, id=id)
-        job_post_with_relations = await job_post.with_detail_relations(session=session)
-        return job_post_with_relations
+        job_post = await job_post.with_detail_relations(session=session)
+        if user:
+            job_application = await JobApplicationService.get_from_user_and_job_post(
+                session=session,
+                user=user,
+                job_post=job_post
+            )
+            job_post.application_status = job_application.status if job_application else None
+        return job_post
 
     @staticmethod
     async def get_from_company(session: AsyncSession, company: "Company") -> Optional[Sequence["JobPost"]]:
         return await JobPost.get_from_company(session=session, company=company)
 
-    @staticmethod
-    async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
-        return await JobPost.get_from_user(session=session, user=user)
-
+    # TODO: add application_status prop by 1 query
     @staticmethod
     async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Optional[Sequence["JobPost"]]:
         from app.db.models.job_post import JobPost
