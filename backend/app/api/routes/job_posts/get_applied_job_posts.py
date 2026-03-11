@@ -12,7 +12,7 @@ router = APIRouter()
 job_post_service = JobPostService()
 
 
-@router.get("", status_code=200, response_model=JobPostResponseModel)
+@router.get("", status_code=200, response_model=list[JobPostResponseModel])
 async def get_applied_job_posts(
     user: User = Depends(user_required),
     session: AsyncSession = Depends(get_session),
