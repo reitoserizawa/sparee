@@ -86,7 +86,8 @@ class JobPost(BaseModel):
         return await cls.filter_via_join(
             session=session,
             join_model=JobApplication,
-            where=[JobApplication.user_id == user.id]
+            where=[JobApplication.user_id == user.id],
+            relations=JOB_POST_DETAIL_RELATIONS
         )
 
     @classmethod
