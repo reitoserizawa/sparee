@@ -1,6 +1,5 @@
-from pydantic import Field
-from .base import JobApplicationBaseModel
+from pydantic import Field, BaseModel
 
 
-class JobApplicationCreateModel(JobApplicationBaseModel):
+class JobApplicationCreateModel(BaseModel):
     job_post_id: int = Field(...)
