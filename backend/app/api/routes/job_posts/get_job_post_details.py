@@ -18,5 +18,5 @@ async def get_job_post_details(
     user: User = Depends(user_required),
     session: AsyncSession = Depends(get_session),
 ):
-    job_posts = await job_post_service.get_from_id(session=session, id=job_post_id)
+    job_posts = await job_post_service.get_from_id(session=session, id=job_post_id, user=user)
     return job_posts
