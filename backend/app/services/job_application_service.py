@@ -25,6 +25,7 @@ class JobApplicationService:
     @staticmethod
     async def create_job_application(session: AsyncSession, data: JobApplicationCreateModel, user: "User") -> "JobApplication":
         from app.services.job_post_service import JobPostService
+        from app.db.models.job_application import JobApplication
 
         job_post = await JobPostService.get_from_id(session=session, id=data.job_post_id)
         job_application = JobApplication(
