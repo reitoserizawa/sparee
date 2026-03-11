@@ -67,5 +67,9 @@ class JobApplication(BaseModel):
     async def get_from_user(cls: Type["JobApplication"], session: AsyncSession, user: "User") -> Optional[Sequence["JobApplication"]]:
         return await cls.filter_by(session=session, user_id=user.id, relations=JOB_APPLICATION_DETAIL_RELATIONS)
 
+    @classmethod
+    async def get_from_user_and_job_post(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
+        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id)
+
     async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":
         return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS)
