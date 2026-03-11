@@ -81,10 +81,6 @@ class JobPost(BaseModel):
         return await cls.filter_by(session=session, company_id=company.id)
 
     @classmethod
-    async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
-        return await cls.filter_by(session=session, user_id=user.id)
-
-    @classmethod
     async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Optional[Sequence["JobPost"]]:
         from app.db.models.address import Address
 
