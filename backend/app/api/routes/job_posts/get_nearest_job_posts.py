@@ -22,5 +22,5 @@ async def get_nearest_job_posts(
     if not lat or not lng:
         raise ValueError(
             "Latitude and longitude are required to fetch nearest job posts")
-    job_posts = await job_post_service.get_nearest(session=session, lat=lat, lng=lng)
+    job_posts = await job_post_service.get_nearest(session=session, user=user, lat=lat, lng=lng)
     return job_posts

@@ -16,7 +16,8 @@ if TYPE_CHECKING:
     from app.db.models.user_message import UserMessage
     from app.db.models.job_application import JobApplication
 
-JOB_POST_DETAIL_RELATIONS = ["company", "address", "job_category"]
+JOB_POST_DETAIL_RELATIONS = ["company",
+                             "address", "job_category", "applications"]
 
 
 class JobPost(BaseModel):

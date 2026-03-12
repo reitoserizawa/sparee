@@ -38,16 +38,19 @@ class JobPostService:
     @staticmethod
     async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
         from app.db.models.job_post import JobPost
-        return await JobPost.get_from_user(session=session, user=user)
-
-    # TODO: add application_status prop by 1 query
+        job_posts = await JobPost.get_from_user(session=session, user=user)
+        if job_posts:
+            return JobPostService.attach_user_application_status(job_posts=job_posts, user=user)
+        return []
 
     @staticmethod
-    async def get_nearest(session: AsyncSession, lat: float, lng: float) -> Optional[Sequence["JobPost"]]:
+    async def get_nearest(session: AsyncSession, user: "User", lat: float, lng: float) -> Optional[Sequence["JobPost"]]:
         from app.db.models.job_post import JobPost
         user_point = ST_SetSRID(ST_MakePoint(lng, lat), 4326)
         job_posts = await JobPost.filter_by_nearest(session=session, user_point=user_point, limit=20)
-        return job_posts
+        if job_posts:
+            return JobPostService.attach_user_application_status(job_posts=job_posts, user=user)
+        return []
 
     @staticmethod
     async def create_job_post(session: AsyncSession, data: JobPostCreateModel, user: "User") -> "JobPost":
@@ -69,6 +72,19 @@ class JobPostService:
         job_post_with_relations = await job_post.with_detail_relations(session=session)
 
         return job_post_with_relations
+
+    @staticmethod
+    def attach_user_application_status(
+        job_posts: Sequence["JobPost"],
+        user: "User"
+    ) -> Sequence["JobPost"]:
+        for post in job_posts:
+            user_app = next(
+                (app for app in post.applications if app.user_id == user.id),
+                None
+            )
+            post.application_status = user_app.status if user_app else None
+        return job_posts
 
     @staticmethod
     async def _get_company_for_member(session: AsyncSession, company_id: int, user: "User") -> "Company":
