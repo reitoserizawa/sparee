@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from typing import TYPE_CHECKING, Sequence, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,6 +22,16 @@ class JobApplicationService:
         from app.db.models.job_application import JobApplication
         job_application = await JobApplication.get_from_user_and_job_post(session=session, user=user, job_post=job_post)
         return job_application
+
+    @staticmethod
+    async def soft_delete(session: AsyncSession, id: int, user: "User") -> "JobApplication":
+        from app.db.models.job_application import JobApplication
+        job_application = await JobApplication.get_or_raise(session=session, id=id)
+        if not job_application.is_owned_by(user=user):
+            raise HTTPException(
+                status_code=403, detail="User is not authorized to delete the application")
+
+        return await job_application.soft_delete(session=session)
 
     @staticmethod
     async def create_job_application(session: AsyncSession, data: JobApplicationCreateModel, user: "User") -> "JobApplication":

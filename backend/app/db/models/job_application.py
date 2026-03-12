@@ -1,4 +1,4 @@
-from typing import Type, TYPE_CHECKING, Sequence, Optional
+from typing import Type, TYPE_CHECKING, Sequence, Optional, override
 from enum import Enum as PyEnum
 from datetime import datetime
 from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint, Enum as SAEnum
@@ -70,6 +70,14 @@ class JobApplication(BaseModel):
     @classmethod
     async def get_from_user_and_job_post(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id)
+
+    @override
+    async def soft_delete(self: "JobApplication", session: AsyncSession) -> "JobApplication":
+        self.status = JobApplicationStatus.WITHDRAWN
+        return await self.save(session=session)
+
+    def is_owned_by(self: "JobApplication", user: "User"):
+        return self.user_id == user.id
 
     async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":
         return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS)
