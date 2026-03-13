@@ -2,15 +2,15 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useRegisterMutation } from '../../store/features/auth/authApi';
-import requiredValidator from '../common/Form/validators/required';
-import emailValidator from '../common/Form/validators/email_validator';
+import requiredValidator from '../ui/Form/validators/required';
+import emailValidator from '../ui/Form/validators/email_validator';
 import { isErrorWithMessage } from '../../store/features/base/helpers';
 
 import type { UserCreateState } from '../../store/features/auth/types';
 
-import Form from '../common/Form';
-import FormInput from '../common/Form/FormInput';
-import Error from '../common/Error';
+import Form from '../ui/Form';
+import FormInput from '../ui/Form/FormInput';
+import Error from '../ui/Error';
 
 const RegisterPage = (): React.ReactElement => {
     const initialValues: UserCreateState = {

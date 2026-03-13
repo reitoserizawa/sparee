@@ -6,7 +6,7 @@ import { useGetJobPostDetailsQuery } from '../../../store/features/jobPost/jobPo
 import convertSalaryType from '../../../utils/convertSalaryType';
 
 import JobPostDetailsLayout from '../../layouts/JobPostDetailsLayout';
-import Sidebar from './SideBar';
+import Sidebar from './Sidebar';
 
 const JobPostDetailsPage: React.ElementType = () => {
     const { jobPostId } = useParams<{ jobPostId: string }>();

@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { useRefreshMutation } from '../store/features/auth/authApi';
 import { useAppSelector } from '../store/hooks';
 import { selectCurrentUser } from '../store/features/auth/authSelector';
-import FullscreenLoader from '../components/common/Loader/FullScreenLoader';
+import FullscreenLoader from '../components/ui/Loader/FullScreenLoader';
 
 const PersistLogin: React.ElementType = () => {
     const isAuthenticated = useAppSelector(selectCurrentUser);

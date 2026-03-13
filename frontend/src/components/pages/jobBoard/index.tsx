@@ -5,7 +5,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import JobPostCard from '../../common/JobPostCard';
 import JobBoardLayout from '../../layouts/JobBoardLayout';
-import FullscreenLoader from '../../common/Loader/FullScreenLoader';
+import FullscreenLoader from '../../ui/Loader/FullScreenLoader';
 import EmptyJobState from '../../common/EmptyJobState';
 
 const JobBoardPage = () => {
