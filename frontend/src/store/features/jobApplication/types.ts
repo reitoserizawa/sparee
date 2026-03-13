@@ -9,10 +9,14 @@ export interface JobApplication {
 export interface SimpleJobApplication {
     id: number;
     status: string;
-    job_post_id: JobPost;
-    user_id: JobPost;
+    job_post_id: number;
+    user_id: number;
 }
 
 export interface JobApplicationCreate {
     jobPostId: number;
+}
+
+export interface JobApplicationDelete {
+    jobApplicationId: number;
 }
