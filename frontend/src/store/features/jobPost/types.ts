@@ -1,3 +1,5 @@
+import type { SimpleJobApplication } from '../jobApplication/types';
+
 export interface JobPostState {
     jobPostId: number;
 }
@@ -14,6 +16,7 @@ export interface JobPost {
     salary_type: string;
     job_category: JobPostCategory;
     application_status?: string;
+    user_application?: SimpleJobApplication | null;
     created_at: string;
 }
 
