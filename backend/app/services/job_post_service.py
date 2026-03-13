@@ -53,6 +53,15 @@ class JobPostService:
         return []
 
     @staticmethod
+    async def delete_job_application_from_user(session: AsyncSession, id: int, user: "User") -> "JobPost":
+        job_post = await JobPostService.get_from_id(session=session, id=id)
+        job_application = await JobApplicationService.get_from_user_and_job_post(session=session, user=user, job_post=job_post)
+        if not job_application:
+            raise ValueError(
+                f"User does not have an active application")
+        return await JobApplicationService.soft_delete(session=session, id=job_application.id, user=user)
+
+    @staticmethod
     async def create_job_post(session: AsyncSession, data: JobPostCreateModel, user: "User") -> "JobPost":
         from app.db.models.job_post import JobPost
         company = await JobPostService._get_company_for_member(session=session, company_id=data.company_id, user=user)
