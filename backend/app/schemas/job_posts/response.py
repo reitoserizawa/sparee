@@ -4,6 +4,7 @@ from .base import JobPostBaseModel
 from ..companies.response import CompanyResponseModel
 from ..addresses.response import AddressResponseModel
 from ..job_categories import JobCategoryResponseModel
+from ..job_applications import SimpleJobApplicationResponseModel
 
 
 class JobPostResponseModel(JobPostBaseModel):
@@ -14,7 +15,8 @@ class JobPostResponseModel(JobPostBaseModel):
     job_category: JobCategoryResponseModel = Field(frozen=True)
     # skills: list[str] = Field(default_factory=list, frozen=True)
 
-    application_status: str | None = Field(default=None, frozen=True)
+    user_application: SimpleJobApplicationResponseModel | None = Field(
+        default=None, frozen=True)
 
     created_at: datetime
     updated_at: datetime

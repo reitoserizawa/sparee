@@ -1,4 +1,5 @@
 from .create import JobApplicationCreateModel
-from .response import JobApplicationResponseModel
+from .response import JobApplicationResponseModel, SimpleJobApplicationResponseModel
 
-__all__ = ["JobApplicationCreateModel", "JobApplicationResponseModel"]
+__all__ = ["JobApplicationCreateModel",
+           "JobApplicationResponseModel", "SimpleJobApplicationResponseModel"]
