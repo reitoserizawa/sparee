@@ -28,7 +28,7 @@ class JobPostService:
                 user=user,
                 job_post=job_post
             )
-            job_post.application_status = job_application.status if job_application else None
+            job_post.user_application = job_application
         return job_post
 
     @staticmethod
