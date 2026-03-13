@@ -2,10 +2,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useGetJobPostDetailsQuery } from '../../../store/features/jobPost/jobPostApi';
+import { useCreateJobApplicationsMutation } from '../../../store/features/jobApplication/jobApplicationApi';
 
 import CheckIcon from '../../../assets/icons/CheckIcon';
 import Card from '../../ui/Card';
-import { useCreateJobApplicationsMutation } from '../../../store/features/jobApplication/jobApplicationApi';
+import Button from '../../ui/Button';
 
 const Sidebar: React.ElementType = () => {
     const { jobPostId } = useParams<{ jobPostId: string }>();
@@ -54,12 +55,9 @@ const Sidebar: React.ElementType = () => {
                 </p>
 
                 {!hasApplied && (
-                    <button
-                        className='w-full bg-blue-600 text-white py-3 rounded-full font-medium'
-                        onClick={() => handleApply()}
-                    >
+                    <Button variant='brand' onClick={() => handleApply()} className='w-full py-3 rounded-full'>
                         Apply now
-                    </button>
+                    </Button>
                 )}
             </Card>
             {/* Company Card */}
@@ -71,7 +69,9 @@ const Sidebar: React.ElementType = () => {
                 <p className='text-sm text-gray-500 mb-5'>
                     Faucibus ornare suspendisse sed nisi lacus sed. Volutpat ut venenatis tellus.
                 </p>
-                <button className='border px-4 py-2 rounded-full text-sm'>View company</button>
+                <Button variant='secondary' className='px-4 py-2 rounded-full text-sm'>
+                    View company
+                </Button>
             </Card>
         </>
     );

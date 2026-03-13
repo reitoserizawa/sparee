@@ -11,6 +11,7 @@ import type { UserLoginState } from '../../store/features/auth/types';
 import Form from '../ui/Form';
 import FormInput from '../ui/Form/FormInput';
 import Error from '../ui/Error';
+import Button from '../ui/Button';
 
 const LoginPage = (): React.ReactElement => {
     const initialValues: UserLoginState = { email: '', password: '' };
@@ -47,13 +48,9 @@ const LoginPage = (): React.ReactElement => {
                         validators={[requiredValidator()]}
                     />
                     {isError && isErrorWithMessage(error) && <Error message={error?.data?.message} />}
-                    <button
-                        type='submit'
-                        disabled={isLoading}
-                        className='w-full rounded-lg bg-black text-white py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50'
-                    >
+                    <Button type='submit' disabled={isLoading} className='w-full rounded-lg py-2 text-sm'>
                         {isLoading ? 'Signing in...' : 'Sign in'}
-                    </button>
+                    </Button>
                 </Form>
 
                 <p className='text-sm text-center text-gray-500 mt-6'>
