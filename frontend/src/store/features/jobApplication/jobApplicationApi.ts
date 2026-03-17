@@ -45,4 +45,5 @@ const jobApplicationApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetUserJobApplicationsQuery, useCreateJobApplicationsMutation } = jobApplicationApi;
+export const { useGetUserJobApplicationsQuery, useCreateJobApplicationsMutation, useDeleteJobApplicationMutation } =
+    jobApplicationApi;
