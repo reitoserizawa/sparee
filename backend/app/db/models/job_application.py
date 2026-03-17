@@ -76,8 +76,12 @@ class JobApplication(BaseModel):
         self.status = JobApplicationStatus.WITHDRAWN
         return await self.save(session=session)
 
+    async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":
+        return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS)
+
     def is_owned_by(self: "JobApplication", user: "User"):
         return self.user_id == user.id
 
-    async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":
-        return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS)
+    def validate_status_change(self, new_status: JobApplicationStatus):
+        if self.status == JobApplicationStatus.REJECTED and new_status == JobApplicationStatus.ACCEPTED:
+            raise ValueError("Cannot accept a rejected application")
