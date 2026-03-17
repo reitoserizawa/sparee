@@ -20,3 +20,8 @@ export interface JobApplicationCreate {
 export interface JobApplicationDelete {
     jobApplicationId: number;
 }
+
+export interface UpdateJobApplicationStatusRequest {
+    jobApplicationId: number;
+    newStatus: string;
+}

@@ -1,5 +1,11 @@
 import baseApi from '../base/baseApi';
-import type { JobApplication, JobApplicationCreate, JobApplicationDelete, SimpleJobApplication } from './types';
+import type {
+    JobApplication,
+    JobApplicationCreate,
+    JobApplicationDelete,
+    SimpleJobApplication,
+    UpdateJobApplicationStatusRequest,
+} from './types';
 
 const jobApplicationApi = baseApi.injectEndpoints({
     endpoints: builder => ({
@@ -42,8 +48,28 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 ];
             },
         }),
+        changeJobApplicationStatus: builder.mutation<SimpleJobApplication, UpdateJobApplicationStatusRequest>({
+            query: ({ jobApplicationId, newStatus }) => ({
+                url: `/job-applications/${jobApplicationId}`,
+                method: 'PATCH',
+                body: {
+                    new_status: newStatus,
+                },
+            }),
+            invalidatesTags: result => {
+                if (!result) return [{ type: 'JobApplication', id: 'LIST' }];
+                return [
+                    { type: 'JobApplication', id: 'LIST' },
+                    { type: 'JobPost', id: result.job_post_id },
+                ];
+            },
+        }),
     }),
 });
 
-export const { useGetUserJobApplicationsQuery, useCreateJobApplicationsMutation, useDeleteJobApplicationMutation } =
-    jobApplicationApi;
+export const {
+    useGetUserJobApplicationsQuery,
+    useCreateJobApplicationsMutation,
+    useDeleteJobApplicationMutation,
+    useChangeJobApplicationStatusMutation,
+} = jobApplicationApi;
