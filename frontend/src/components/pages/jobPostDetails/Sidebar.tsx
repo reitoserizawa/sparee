@@ -91,7 +91,11 @@ const Sidebar: React.ElementType = () => {
                     </span>
                 </div>
 
-                <h3 className='font-semibold mb-2'>{userApplication ? 'Applied' : 'Apply now'}</h3>
+                <h3 className='font-semibold mb-2'>
+                    {userApplication
+                        ? userApplication?.status[0].toUpperCase() + userApplication?.status.slice(1)
+                        : 'Apply now'}
+                </h3>
 
                 <p className='text-sm text-gray-500 mb-5'>
                     {userApplication
