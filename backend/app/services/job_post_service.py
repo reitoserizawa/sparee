@@ -92,7 +92,7 @@ class JobPostService:
                 (app for app in post.applications if app.user_id == user.id),
                 None
             )
-            post.application_status = user_app.status if user_app else None
+            post.user_application = user_app
         return job_posts
 
     @staticmethod
