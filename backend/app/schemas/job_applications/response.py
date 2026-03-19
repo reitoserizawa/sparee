@@ -10,7 +10,7 @@ class JobApplicationResponseModel(JobApplicationBaseModel):
     id: int = Field(..., frozen=True)
     job_post: "JobPostResponseModel" = Field(..., frozen=True)
     user_id: int = Field(..., frozen=True)
-    status: str = Field(..., frozen=True)
+    application_status: str = Field(..., frozen=True)
 
 
 class SimpleJobApplicationResponseModel(JobApplicationBaseModel):
