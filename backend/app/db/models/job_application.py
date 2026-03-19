@@ -77,15 +77,15 @@ class JobApplication(BaseModel):
 
     @classmethod
     async def get_from_user_and_job_post(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
-        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id)
+        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, filters=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @classmethod
     async def get_active_application(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
-        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, filters=[JobApplication.status.in_(ACTIVE_STATUSES)])
+        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, filters=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @override
     async def soft_delete(self: "JobApplication", session: AsyncSession) -> "JobApplication":
-        self.status = JobApplicationStatus.WITHDRAWN
+        self.application_status = JobApplicationStatus.WITHDRAWN
         return await self.save(session=session)
 
     async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":
