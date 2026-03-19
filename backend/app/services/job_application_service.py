@@ -58,7 +58,7 @@ class JobApplicationService:
         from app.db.models.job_application import JobApplication
 
         job_post = await JobPostService.get_from_id(session=session, id=data.job_post_id)
-        if JobApplicationService.get_active_application(session=session, user=user, job_post=job_post):
+        if await JobApplicationService.get_active_application(session=session, user=user, job_post=job_post):
             raise HTTPException(
                 status_code=403,
                 detail=f"User has an active application"
