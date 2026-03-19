@@ -15,7 +15,7 @@ class AddressService:
         return await Address.get_or_raise(session, address_id)
 
     @staticmethod
-    async def get_all(session: AsyncSession) -> Sequence[Address]:
+    async def get_all(session: AsyncSession) -> Sequence[Address] | None:
         return await Address.get_all(session)
 
     @staticmethod
