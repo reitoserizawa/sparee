@@ -128,8 +128,11 @@ class BaseModel(Base):
         return result.scalars().all()
 
     @classmethod
-    async def find_one_by(cls: Type[T], session: AsyncSession, include_deleted: bool = False, **kwargs) -> Optional[T]:
-        stmt = select(cls).filter_by(**kwargs).limit(1)
+    async def find_one_by(cls: Type[T], session: AsyncSession, include_deleted: bool = False, filters: Optional[list[ColumnElement]] = None, **kwargs) -> Optional[T]:
+        stmt = select(cls).filter_by(**kwargs)
+        if filters:
+            stmt = stmt.where(*filters)
+        stmt = stmt.limit(1)
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
         result = await session.execute(stmt)
