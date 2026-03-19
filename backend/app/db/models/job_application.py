@@ -1,7 +1,7 @@
 from typing import Type, TYPE_CHECKING, Sequence, Optional, override
 from enum import Enum as PyEnum
 from datetime import datetime
-from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint, Enum as SAEnum
+from sqlalchemy import Integer, ForeignKey, DateTime, Index, Enum as SAEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
@@ -19,6 +19,12 @@ class JobApplicationStatus(PyEnum):
     REJECTED = "rejected"
     ACCEPTED = "accepted"
     WITHDRAWN = "withdrawn"
+
+
+ACTIVE_STATUSES = [
+    JobApplicationStatus.APPLIED,
+    JobApplicationStatus.REVIEWING,
+]
 
 
 class JobApplication(BaseModel):
@@ -39,8 +45,8 @@ class JobApplication(BaseModel):
     job_post: Mapped["JobPost"] = relationship(
         "JobPost", back_populates="applications")
 
-    status: Mapped[JobApplicationStatus] = mapped_column(
-        SAEnum(JobApplicationStatus, name="status"),
+    application_status: Mapped[JobApplicationStatus] = mapped_column(
+        SAEnum(JobApplicationStatus, name="application_status"),
         default=JobApplicationStatus.APPLIED,
         nullable=False
     )
@@ -56,10 +62,12 @@ class JobApplication(BaseModel):
     )
 
     __table_args__ = (
-        UniqueConstraint(
-            "user_id",
-            "job_post_id",
-            name="unique_user_per_job_post"
+        Index(
+            "unique_active_application_per_user_job",
+            user_id,
+            job_post_id,
+            unique=True,
+            postgresql_where=application_status.in_(ACTIVE_STATUSES)
         ),
     )
 
@@ -70,6 +78,10 @@ class JobApplication(BaseModel):
     @classmethod
     async def get_from_user_and_job_post(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id)
+
+    @classmethod
+    async def get_active_application(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
+        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, filters=[JobApplication.status.in_(ACTIVE_STATUSES)])
 
     @override
     async def soft_delete(self: "JobApplication", session: AsyncSession) -> "JobApplication":
@@ -83,5 +95,5 @@ class JobApplication(BaseModel):
         return self.user_id == user.id
 
     def validate_status_change(self, new_status: JobApplicationStatus):
-        if self.status == JobApplicationStatus.REJECTED and new_status == JobApplicationStatus.ACCEPTED:
+        if self.application_status == JobApplicationStatus.REJECTED and new_status == JobApplicationStatus.ACCEPTED:
             raise ValueError("Cannot accept a rejected application")

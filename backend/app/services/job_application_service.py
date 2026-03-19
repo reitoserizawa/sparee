@@ -24,16 +24,22 @@ class JobApplicationService:
         return job_application
 
     @staticmethod
-    async def change_status(session: AsyncSession, id: int, new_status: str, user: "User") -> "JobApplication":
+    async def get_active_application(session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
+        from app.db.models.job_application import JobApplication
+        job_application = await JobApplication.get_active_application(session=session, user=user, job_post=job_post)
+        return job_application
+
+    @staticmethod
+    async def change_application_status(session: AsyncSession, id: int, new_status: str, user: "User") -> "JobApplication":
         from app.db.models.job_application import JobApplication
         job_application = await JobApplication.get_or_raise(session=session, id=id)
         if not job_application.is_owned_by(user=user):
             raise HTTPException(
                 status_code=403, detail="User is not authorized to delete the application")
-        validated_status = JobApplicationService._validate_status(
+        validated_status = JobApplicationService._validate_application_status(
             status=new_status)
         job_application.validate_status_change(new_status=validated_status)
-        job_application.status = validated_status
+        job_application.application_status = validated_status
         return await job_application.save(session=session)
 
     @staticmethod
@@ -52,6 +58,11 @@ class JobApplicationService:
         from app.db.models.job_application import JobApplication
 
         job_post = await JobPostService.get_from_id(session=session, id=data.job_post_id)
+        if JobApplicationService.get_active_application(session=session, user=user, job_post=job_post):
+            raise HTTPException(
+                status_code=403,
+                detail=f"User has an active application"
+            )
         job_application = JobApplication(
             user_id=user.id,
             job_post_id=job_post.id
@@ -61,7 +72,7 @@ class JobApplicationService:
         return job_application_with_details
 
     @staticmethod
-    def _validate_status(status: str) -> "JobApplicationStatus":
+    def _validate_application_status(status: str) -> "JobApplicationStatus":
         try:
             new_status = JobApplicationStatus(status)
         except ValueError:
