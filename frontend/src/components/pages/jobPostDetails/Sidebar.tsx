@@ -38,13 +38,15 @@ const Sidebar: React.ElementType = () => {
     };
 
     const handleDeleteApplication = async () => {
-        if (userApplication) {
-            await deleteJobApplication({ jobApplicationId: userApplication?.id }).unwrap();
-            setIsDeleteModalOpen(false);
+        try {
+            if (userApplication) {
+                await deleteJobApplication({ jobApplicationId: userApplication?.id }).unwrap();
+                setIsDeleteModalOpen(false);
+            }
+        } catch (err) {
+            console.log(err);
         }
     };
-
-    // TODO: add case of "reviewing", "rejected", "accepted"
 
     const insertJobApplicationActionButton = (status: string | undefined) => {
         switch (status) {
@@ -64,10 +66,18 @@ const Sidebar: React.ElementType = () => {
                         Reapply
                     </Button>
                 );
+            case 'reviewing':
+                return;
+            case 'rejected':
+                return;
+            case 'approved':
+                return;
             default:
-                <Button variant='brand' onClick={() => handleApply()} className='w-full py-3 rounded-full'>
-                    Apply now
-                </Button>;
+                return (
+                    <Button variant='brand' onClick={() => handleApply()} className='w-full py-3 rounded-full'>
+                        Apply now
+                    </Button>
+                );
         }
     };
 
@@ -77,13 +87,13 @@ const Sidebar: React.ElementType = () => {
             <Card>
                 <div
                     className={`flex items-center justify-center w-10 h-10 rounded-lg mb-4 ${
-                        userApplication?.status === 'applied' ? 'bg-blue-100' : 'bg-green-100'
+                        userApplication?.application_status === 'applied' ? 'bg-blue-100' : 'bg-green-100'
                     }`}
                 >
                     <span
                         className={`material-symbols-outlined ${userApplication ? 'text-green-600' : 'text-blue-600'}`}
                     >
-                        {userApplication?.status === 'applied' ? (
+                        {userApplication?.application_status === 'applied' ? (
                             <CheckIcon size={24} color='blue' />
                         ) : (
                             <CheckIcon size={24} color='green' />
@@ -93,7 +103,8 @@ const Sidebar: React.ElementType = () => {
 
                 <h3 className='font-semibold mb-2'>
                     {userApplication
-                        ? userApplication?.status[0].toUpperCase() + userApplication?.status.slice(1)
+                        ? userApplication?.application_status[0].toUpperCase() +
+                          userApplication?.application_status.slice(1)
                         : 'Apply now'}
                 </h3>
 
@@ -103,7 +114,7 @@ const Sidebar: React.ElementType = () => {
                         : `Please let ${companyName} know that you found this position.`}
                 </p>
 
-                {insertJobApplicationActionButton(userApplication?.status)}
+                {insertJobApplicationActionButton(userApplication?.application_status)}
             </Card>
             {/* Company Card */}
             <Card>

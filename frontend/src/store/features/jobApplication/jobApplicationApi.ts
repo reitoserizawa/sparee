@@ -1,8 +1,8 @@
 import baseApi from '../base/baseApi';
 import type {
     JobApplication,
-    JobApplicationCreate,
-    JobApplicationDelete,
+    CreateJobApplicationRequest,
+    DeleteJobApplicationRequest,
     SimpleJobApplication,
     UpdateJobApplicationStatusRequest,
 } from './types';
@@ -22,7 +22,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
                       ]
                     : [{ type: 'JobApplication', id: 'LIST' }],
         }),
-        createJobApplications: builder.mutation<JobApplication, JobApplicationCreate>({
+        createJobApplications: builder.mutation<JobApplication, CreateJobApplicationRequest>({
             query: ({ jobPostId }) => ({
                 url: `/job-applications`,
                 method: 'POST',
@@ -35,7 +35,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 { type: 'JobPost', id: jobPostId },
             ],
         }),
-        deleteJobApplication: builder.mutation<SimpleJobApplication, JobApplicationDelete>({
+        deleteJobApplication: builder.mutation<SimpleJobApplication, DeleteJobApplicationRequest>({
             query: ({ jobApplicationId }) => ({
                 url: `/job-applications/${jobApplicationId}`,
                 method: 'DELETE',

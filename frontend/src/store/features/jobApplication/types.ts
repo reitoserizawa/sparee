@@ -1,27 +1,29 @@
 import type { JobPost } from '../jobPost/types';
 
+type JobApplicationStatus = 'applied' | 'rejected' | 'reviewing' | 'withdrawn';
+
 export interface JobApplication {
     id: number;
-    status: string;
+    application_status: JobApplicationStatus;
     job_post: JobPost;
 }
 
 export interface SimpleJobApplication {
     id: number;
-    status: string;
+    application_status: JobApplicationStatus;
     job_post_id: number;
     user_id: number;
 }
 
-export interface JobApplicationCreate {
+export interface CreateJobApplicationRequest {
     jobPostId: number;
 }
 
-export interface JobApplicationDelete {
+export interface DeleteJobApplicationRequest {
     jobApplicationId: number;
 }
 
 export interface UpdateJobApplicationStatusRequest {
     jobApplicationId: number;
-    newStatus: string;
+    newStatus: JobApplicationStatus;
 }
