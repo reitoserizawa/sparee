@@ -20,6 +20,18 @@ export interface JobPost {
     created_at: string;
 }
 
+export interface SimpleJobPost {
+    id: number;
+    title: string;
+    description: string;
+    skills?: string[];
+    salary: number;
+    location?: string;
+    salary_type: string;
+    application_status?: string;
+    created_at: string;
+}
+
 interface JobPostCategory {
     id: number;
     name: string;
