@@ -1,17 +1,29 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+from datetime import datetime
 from pydantic import Field
 from .base import JobApplicationBaseModel
 
+from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from ..job_posts import JobPostResponseModel
+    from ..job_posts import SimpleJobPostResponseModel
 
 
 class JobApplicationResponseModel(JobApplicationBaseModel):
+
     id: int = Field(..., frozen=True)
-    job_post: "JobPostResponseModel" = Field(..., frozen=True)
-    user_id: int = Field(..., frozen=True)
-    application_status: str = Field(..., frozen=True)
+    job_post: "SimpleJobPostResponseModel | None" = Field(
+        default=None, frozen=True)
+    created_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class SimpleJobApplicationResponseModel(JobApplicationBaseModel):
     id: int = Field(..., frozen=True)
+
+    model_config = {
+        "from_attributes": True
+    }

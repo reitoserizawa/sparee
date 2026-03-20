@@ -5,3 +5,9 @@ from .companies import *
 from .job_applications import *
 from .job_categories import *
 from .job_posts import *
+from .job_posts import JobPostResponseModel
+from .job_applications import JobApplicationResponseModel
+
+
+JobPostResponseModel.model_rebuild()
+JobApplicationResponseModel.model_rebuild()
