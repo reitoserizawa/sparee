@@ -83,11 +83,12 @@ class JobPost(BaseModel):
 
     @classmethod
     async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
-        from app.db.models.job_application import JobApplication
+        from app.db.models.job_application import JobApplication, ACTIVE_STATUSES
         return await cls.filter_via_join(
             session=session,
             join_model=JobApplication,
-            where=[JobApplication.user_id == user.id],
+            where=[JobApplication.user_id == user.id,
+                   JobApplication.application_status.in_(ACTIVE_STATUSES)],
             relations=JOB_POST_DETAIL_RELATIONS
         )
 
