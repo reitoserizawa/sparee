@@ -7,6 +7,7 @@ export interface JobApplication {
     application_status: JobApplicationStatus;
     job_post: SimpleJobPost;
     created_at: string;
+    updated_at: string;
 }
 
 export interface SimpleJobApplication {
@@ -15,6 +16,7 @@ export interface SimpleJobApplication {
     job_post_id: number;
     user_id: number;
     created_at: string;
+    updated_at: string;
 }
 
 export interface CreateJobApplicationRequest {

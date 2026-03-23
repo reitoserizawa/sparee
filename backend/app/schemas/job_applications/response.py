@@ -15,6 +15,7 @@ class JobApplicationResponseModel(JobApplicationBaseModel):
     job_post: "SimpleJobPostResponseModel | None" = Field(
         default=None, frozen=True)
     created_at: datetime
+    updated_at: datetime
 
     model_config = {
         "from_attributes": True
@@ -23,6 +24,8 @@ class JobApplicationResponseModel(JobApplicationBaseModel):
 
 class SimpleJobApplicationResponseModel(JobApplicationBaseModel):
     id: int = Field(..., frozen=True)
+    created_at: datetime
+    updated_at: datetime
 
     model_config = {
         "from_attributes": True
