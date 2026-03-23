@@ -5,6 +5,7 @@ from sqlalchemy import Integer, ForeignKey, DateTime, Index, Enum as SAEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
+from app.schemas.job_applications import JobApplicationActivityResponse
 
 if TYPE_CHECKING:
     from app.db.models.user import User
@@ -77,11 +78,50 @@ class JobApplication(BaseModel):
 
     @classmethod
     async def get_from_user_and_job_post(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
-        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, filters=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
+        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @classmethod
     async def get_active_application(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
-        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, filters=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
+        return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
+
+    @classmethod
+    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: str, end: str,) -> Optional[Sequence["JobApplicationActivityResponse"]]:
+        from sqlalchemy import select, func
+        stmt = (
+            select(
+                func.date(cls.created_at).label("date"),
+                cls.status,
+                func.count().label("count"),
+            )
+            .where(
+                cls.user_id == user.id,
+                cls.created_at >= start,
+                cls.created_at <= end,
+            )
+            .group_by(func.date(cls.created_at), cls.status)
+        )
+
+        result = await session.execute(stmt)
+        rows = result.all()
+        activity_map = {}
+
+        for date, status, count in rows:
+            key = str(date)
+
+            if key not in activity_map:
+                activity_map[key] = {
+                    "date": key,
+                    "applied": 0,
+                    "interviewing": 0,
+                    "accepted": 0,
+                    "rejected": 0,
+                    "total": 0,
+                }
+
+            activity_map[key][status] += count
+            activity_map[key]["total"] += count
+
+        return list(activity_map.values())
 
     @override
     async def soft_delete(self: "JobApplication", session: AsyncSession) -> "JobApplication":
