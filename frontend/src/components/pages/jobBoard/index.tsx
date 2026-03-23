@@ -16,9 +16,9 @@ const JobBoardPage = () => {
     );
     const { data: appliedJobPosts, isLoading: loadingUserJobApplications } = useGetAppliedJobPostsQuery(null);
 
-    const globalLoading = loadingUserJobApplications || loadingNearestJobPosts;
+    const isGlobalLoading = loadingUserJobApplications || loadingNearestJobPosts;
 
-    if (globalLoading) return <FullscreenLoader />;
+    if (isGlobalLoading) return <FullscreenLoader />;
 
     return (
         <JobBoardLayout header={<Header />} sidebar={<Sidebar />}>
