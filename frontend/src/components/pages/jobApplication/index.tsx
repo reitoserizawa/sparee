@@ -5,28 +5,24 @@ import { useGetUserJobApplicationsQuery } from '../../../store/features/jobAppli
 import Card from '../../ui/Card';
 import Sidebar from './Sidebar';
 import JobPostDetailsLayout from '../../layouts/JobPostDetailsLayout';
-
-const STATUS_COLORS: Record<string, string> = {
-    applied: 'bg-blue-100 text-blue-600',
-    reviewing: 'bg-yellow-100 text-yellow-600',
-    accepted: 'bg-green-100 text-green-600',
-    rejected: 'bg-red-100 text-red-600',
-    withdrawn: 'bg-gray-100 text-gray-600',
-};
+import FullscreenLoader from '../../ui/Loader/FullScreenLoader';
+import JobApplicationListItem from '../../common/JobApplicationListItem';
 
 const JobApplicationsPage: React.FC = () => {
-    const { data: applications } = useGetUserJobApplicationsQuery(null);
+    const { data: jobApplications, isLoading: loadingApplications } = useGetUserJobApplicationsQuery(null);
+    const isGlobalLoading = loadingApplications;
 
     const stats = useMemo(() => {
-        if (!applications) return {};
+        if (!jobApplications) return {};
 
-        return applications.reduce((acc: Record<string, number>, app) => {
+        return jobApplications.reduce((acc: Record<string, number>, app) => {
             acc[app.application_status] = (acc[app.application_status] || 0) + 1;
             return acc;
         }, {});
-    }, [applications]);
+    }, [jobApplications]);
 
-    if (!applications) return null;
+    if (!jobApplications) return null;
+    if (isGlobalLoading) return <FullscreenLoader withNavBar={true} />;
 
     return (
         <JobPostDetailsLayout sidebar={<Sidebar stats={stats} />}>
@@ -46,38 +42,13 @@ const JobApplicationsPage: React.FC = () => {
                         </Card>
                     ))}
                 </div>
-
-                {/* APPLICATION LIST */}
                 <Card>
                     <h2 className='font-semibold mb-4'>Recent Applications</h2>
 
                     <div className='space-y-4'>
-                        {applications.map(app => {
-                            const { application_status, job_post } = app;
-                            const { title, description } = job_post;
-
-                            return (
-                                <div
-                                    key={app.id}
-                                    className='flex items-center justify-between border-b pb-4 last:border-none'
-                                >
-                                    <div>
-                                        <h3 className='font-medium'>{title}</h3>
-                                        {/* add company name */}
-                                        <p className='text-sm text-gray-500'>{description}</p>
-                                        <p className='text-xs text-gray-400 mt-1'>Applied on {app?.created_at}</p>
-                                    </div>
-
-                                    <div
-                                        className={`px-3 py-1 rounded-full text-sm capitalize ${
-                                            STATUS_COLORS[application_status]
-                                        }`}
-                                    >
-                                        {application_status}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                        {jobApplications.map(jobApplication => (
+                            <JobApplicationListItem key={jobApplication.id} jobApplication={jobApplication} />
+                        ))}
                     </div>
                 </Card>
             </div>
