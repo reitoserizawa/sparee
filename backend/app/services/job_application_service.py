@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from typing import TYPE_CHECKING, Sequence, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.job_applications.create import JobApplicationCreateModel
+from app.schemas.job_applications import JobApplicationCreateModel, JobApplicationActivityResponse
 
 if TYPE_CHECKING:
     from app.db.models.user import User
@@ -28,6 +28,16 @@ class JobApplicationService:
         from app.db.models.job_application import JobApplication
         job_application = await JobApplication.get_active_application(session=session, user=user, job_post=job_post)
         return job_application
+
+    @staticmethod
+    async def get_activity(session: AsyncSession, user: "User", start: str, end: str) -> Optional[Sequence["JobApplicationActivityResponse"]]:
+        from app.db.models.job_application import JobApplication
+        return await JobApplication.get_activity_by_date(
+            session=session,
+            user=user,
+            start=start,
+            end=end,
+        )
 
     @staticmethod
     async def change_application_status(session: AsyncSession, id: int, new_status: str, user: "User") -> "JobApplication":
