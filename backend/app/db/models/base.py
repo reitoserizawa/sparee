@@ -128,19 +128,26 @@ class BaseModel(Base):
         return result.scalars().all()
 
     @classmethod
-    async def find_one_by(cls: Type[T], session: AsyncSession, include_deleted: bool = False, filters: Optional[list[ColumnElement]] = None, **kwargs) -> Optional[T]:
-        stmt = select(cls).filter_by(**kwargs)
-        if filters:
-            stmt = stmt.where(*filters)
-        stmt = stmt.limit(1)
+    async def find_one_by(cls: Type[T], session: AsyncSession, relations: Optional[list[str]] = None, include_deleted: bool = False, where: Optional[list[ColumnElement]] = None, **kwargs) -> Optional[T]:
+        stmt = cls._set_stmt(where=where, relations=relations)
+
+        if kwargs:
+            stmt = stmt.filter_by(**kwargs)
+
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
+
+        stmt = stmt.limit(1)
         result = await session.execute(stmt)
         return result.scalar_one_or_none()
 
     @classmethod
-    async def filter_by(cls: Type[T], session: AsyncSession, relations: Optional[list[str]] = None, include_deleted: bool = False, **kwargs) -> Optional[Sequence[T]]:
-        stmt = select(cls).filter_by(**kwargs)
+    async def filter_by(cls: Type[T], session: AsyncSession, where: Optional[Iterable[ColumnElement[bool]]] = None, relations: Optional[list[str]] = None, include_deleted: bool = False, **kwargs) -> Optional[Sequence[T]]:
+        stmt = cls._set_stmt(where=where, relations=relations)
+
+        if kwargs:
+            stmt = stmt.filter_by(**kwargs)
+
         if relations:
             loaders = cls._generate_nested_loaders(relations)
             stmt = stmt.options(*loaders)
@@ -158,14 +165,12 @@ class BaseModel(Base):
         where: Optional[Iterable[ColumnElement[bool]]] = None,
         order_by: Optional[Iterable[ColumnElement[Any]]] = None,
         relations: Optional[list[str]] = None,
-        include_deleted: bool = False
     ) -> Optional[T]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,
             order_by=order_by,
             relations=relations,
-            include_deleted=include_deleted
         )
 
         result = await session.execute(stmt)
@@ -181,7 +186,6 @@ class BaseModel(Base):
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         relations: Optional[list[str]] = None,
-        include_deleted: bool = False,
     ) -> Optional[Sequence[T]]:
         stmt = cls._set_stmt(
             join_model=join_model,
@@ -190,24 +194,25 @@ class BaseModel(Base):
             limit=limit,
             offset=offset,
             relations=relations,
-            include_deleted=include_deleted
         )
         result = await session.execute(stmt)
         return result.scalars().all()
 
     @classmethod
     def _set_stmt(cls: Type[T],
-                  join_model: Any,
+                  join_model: Any = None,
                   where: Optional[Iterable[ColumnElement[bool]]] = None,
                   order_by: Optional[Iterable[ColumnElement[Any]]] = None,
                   limit: Optional[int] = None,
                   offset: Optional[int] = None,
                   relations: Optional[list[str]] = None,
-                  include_deleted: bool = False) -> Select:
-        stmt: Select = select(cls).join(join_model)
-        if where is not None:
+                  ) -> Select:
+        stmt: Select = select(cls)
+        if join_model:
+            stmt.join(join_model)
+        if where:
             stmt = stmt.where(*where)
-        if order_by is not None:
+        if order_by:
             stmt = stmt.order_by(*order_by)
         if limit:
             stmt = stmt.limit(limit)
@@ -216,8 +221,6 @@ class BaseModel(Base):
         if relations:
             loaders = cls._generate_nested_loaders(relations=relations)
             stmt = stmt.options(*loaders)
-        if not include_deleted:
-            stmt = cls._soft_delete_filter(stmt)
 
         return stmt
 
