@@ -31,3 +31,12 @@ export interface UpdateJobApplicationStatusRequest {
     jobApplicationId: number;
     newStatus: JobApplicationStatus;
 }
+
+export interface JobApplicationActivityDay {
+    date: string;
+    applied: number;
+    interviewing: number;
+    accepted: number;
+    rejected: number;
+    total: number;
+}
