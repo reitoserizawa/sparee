@@ -32,11 +32,16 @@ class JobApplicationService:
     @staticmethod
     async def get_activity(session: AsyncSession, user: "User", start: str, end: str) -> Optional[Sequence["JobApplicationActivityResponse"]]:
         from app.db.models.job_application import JobApplication
+        from datetime import datetime
+
+        start_time = datetime.fromisoformat(start)
+        end_time = datetime.fromisoformat(end)
+
         return await JobApplication.get_activity_by_date(
             session=session,
             user=user,
-            start=start,
-            end=end,
+            start=start_time,
+            end=end_time,
         )
 
     @staticmethod

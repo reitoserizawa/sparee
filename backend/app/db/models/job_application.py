@@ -85,12 +85,13 @@ class JobApplication(BaseModel):
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @classmethod
-    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: str, end: str,) -> Optional[Sequence["JobApplicationActivityResponse"]]:
+    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: datetime, end: datetime,) -> Optional[Sequence["JobApplicationActivityResponse"]]:
         from sqlalchemy import select, func
+
         stmt = (
             select(
                 func.date(cls.created_at).label("date"),
-                cls.status,
+                cls.application_status,
                 func.count().label("count"),
             )
             .where(
@@ -98,7 +99,7 @@ class JobApplication(BaseModel):
                 cls.created_at >= start,
                 cls.created_at <= end,
             )
-            .group_by(func.date(cls.created_at), cls.status)
+            .group_by(func.date(cls.created_at), cls.application_status)
         )
 
         result = await session.execute(stmt)
@@ -111,14 +112,12 @@ class JobApplication(BaseModel):
             if key not in activity_map:
                 activity_map[key] = {
                     "date": key,
-                    "applied": 0,
-                    "interviewing": 0,
-                    "accepted": 0,
-                    "rejected": 0,
                     "total": 0,
                 }
 
-            activity_map[key][status] += count
+            status_key = status.value
+            activity_map[key][status_key] = activity_map[key].get(
+                status_key, 0) + count
             activity_map[key]["total"] += count
 
         return list(activity_map.values())
