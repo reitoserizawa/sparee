@@ -2,17 +2,35 @@ import { useMemo, useState } from 'react';
 import type { ActivityCalendarProps } from './types';
 import type { JobApplicationActivityDay } from '../../../../store/features/jobApplication/types';
 import DateUtils from '../../../../utils/DateUtils';
+import { useGetJobApplicationActivityQuery } from '../../../../store/features/jobApplication/jobApplicationApi';
 
-const ActivityCalendar: React.FC<ActivityCalendarProps> = ({ data, onDayClick }) => {
+const ActivityCalendar: React.FC<ActivityCalendarProps> = ({ onDayClick }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [hovered, setHovered] = useState<JobApplicationActivityDay | null>(null);
+
+    const startOfMonth = useMemo(() => {
+        const d = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }, [currentDate]);
+
+    const endOfMonth = useMemo(() => {
+        const d = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        d.setHours(23, 59, 59, 999);
+        return d;
+    }, [currentDate]);
+
+    const { data } = useGetJobApplicationActivityQuery({
+        start: startOfMonth.toISOString(),
+        end: endOfMonth.toISOString(),
+    });
 
     const today = new Date();
     const todayStr = DateUtils.formatDate(today);
 
     const activityMap = useMemo(() => {
         const map = new Map<string, JobApplicationActivityDay>();
-        data.forEach(d => map.set(d.date, d));
+        data?.forEach(d => map.set(d.date, d));
         return map;
     }, [data]);
 
@@ -128,10 +146,11 @@ const ActivityCalendar: React.FC<ActivityCalendarProps> = ({ data, onDayClick })
                 <div className='absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 rounded-xl bg-white shadow-xl p-3 text-xs border z-50'>
                     <p className='text-gray-500 mb-1'>{DateUtils.parseDate(hovered.date).toDateString()}</p>
                     <p className='font-semibold mb-1'>{hovered.total} activities</p>
-                    <p>📨 Applied: {hovered.applied}</p>
-                    <p>👀 Interviewing: {hovered.interviewing}</p>
-                    <p>✅ Accepted: {hovered.accepted}</p>
-                    <p>❌ Rejected: {hovered.rejected}</p>
+                    {hovered.applied && <p>📨 Applied: {hovered.applied}</p>}
+                    {hovered.withdrawn && <p>🗑️ Withdrawn: {hovered.withdrawn}</p>}
+                    {hovered.reviewing && <p>👀 Reviewing: {hovered.reviewing}</p>}
+                    {hovered.accepted && <p>✅ Accepted: {hovered.accepted}</p>}
+                    {hovered.rejected && <p>❌ Rejected: {hovered.rejected}</p>}
                 </div>
             )}
         </div>
