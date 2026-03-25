@@ -32,11 +32,17 @@ export interface UpdateJobApplicationStatusRequest {
     newStatus: JobApplicationStatus;
 }
 
+export interface JobApplicationActivityDateRange {
+    start: string;
+    end: string;
+}
+
 export interface JobApplicationActivityDay {
     date: string;
-    applied: number;
-    interviewing: number;
-    accepted: number;
-    rejected: number;
+    applied?: number;
+    reviewing?: number;
+    accepted?: number;
+    withdrawn?: number;
+    rejected?: number;
     total: number;
 }

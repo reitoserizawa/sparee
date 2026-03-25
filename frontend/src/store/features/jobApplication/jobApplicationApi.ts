@@ -1,10 +1,12 @@
 import baseApi from '../base/baseApi';
-import type {
-    JobApplication,
-    CreateJobApplicationRequest,
-    DeleteJobApplicationRequest,
-    SimpleJobApplication,
-    UpdateJobApplicationStatusRequest,
+import {
+    type JobApplication,
+    type CreateJobApplicationRequest,
+    type DeleteJobApplicationRequest,
+    type SimpleJobApplication,
+    type UpdateJobApplicationStatusRequest,
+    type JobApplicationActivityDay,
+    type JobApplicationActivityDateRange,
 } from './types';
 
 const jobApplicationApi = baseApi.injectEndpoints({
@@ -64,6 +66,12 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 ];
             },
         }),
+        getJobApplicationActivity: builder.query<JobApplicationActivityDay[], JobApplicationActivityDateRange>({
+            query: ({ start, end }) => ({
+                url: `/job-applications/activity?start=${start}&end=${end}`,
+                method: 'GET',
+            }),
+        }),
     }),
 });
 
@@ -72,4 +80,5 @@ export const {
     useCreateJobApplicationsMutation,
     useDeleteJobApplicationMutation,
     useChangeJobApplicationStatusMutation,
+    useGetJobApplicationActivityQuery,
 } = jobApplicationApi;
