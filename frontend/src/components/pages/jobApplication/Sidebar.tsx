@@ -1,10 +1,10 @@
 import type React from 'react';
 import Card from '../../ui/Card';
+import ActivityCalendar from './ActivityCalendar/ActivityCalendar';
 
 const Sidebar: React.FC<{ stats: Record<string, number> }> = ({ stats }) => {
     return (
         <>
-            {/* SUMMARY CARD */}
             <Card>
                 <h3 className='font-semibold mb-4'>Overview</h3>
 
@@ -15,18 +15,9 @@ const Sidebar: React.FC<{ stats: Record<string, number> }> = ({ stats }) => {
                     <p>❌ Rejected: {stats.rejected || 0}</p>
                 </div>
             </Card>
-
-            {/* SIMPLE CALENDAR / ACTIVITY */}
             <Card>
                 <h3 className='font-semibold mb-4'>Activity</h3>
-
-                <div className='grid grid-cols-7 gap-2 text-xs text-center'>
-                    {Array.from({ length: 28 }).map((_, i) => (
-                        <div key={i} className='h-6 w-6 rounded bg-gray-100 flex items-center justify-center'>
-                            {i + 1}
-                        </div>
-                    ))}
-                </div>
+                <ActivityCalendar />
             </Card>
         </>
     );
