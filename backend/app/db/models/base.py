@@ -19,6 +19,8 @@ class BaseModel(Base):
 
     async def save(self: "BaseModel", session: AsyncSession) -> "BaseModel":
         try:
+            if hasattr(self, "updated_at"):
+                self.updated_at = datetime.now(timezone.utc)
             session.add(self)
             await session.commit()
             return self
@@ -125,7 +127,7 @@ class BaseModel(Base):
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
         result = await session.execute(stmt)
-        return result.scalars().all()
+        return result.scalars().unique().all()
 
     @classmethod
     async def find_one_by(cls: Type[T], session: AsyncSession, relations: Optional[list[str]] = None, include_deleted: bool = False, where: Optional[list[ColumnElement]] = None, **kwargs) -> Optional[T]:
@@ -155,7 +157,7 @@ class BaseModel(Base):
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
         result = await session.execute(stmt)
-        return result.scalars().all()
+        return result.scalars().unique().all()
 
     @classmethod
     async def find_one_via_join(
@@ -196,7 +198,7 @@ class BaseModel(Base):
             relations=relations,
         )
         result = await session.execute(stmt)
-        return result.scalars().all()
+        return result.scalars().unique().all()
 
     @classmethod
     def _set_stmt(cls: Type[T],
