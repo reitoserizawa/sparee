@@ -1,7 +1,7 @@
 from typing import Type, Sequence, TYPE_CHECKING, Optional
 from datetime import datetime
-from sqlalchemy import Integer, ForeignKey, String, DateTime, Text, Float
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import Integer, ForeignKey, String, DateTime, Text, Float, select, func
+from sqlalchemy.orm import relationship, Mapped, mapped_column, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 from app.db.models.base import BaseModel
@@ -83,8 +83,6 @@ class JobPost(BaseModel):
 
     @classmethod
     async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
-        from sqlalchemy import select, func, and_
-        from sqlalchemy.orm import aliased
         from app.db.models.job_application import JobApplication, ACTIVE_STATUSES
 
         latest_app = (
@@ -101,6 +99,12 @@ class JobPost(BaseModel):
 
         stmt = (
             select(JobPost)
+            .options(
+                selectinload(JobPost.company),
+                selectinload(JobPost.address),
+                selectinload(JobPost.job_category),
+                selectinload(JobPost.applications)
+            )
             .join(
                 latest_app,
                 (latest_app.c.job_post_id == JobPost.id) & (latest_app.c.rn == 1)
