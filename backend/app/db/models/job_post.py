@@ -83,14 +83,35 @@ class JobPost(BaseModel):
 
     @classmethod
     async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
+        from sqlalchemy import select, func, and_
+        from sqlalchemy.orm import aliased
         from app.db.models.job_application import JobApplication, ACTIVE_STATUSES
-        return await cls.filter_via_join(
-            session=session,
-            join_model=JobApplication,
-            where=[JobApplication.user_id == user.id,
-                   JobApplication.application_status.in_(ACTIVE_STATUSES)],
-            relations=JOB_POST_DETAIL_RELATIONS
+
+        latest_app = (
+            select(
+                JobApplication,
+                func.row_number().over(
+                    partition_by=JobApplication.job_post_id,
+                    order_by=JobApplication.updated_at.desc()
+                ).label("rn")
+            )
+            .where(JobApplication.user_id == user.id)
+            .cte("latest_app")
         )
+
+        stmt = (
+            select(JobPost)
+            .join(
+                latest_app,
+                (latest_app.c.job_post_id == JobPost.id) & (latest_app.c.rn == 1)
+            )
+            .where(
+                latest_app.c.application_status.in_(ACTIVE_STATUSES),
+            )
+        )
+
+        result = await session.execute(stmt)
+        return result.scalars().all()
 
     @classmethod
     async def filter_by_nearest(cls: Type["JobPost"], session: AsyncSession, user_point: ColumnElement, limit: int = 20) -> Optional[Sequence["JobPost"]]:
