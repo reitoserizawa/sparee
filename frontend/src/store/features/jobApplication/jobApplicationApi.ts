@@ -71,6 +71,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 url: `/job-applications/activity?start=${start}&end=${end}`,
                 method: 'GET',
             }),
+            providesTags: [{ type: 'JobApplication', id: 'LIST' }],
         }),
     }),
 });
