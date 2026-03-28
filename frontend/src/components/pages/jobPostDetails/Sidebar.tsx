@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { useGetJobPostDetailsQuery } from '../../../store/features/jobPost/jobPostApi';
 import {
-    useCreateJobApplicationsMutation,
+    useCreateJobApplicationMutation,
     useDeleteJobApplicationMutation,
 } from '../../../store/features/jobApplication/jobApplicationApi';
 
@@ -18,7 +18,7 @@ const Sidebar: React.ElementType = () => {
     const [deleteJobApplication, { isLoading: deletingJobApplication }] = useDeleteJobApplicationMutation();
 
     const { data: jobPost } = useGetJobPostDetailsQuery({ jobPostId: Number(jobPostId) }, { skip: !jobPostId });
-    const [createJobApplication] = useCreateJobApplicationsMutation();
+    const [createJobApplication] = useCreateJobApplicationMutation();
 
     if (!jobPost) {
         return;

@@ -5,6 +5,7 @@ type JobApplicationStatus = 'applied' | 'rejected' | 'reviewing' | 'withdrawn';
 export interface JobApplication {
     id: number;
     application_status: JobApplicationStatus;
+    job_post_id: number;
     job_post: SimpleJobPost;
     created_at: string;
     updated_at: string;
