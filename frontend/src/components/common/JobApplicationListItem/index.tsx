@@ -24,7 +24,7 @@ const JobApplicationListItem: React.FC<JobApplicationListItemProps> = ({ jobAppl
                 <p className='text-sm text-gray-500'>{description}</p>
                 <p className='text-xs text-gray-400 mt-1'>Applied on {moment(createdAt).format('LLL')}</p>
                 {applicationStatus != 'applied' && updatedAt && (
-                    <p className='text-xs text-gray-400 mt-1'>Updated on {moment(createdAt).format('LLL')}</p>
+                    <p className='text-xs text-gray-400 mt-1'>Updated on {moment(updatedAt).format('LLL')}</p>
                 )}
             </div>
 
