@@ -103,8 +103,8 @@ const ActivityCalendar: React.FC<ActivityCalendarProps> = ({ onDayClick }) => {
 
             {/* week label */}
             <div className='grid grid-cols-7 text-xs text-gray-400 mb-1'>
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => (
-                    <div key={d} className='text-center'>
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, idx) => (
+                    <div key={idx} className='text-center'>
                         {d}
                     </div>
                 ))}
