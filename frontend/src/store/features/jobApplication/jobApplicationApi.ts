@@ -24,7 +24,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
                       ]
                     : [{ type: 'JobApplication', id: 'LIST' }],
         }),
-        createJobApplications: builder.mutation<JobApplication, CreateJobApplicationRequest>({
+        createJobApplication: builder.mutation<JobApplication, CreateJobApplicationRequest>({
             query: ({ jobPostId }) => ({
                 url: `/job-applications`,
                 method: 'POST',
@@ -32,10 +32,14 @@ const jobApplicationApi = baseApi.injectEndpoints({
                     job_post_id: jobPostId,
                 },
             }),
-            invalidatesTags: (result, error, { jobPostId }) => [
-                { type: 'JobApplication', id: 'LIST' },
-                { type: 'JobPost', id: jobPostId },
-            ],
+            invalidatesTags: result => {
+                if (!result) return [{ type: 'JobApplication', id: 'LIST' }];
+                return [
+                    { type: 'JobApplication', id: result.id },
+                    { type: 'JobApplication', id: 'LIST' },
+                    { type: 'JobPost', id: result.job_post_id },
+                ];
+            },
         }),
         deleteJobApplication: builder.mutation<SimpleJobApplication, DeleteJobApplicationRequest>({
             query: ({ jobApplicationId }) => ({
@@ -45,6 +49,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
             invalidatesTags: result => {
                 if (!result) return [{ type: 'JobApplication', id: 'LIST' }];
                 return [
+                    { type: 'JobApplication', id: result.id },
                     { type: 'JobApplication', id: 'LIST' },
                     { type: 'JobPost', id: result.job_post_id },
                 ];
@@ -61,6 +66,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
             invalidatesTags: result => {
                 if (!result) return [{ type: 'JobApplication', id: 'LIST' }];
                 return [
+                    { type: 'JobApplication', id: result.id },
                     { type: 'JobApplication', id: 'LIST' },
                     { type: 'JobPost', id: result.job_post_id },
                 ];
@@ -68,8 +74,9 @@ const jobApplicationApi = baseApi.injectEndpoints({
         }),
         getJobApplicationActivity: builder.query<JobApplicationActivityDay[], JobApplicationActivityDateRange>({
             query: ({ start, end }) => ({
-                url: `/job-applications/activity?start=${start}&end=${end}`,
+                url: `/job-applications/activity`,
                 method: 'GET',
+                params: { start, end },
             }),
             providesTags: [{ type: 'JobApplication', id: 'LIST' }],
         }),
@@ -78,7 +85,7 @@ const jobApplicationApi = baseApi.injectEndpoints({
 
 export const {
     useGetUserJobApplicationsQuery,
-    useCreateJobApplicationsMutation,
+    useCreateJobApplicationMutation,
     useDeleteJobApplicationMutation,
     useChangeJobApplicationStatusMutation,
     useGetJobApplicationActivityQuery,
