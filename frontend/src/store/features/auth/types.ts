@@ -1,10 +1,12 @@
 export interface AuthState {
     username: string | null;
+    email?: string;
     accessToken: string | null;
 }
 
 export interface AuthResponse {
     username: string;
+    email?: string;
     access_token: string;
 }
 
