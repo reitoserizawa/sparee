@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AccountCircle from '../assets/icons/AccountCircle';
 
 const NavBar: React.FC = () => {
     return (
@@ -32,21 +33,8 @@ const NavBar: React.FC = () => {
                                 Messages
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                to='/'
-                                className='block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent'
-                            >
-                                Profile
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to='/'
-                                className='block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent'
-                            >
-                                Setting
-                            </Link>
+                        <li className='cursor-pointer block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 md:dark:hover:bg-transparent'>
+                            <AccountCircle size={24} color='black' />
                         </li>
                     </ul>
                 </div>
