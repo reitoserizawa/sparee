@@ -4,7 +4,6 @@ import RegisterPage from '../components/pages/Register';
 import JobBoardPage from '../components/pages/jobBoard';
 import PersistLogin from './PersistLogin';
 import RequireAuth from './RequireAuth';
-import DashboardPage from '../components/pages/dashboard';
 import RootLayout from '../components/layouts/RootLayout';
 import JobPostDetailsPage from '../components/pages/jobPostDetails';
 import JobApplicationsPage from '../components/pages/jobApplication';
@@ -18,8 +17,7 @@ const AppRoutes = () => {
                     <Route path='/register' element={<RegisterPage />} />
                     <Route element={<RequireAuth />}>
                         <Route element={<RootLayout />}>
-                            <Route path='/' element={<DashboardPage />} />
-                            <Route path='/jobs' element={<JobBoardPage />} />
+                            <Route path='/' element={<JobBoardPage />} />
                             <Route path='/job-posts/:jobPostId' element={<JobPostDetailsPage />} />
                             <Route path='/applications' element={<JobApplicationsPage />} />
                         </Route>
