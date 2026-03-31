@@ -5,6 +5,7 @@ from app.api.routes.addresses import router as addresses_router
 from app.api.routes.job_posts import router as job_posts_router
 from app.api.routes.auth import router as auth_router
 from app.api.routes.job_applications import router as job_application_router
+from app.api.routes.chats import router as chat_router
 
 router = APIRouter()
 
@@ -18,4 +19,7 @@ router.include_router(
     job_posts_router, prefix="/job-posts", tags=["job-posts"])
 router.include_router(
     job_application_router, prefix="/job-applications", tags=["job-applications"]
+)
+router.include_router(
+    chat_router, prefix="/chat", tags=["chats"]
 )
