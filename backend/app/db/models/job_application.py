@@ -85,12 +85,13 @@ class JobApplication(BaseModel):
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @classmethod
-    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: datetime, end: datetime,) -> Optional[Sequence["JobApplicationActivityResponse"]]:
+    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: datetime, end: datetime,) -> Sequence["JobApplicationActivityResponse"]:
         from sqlalchemy import select, func
 
         stmt = (
             select(
-                func.date(cls.created_at).label("date"),
+                func.date(cls.created_at).label("created_date"),
+                func.date(cls.updated_at).label("updated_date"),
                 cls.application_status,
                 func.count().label("count"),
             )
@@ -99,28 +100,44 @@ class JobApplication(BaseModel):
                 cls.created_at >= start,
                 cls.created_at <= end,
             )
-            .group_by(func.date(cls.created_at), cls.application_status)
+            .group_by(func.date(cls.created_at), func.date(cls.updated_at), cls.application_status)
         )
 
         result = await session.execute(stmt)
         rows = result.all()
         activity_map = {}
 
-        for date, status, count in rows:
-            key = str(date)
+        for created_date, updated_date, status, count in rows:
+            created_date_str = created_date.isoformat() if hasattr(
+                created_date, "isoformat") else str(created_date)
+            updated_date_str = updated_date.isoformat() if hasattr(
+                updated_date, "isoformat") else str(updated_date)
 
-            if key not in activity_map:
-                activity_map[key] = {
-                    "date": key,
-                    "total": 0,
-                }
+            # handle created_date
+            if start.date() <= created_date <= end.date():
+                if created_date_str not in activity_map:
+                    activity_map[created_date_str] = {
+                        "date": created_date_str, "total": 0}
+                created_status = JobApplicationStatus.APPLIED.value
+                activity_map[created_date_str][created_status] = activity_map[created_date_str].get(
+                    created_status, 0) + count
+                activity_map[created_date_str]["total"] += count
 
-            status_key = status.value
-            activity_map[key][status_key] = activity_map[key].get(
-                status_key, 0) + count
-            activity_map[key]["total"] += count
+            # handle updated_date
+            if start.date() <= updated_date <= end.date():
+                if updated_date_str not in activity_map:
+                    activity_map[updated_date_str] = {
+                        "date": updated_date_str, "total": 0}
+                current_status = status.value
+                activity_map[updated_date_str][current_status] = activity_map[updated_date_str].get(
+                    current_status, 0) + count
+                activity_map[updated_date_str]["total"] += count
 
-        return list(activity_map.values())
+        return sorted(
+            [JobApplicationActivityResponse(**data)
+             for data in activity_map.values()],
+            key=lambda x: x.date
+        )
 
     @override
     async def soft_delete(self: "JobApplication", session: AsyncSession) -> "JobApplication":
