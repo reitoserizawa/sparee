@@ -1,3 +1,5 @@
+# TODO: Delete this model and move the read/deleted status to the Message model, with a JSONB column to track which users have read/deleted the message.
+
 from typing import TYPE_CHECKING, Optional
 from datetime import datetime
 from sqlalchemy import Integer, ForeignKey, DateTime, Enum, UniqueConstraint
