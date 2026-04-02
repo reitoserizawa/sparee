@@ -29,13 +29,11 @@ class Conversation(BaseModel):
     participants: Mapped[list["ConversationParticipant"]] = relationship(
         "ConversationParticipant",
         back_populates="conversation",
-        cascade="all, delete-orphan"
     )
 
     messages: Mapped[list["Message"]] = relationship(
         "Message",
         back_populates="conversation",
-        cascade="all, delete-orphan"
     )
 
     created_at: Mapped[DateTime] = mapped_column(
