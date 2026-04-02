@@ -2,7 +2,7 @@ from rq import Retry
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.address import Address, AddressStatus
-from app.workers.job_queue import geocode_queue
+from app.workers.address_worker import geocode_queue
 
 from app.workers.jobs.address_job import AddressJob
 
@@ -20,7 +20,7 @@ class AddressService:
 
     @staticmethod
     def enqueue_geocode(address_id: int):
-        from app.workers.worker import run_async_job
+        from app.workers.base_worker import run_async_job
         geocode_queue.enqueue(
             run_async_job,
             AddressJob.geocode_address_job,
