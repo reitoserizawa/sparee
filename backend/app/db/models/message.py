@@ -1,11 +1,12 @@
 from datetime import datetime
-from sqlalchemy import Integer, String, DateTime
+from sqlalchemy import ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.models.base import BaseModel
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.db.models.user_message import UserMessage
+    from app.db.models.user import User
+    from app.db.models.conversation import Conversation
 
 
 class Message(BaseModel):
@@ -13,15 +14,19 @@ class Message(BaseModel):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
-    body: Mapped[str] = mapped_column(String(140))
-    timestamp: Mapped[datetime] = mapped_column(DateTime, index=True,
-                                                default=BaseModel.set_utc_now)
+    conversation_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("conversations.id"), nullable=False, index=True)
+    conversation: Mapped["Conversation"] = relationship(
+        "Conversation", back_populates="messages")
 
-    user_messages: Mapped[list["UserMessage"]] = relationship(
-        "UserMessage",
-        back_populates="message",
-        cascade="all, delete-orphan"
-    )
+    sender_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True)
+    sender: Mapped["User"] = relationship(
+        "User", back_populates="sent_messages")
+
+    body: Mapped[str] = mapped_column(String(140), nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=BaseModel.set_utc_now, nullable=False)
 
     def __repr__(self) -> str:
         return f'<Message id={self.id} body={self.body}>'

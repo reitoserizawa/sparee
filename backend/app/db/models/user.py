@@ -7,11 +7,12 @@ from datetime import datetime
 from app.db.models.base import BaseModel
 
 if TYPE_CHECKING:
+    from app.db.models.message import Message
     from app.db.models.skill import Skill
     from app.db.models.user_skill import UserSkill
     from app.db.models.company_member import CompanyMember
-    from app.db.models.user_message import UserMessage
     from app.db.models.job_application import JobApplication
+    from app.db.models.conversation_participant import ConversationParticipant
 
 
 class User(BaseModel):
@@ -30,10 +31,14 @@ class User(BaseModel):
     skills: Mapped[list["Skill"]] = relationship(
         "Skill", secondary="user_skills", viewonly=True)
 
-    user_messages: Mapped[list["UserMessage"]] = relationship(
-        "UserMessage",
-        back_populates="user",
-        cascade="all, delete-orphan"
+    conversation_participants: Mapped[list["ConversationParticipant"]] = relationship(
+        "ConversationParticipant",
+        back_populates="user"
+    )
+
+    sent_messages: Mapped[list["Message"]] = relationship(
+        "Message",
+        back_populates="sender"
     )
 
     associated_companies: Mapped[list["CompanyMember"]] = relationship(
