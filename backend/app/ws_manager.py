@@ -22,3 +22,31 @@ class ConnectionManager:
     async def broadcast(self, user_ids: list[int], message: dict):
         for user_id in user_ids:
             await self.send_personal_message(user_id, message)
+
+    def start_redis_listener(self):
+        from redis import Redis
+        from threading import Thread
+        import json
+        import asyncio
+
+        def run():
+            r = Redis.from_url("redis://redis:6379/0")
+            pubsub = r.pubsub()
+            pubsub.subscribe("messages")
+
+            for msg in pubsub.listen():
+                if msg["type"] != "message":
+                    continue
+
+                data = json.loads(msg["data"])
+
+                asyncio.run(self.broadcast(
+                    data["recipient_ids"],
+                    data
+                ))
+
+        Thread(target=run, daemon=True).start()
+
+
+manager = ConnectionManager()
+manager.start_redis_listener()
