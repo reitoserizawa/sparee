@@ -22,9 +22,21 @@ services:
         ports:
             - '5001:5000'
 
-    worker:
+    worker_address:
         build: .
-        command: python -m app.workers.worker
+        command: python -m app.workers.address_worker
+        volumes:
+            - ./:/app
+        working_dir: /app
+        env_file: .env
+        environment:
+            - REDIS_URL=redis://redis:6379/0
+        depends_on:
+            - redis
+
+    worker_message:
+        build: .
+        command: python -m app.workers.message_worker
         volumes:
             - ./:/app
         working_dir: /app
