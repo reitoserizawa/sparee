@@ -1,16 +1,25 @@
-from fastapi import APIRouter, WebSocket
-from app.web_sockets.ws_manager import ConnectionManager
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from app.ws_manager import manager
 
 router = APIRouter()
-connection_manager = ConnectionManager()
 
 
 @router.websocket("")
 async def websocket_endpoint(websocket: WebSocket, user_id: int):
-    await connection_manager.connect(user_id, websocket)
+    await manager.connect(user_id, websocket)
+
     try:
         while True:
             data = await websocket.receive_json()
-            await connection_manager.send_personal_message(user_id, {"echo": data})
+            await manager.send_personal_message(user_id, {
+                "type": "echo",
+                "data": data
+            })
+
+            # TODO: enqueue message job
+            # MessageJob.enqueue_message(...)
+
+    except WebSocketDisconnect:
+        manager.disconnect(user_id, websocket)
     except Exception:
-        connection_manager.disconnect(user_id, websocket)
+        manager.disconnect(user_id, websocket)
