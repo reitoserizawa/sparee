@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
-from sqlalchemy import Integer, ForeignKey, UniqueConstraint
+from typing import TYPE_CHECKING, Type, Optional, Sequence
+from sqlalchemy import Integer, ForeignKey, Sequence, UniqueConstraint
 from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -29,3 +30,20 @@ class ConversationParticipant(BaseModel):
             name="unique_user_per_conversation"
         ),
     )
+
+    @classmethod
+    async def get_from_conversation(cls: Type["ConversationParticipant"], session: AsyncSession, conversation: "Conversation") -> Optional[Sequence["ConversationParticipant"]]:
+        cps = await cls.filter_by(
+            session=session,
+            conversation_id=conversation.id
+        )
+        return cps
+
+    @classmethod
+    async def get_from_user_and_conversation(cls: Type["ConversationParticipant"], session: AsyncSession, user: "User", conversation: "Conversation") -> Optional["ConversationParticipant"]:
+        cp = await cls.find_one_by(
+            session=session,
+            user_id=user.id,
+            conversation_id=conversation.id
+        )
+        return cp
