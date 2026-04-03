@@ -1,53 +1,46 @@
-import asyncio
 import json
-from typing import Dict, List
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import AsyncSessionLocal
-from app.db.models.message import Message
-from app.db.models.user_message import UserMessage
+from app.db.models.user import User
+from app.schemas.messages.create import MessageCreateModel
+from app.services.message_service import MessageService
+from app.services.conversation_service import ConversationService
+from backend.app.services.conversation_participant import ConversationParticipantService
 from ..base_worker import redis_conn
 
 
 class MessageJob:
     @staticmethod
-    async def save_and_broadcast(message_data: Dict):
-        sender_id = message_data["sender_id"]
-        recipient_ids: List[int] = message_data.get("recipient_ids", [])
-        body = message_data["body"]
-
+    async def save_and_broadcast(message_data: dict):
         async with AsyncSessionLocal() as session:
-            # 1️⃣ Save message
-            msg = Message(body=body)
-            session.add(msg)
-            await session.commit()
-            await session.refresh(msg)
+            # create message
+            user: User = message_data["user"]
+            msg = await MessageService.create_message(
+                session=session,
+                data=MessageCreateModel(
+                    conversation_id=message_data["conversation_id"],
+                    body=message_data["body"]
+                ),
+                user=user
+            )
 
-            # 2️⃣ Save UserMessage rows
-            all_user_ids = [sender_id] + recipient_ids
-            for user_id in all_user_ids:
-                role = "sender" if user_id == sender_id else "recipient"
-                session.add(UserMessage(
-                    user_id=user_id,
-                    message_id=msg.id,
-                    role=role
-                ))
-            await session.commit()
+            # add recipients
+            conversation = await ConversationService.get_from_id(
+                session=session,
+                id=message_data["conversation_id"],
+                user=user
+            )
+            pcs = await ConversationParticipantService.get_from_conversation(
+                session=session,
+                conversation=conversation
+            )
+            recipient_ids = [
+                pc.user_id for pc in pcs if pc.user_id != user.id] if pcs else []
 
-            # 3️⃣ Publish to Redis (instead of manager.broadcast)
             redis_conn.publish("messages", json.dumps({
                 "id": msg.id,
                 "body": msg.body,
-                "sender_id": sender_id,
-                "recipient_ids": recipient_ids
+                "sender_id": msg.sender_id,
+                "recipent_ids": recipient_ids,
+                "conversation_id": msg.conversation_id,
             }))
-
-    @staticmethod
-    def enqueue_message(message_data: Dict, queue):
-        """
-        Enqueue the job into an RQ queue.
-        Wraps async save_and_broadcast in asyncio.run for sync RQ worker.
-        """
-        def job_wrapper(data):
-            asyncio.run(MessageJob.save_and_broadcast(data))
-
-        queue.enqueue(job_wrapper, message_data)
