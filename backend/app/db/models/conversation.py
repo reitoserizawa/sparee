@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
 
 if TYPE_CHECKING:
@@ -8,6 +9,8 @@ if TYPE_CHECKING:
     from app.db.models.job_post import JobPost
     from app.db.models.message import Message
     from app.db.models.conversation_participant import ConversationParticipant
+
+CONVERSATION_DETAIL_RELATIONS = ["messages"]
 
 
 class Conversation(BaseModel):
@@ -46,3 +49,11 @@ class Conversation(BaseModel):
             name="unique_applicant_per_job_post"
         ),
     )
+
+    async def with_detail_relations(self, session: AsyncSession) -> "Conversation":
+        return await self.with_relations(session=session, relations=CONVERSATION_DETAIL_RELATIONS)
+
+    async def is_participant(self, session: AsyncSession, user: "User") -> bool:
+        from app.db.models.conversation_participant import ConversationParticipant
+        conversation = await ConversationParticipant.get_from_user_and_conversation(session=session, user=user, conversation=self)
+        return conversation is not None
