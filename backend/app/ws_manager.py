@@ -17,36 +17,39 @@ class ConnectionManager:
 
     async def send_personal_message(self, user_id: int, message: dict):
         for ws in self.active_connections.get(user_id, []):
-            await ws.send_json(message)
+            try:
+                await ws.send_json(message)
+            except Exception:
+                self.active_connections[user_id].discard(ws)
 
     async def broadcast(self, user_ids: list[int], message: dict):
         for user_id in user_ids:
             await self.send_personal_message(user_id, message)
 
-    def start_redis_listener(self):
-        from redis import Redis
-        from threading import Thread
+    async def start_redis_listener(self):
         import json
         import asyncio
+        from app.workers.base_worker import redis_conn
 
-        def run():
-            r = Redis.from_url("redis://redis:6379/0")
-            pubsub = r.pubsub()
-            pubsub.subscribe("messages")
+        pubsub = redis_conn.pubsub()
+        pubsub.subscribe("messages")
+        while True:
+            message = pubsub.get_message(ignore_subscribe_messages=True)
+            if message:
+                data = json.loads(message["data"])
+                recipients = data.get("recipient_ids", []) + \
+                    [data.get("sender_id")]
+                await self.broadcast(recipients, data)
+            await asyncio.sleep(0.01)
 
-            for msg in pubsub.listen():
-                if msg["type"] != "message":
-                    continue
-
-                data = json.loads(msg["data"])
-
-                asyncio.run(self.broadcast(
-                    data["recipient_ids"],
-                    data
-                ))
-
-        Thread(target=run, daemon=True).start()
+    async def shutdown_connections(self):
+        for user_id, conns in self.active_connections.items():
+            for ws in conns:
+                try:
+                    await ws.close(code=1001)
+                except Exception:
+                    pass
+        self.active_connections.clear()
 
 
 manager = ConnectionManager()
-manager.start_redis_listener()
