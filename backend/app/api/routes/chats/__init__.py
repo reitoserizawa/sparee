@@ -2,4 +2,4 @@ from fastapi import APIRouter
 from .chat import router as chat_router
 
 router = APIRouter()
-router.include_router(chat_router, prefix="/{user_id}", tags=["chats"])
+router.include_router(chat_router, prefix="/{conversation_id}", tags=["chats"])

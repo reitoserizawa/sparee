@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.websocket("")
-async def websocket_endpoint(websocket: WebSocket, user: User = Depends(user_required)):
+async def websocket_endpoint(websocket: WebSocket, conversation_id: int, user: User = Depends(user_required)):
     try:
         while True:
             data = await websocket.receive_json()
@@ -27,7 +27,7 @@ async def websocket_endpoint(websocket: WebSocket, user: User = Depends(user_req
                 enqueue_message,
                 {
                     "user": user,
-                    "conversation_id": data["conversation_id"],
+                    "conversation_id": conversation_id,
                     "body": data["body"]
                 }
             )
