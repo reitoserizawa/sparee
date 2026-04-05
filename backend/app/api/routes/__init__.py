@@ -21,5 +21,5 @@ router.include_router(
     job_application_router, prefix="/job-applications", tags=["job-applications"]
 )
 router.include_router(
-    chat_router, prefix="/chat", tags=["chats"]
+    chat_router, prefix="/chats", tags=["chats"]
 )
