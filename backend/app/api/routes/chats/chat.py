@@ -25,6 +25,7 @@ async def websocket_endpoint(websocket: WebSocket, conversation_id: int, user: U
             message_queue.enqueue(
                 run_async_job,
                 enqueue_message,
+                # message_data
                 {
                     "user": user,
                     "conversation_id": conversation_id,
