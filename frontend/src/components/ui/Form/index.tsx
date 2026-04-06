@@ -1,6 +1,23 @@
 import React, { useState, useCallback } from 'react';
 import { FormContext } from './formContext';
-import type { FormProviderProps, FormState } from './types';
+import type { DotPaths, FormProviderProps, FormState } from './types';
+
+const setNestedValue = <State,>(obj: State, path: string, value: string): State => {
+    const keys = path.split('.');
+    const lastKey = keys.pop()!;
+    const newObj = { ...(obj as object) } as State;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let curr: any = newObj;
+    for (const key of keys) {
+        curr[key] = { ...curr[key] };
+        curr = curr[key];
+    }
+    curr[lastKey] = value;
+    return newObj;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getNestedValue = (obj: any, path: string): unknown => path.split('.').reduce((acc, key) => acc?.[key], obj);
 
 const Form = <State,>({ children, initialValues, onSubmit, className }: FormProviderProps<State>) => {
     const [formState, setFormState] = useState<FormState<State>>({
@@ -9,69 +26,50 @@ const Form = <State,>({ children, initialValues, onSubmit, className }: FormProv
         errors: {},
     });
 
-    const updateField = (name: keyof State, value: string) => {
-        setFormState(prev => ({
-            ...prev,
-            data: {
-                ...prev.data,
-                [name]: value,
-            },
-        }));
-    };
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        updateField(e.target.name as keyof State, e.target.value);
-    };
-
-    const registerInput = useCallback(({ name, validators }: { name: keyof State; validators?: ((value: Partial<State>) => string[])[] }) => {
+        const { name, value } = e.target;
         setFormState(prev => ({
             ...prev,
-            validators: {
-                ...prev?.validators,
-                [name]: validators || [],
-            },
-            errors: {
-                ...prev.errors,
-                [name]: [],
-            },
+            data: setNestedValue(prev.data, name, value),
         }));
+    };
 
-        return () => {
-            setFormState(prev => {
-                const restErrors = { ...prev.errors };
-                delete restErrors[name];
+    const registerInput = useCallback(
+        ({ name, validators }: { name: DotPaths<State>; validators?: ((value: Partial<State>) => string[])[] }) => {
+            setFormState(prev => ({
+                ...prev,
+                validators: { ...prev.validators, [name]: validators || [] },
+                errors: { ...prev.errors, [name]: [] },
+            }));
 
-                const restValidators = { ...prev.validators };
-                delete restValidators[name];
-                return {
-                    ...prev,
-                    errors: restErrors,
-                    validators: restValidators,
-                };
-            });
-        };
-    }, []);
+            return () => {
+                setFormState(prev => {
+                    const restErrors = { ...prev.errors };
+                    delete restErrors[name];
+                    const restValidators = { ...prev.validators };
+                    delete restValidators[name];
+                    return { ...prev, errors: restErrors, validators: restValidators };
+                });
+            };
+        },
+        [],
+    );
 
     const validate = (): boolean => {
-        const newErrors: Partial<Record<keyof State, string[]>> = {};
+        const newErrors: Partial<Record<string, string[]>> = {};
 
-        (Object.keys(formState.validators) as (keyof State)[]).forEach(name => {
+        Object.keys(formState.validators).forEach(name => {
             const fieldValidators = formState.validators[name];
             if (!fieldValidators) return;
-
-            const value = formState.data[name] as Partial<State>;
-            const messages = fieldValidators.flatMap(validator => validator(value));
-
-            if (messages.length) {
-                newErrors[name] = messages;
-            }
+            const value = getNestedValue(formState.data, name) as Partial<State>;
+            const messages = fieldValidators.flatMap(v => v(value));
+            if (messages.length) newErrors[name] = messages;
         });
 
         if (Object.keys(newErrors).length) {
             setFormState(prev => ({ ...prev, errors: newErrors }));
             return false;
         }
-
         return true;
     };
 
