@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useStateContext } from './formContext';
 import type { DotPaths, FormInputProps } from './types';
 
@@ -10,11 +10,12 @@ const getNestedValue = (obj: unknown, path: string): unknown =>
 
 const FormInput = <State,>({ name, validators, placeholder, label, type = 'text' }: FormInputProps<State>) => {
     const { formState, registerInput, handleChange } = useStateContext<State>();
+    const validatorsRef = useRef(validators);
 
     useEffect(() => {
-        const unregister = registerInput({ name: name as DotPaths<State>, validators });
+        const unregister = registerInput({ name: name as DotPaths<State>, validators: validatorsRef.current });
         return unregister;
-    }, [name, validators, registerInput]);
+    }, [name, registerInput]);
 
     const { data, errors } = formState;
     const value = (getNestedValue(data, name) as string) ?? '';

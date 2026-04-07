@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { FormContext } from './formContext';
-import type { DotPaths, FormProviderProps, FormState } from './types';
+import type { FormProviderProps, FormState, Validator } from './types';
 
 const setNestedValue = <State,>(obj: State, path: string, value: string): State => {
     const keys = path.split('.');
@@ -17,7 +17,7 @@ const setNestedValue = <State,>(obj: State, path: string, value: string): State 
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getNestedValue = (obj: any, path: string): unknown => path.split('.').reduce((acc, key) => acc?.[key], obj);
+// const getNestedValue = (obj: any, path: string): unknown => path.split('.').reduce((acc, key) => acc?.[key], obj);
 
 const Form = <State,>({ children, initialValues, onSubmit, className }: FormProviderProps<State>) => {
     const [formState, setFormState] = useState<FormState<State>>({
@@ -34,26 +34,23 @@ const Form = <State,>({ children, initialValues, onSubmit, className }: FormProv
         }));
     };
 
-    const registerInput = useCallback(
-        ({ name, validators }: { name: DotPaths<State>; validators?: ((value: Partial<State>) => string[])[] }) => {
-            setFormState(prev => ({
-                ...prev,
-                validators: { ...prev.validators, [name]: validators || [] },
-                errors: { ...prev.errors, [name]: [] },
-            }));
+    const registerInput = useCallback(({ name, validators }: { name: string; validators?: Validator<State>[] }) => {
+        setFormState(prev => ({
+            ...prev,
+            validators: { ...prev.validators, [name]: validators || [] },
+            errors: { ...prev.errors, [name]: [] },
+        }));
 
-            return () => {
-                setFormState(prev => {
-                    const restErrors = { ...prev.errors };
-                    delete restErrors[name];
-                    const restValidators = { ...prev.validators };
-                    delete restValidators[name];
-                    return { ...prev, errors: restErrors, validators: restValidators };
-                });
-            };
-        },
-        [],
-    );
+        return () => {
+            setFormState(prev => {
+                const restErrors = { ...prev.errors };
+                delete restErrors[name];
+                const restValidators = { ...prev.validators };
+                delete restValidators[name];
+                return { ...prev, errors: restErrors, validators: restValidators };
+            });
+        };
+    }, []);
 
     const validate = (): boolean => {
         const newErrors: Partial<Record<string, string[]>> = {};
@@ -61,8 +58,7 @@ const Form = <State,>({ children, initialValues, onSubmit, className }: FormProv
         Object.keys(formState.validators).forEach(name => {
             const fieldValidators = formState.validators[name];
             if (!fieldValidators) return;
-            const value = getNestedValue(formState.data, name) as Partial<State>;
-            const messages = fieldValidators.flatMap(v => v(value));
+            const messages = fieldValidators.flatMap(v => v(formState.data as State, name as keyof State));
             if (messages.length) newErrors[name] = messages;
         });
 

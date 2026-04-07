@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react';
 
 // accept nested paths
-export type DotPaths<T, Prefix extends string = ''> = {
-    [K in keyof T & string]: T[K] extends object ? DotPaths<T[K], `${Prefix}${K}.`> | `${Prefix}${K}` : `${Prefix}${K}`;
-}[keyof T & string];
+export type DotPaths<T> = T extends object
+    ? {
+          [K in keyof T & string]: T[K] extends object ? `${K}.${DotPaths<T[K]>}` | K : K;
+      }[keyof T & string]
+    : string;
 
-export type Validator<State> = (value: Partial<State>) => string[];
+export type Validator<State> = (value: State, name: keyof State) => string[];
 
 export interface FormState<State> {
     data: State;
@@ -15,7 +17,7 @@ export interface FormState<State> {
 
 export interface FormContextType<State> {
     formState: FormState<State>;
-    registerInput: (params: { name: DotPaths<State>; validators?: Validator<State>[] }) => () => void;
+    registerInput: (params: { name: string; validators?: Validator<State>[] }) => () => void;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
