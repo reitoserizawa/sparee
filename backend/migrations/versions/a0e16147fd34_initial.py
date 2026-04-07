@@ -34,8 +34,6 @@ def upgrade():
                                                         'failed', name='geocode_status'), nullable=False),
                     sa.PrimaryKeyConstraint('id')
                     )
-    op.create_index('idx_addresses_location', 'addresses', [
-                    'location'], unique=False, postgresql_using='gist')
     op.create_table('job_categories',
                     sa.Column('id', sa.Integer(),
                               autoincrement=True, nullable=False),
@@ -176,7 +174,5 @@ def downgrade():
     op.drop_index(op.f('ix_messages_timestamp'), table_name='messages')
     op.drop_table('messages')
     op.drop_table('job_categories')
-    op.drop_index('idx_addresses_location',
-                  table_name='addresses', postgresql_using='gist')
     op.drop_table('addresses')
     # ### end Alembic commands ###
