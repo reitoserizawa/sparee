@@ -1,12 +1,12 @@
 import type { Validator } from '../types';
 
-const emailValidator = <State>(): Validator<State> => {
-    return value => {
-        if (value) {
-            if (typeof value !== 'string') return ['Invalid value type'];
+const emailValidator = <State extends { email: string }>(): Validator<State> => {
+    return (data: Partial<State>) => {
+        if (data.email) {
+            if (typeof data.email !== 'string') return ['Invalid value type'];
 
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regex.test(value)) return ['Invalid email format'];
+            if (!regex.test(data.email)) return ['Invalid email format'];
         }
 
         return [];
