@@ -8,7 +8,6 @@ from .user import User
 from .user_skill import UserSkill
 from .company_member import CompanyMember
 from .message import Message
-from .user_message import UserMessage
 from .job_application import JobApplication
 from .conversation import Conversation
 from .conversation_participant import ConversationParticipant
@@ -25,7 +24,6 @@ __all__ = [
     "UserSkill",
     "CompanyMember",
     "Message",
-    "UserMessage",
     "JobApplication",
     "Conversation",
     "ConversationParticipant",
