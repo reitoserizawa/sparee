@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '../../store/features/auth/authApi';
 import requiredValidator from '../ui/Form/validators/required';
 import emailValidator from '../ui/Form/validators/email_validator';
+import passwordMatchValidator from '../ui/Form/validators/password_validator';
 import { isErrorWithMessage } from '../../store/features/base/helpers';
 
 import type { UserCreateState } from '../../store/features/auth/types';
@@ -18,15 +19,17 @@ const RegisterPage = (): React.ReactElement => {
         username: '',
         email: '',
         password: '',
-        confirmPassword: '',
+        confirm_password: '',
     };
     const navigate = useNavigate();
-    const [register, { isSuccess, isLoading, isError, error }] = useRegisterMutation();
+    const [register, { isLoading, isError, error }] = useRegisterMutation();
 
     const handleSubmit = async (data: UserCreateState) => {
-        await register(data);
-        if (isSuccess) {
+        try {
+            await register(data).unwrap();
             navigate('/');
+        } catch (err) {
+            console.error('Failed to register user:', err);
         }
     };
 
@@ -58,10 +61,10 @@ const RegisterPage = (): React.ReactElement => {
                         validators={[requiredValidator()]}
                     />
                     <FormInput<UserCreateState>
-                        name='confirmPassword'
+                        name='confirm_password'
                         label='Confirm Password*'
                         type='password'
-                        validators={[requiredValidator()]}
+                        validators={[requiredValidator(), passwordMatchValidator()]}
                     />
                     {isError && isErrorWithMessage(error) && <Error message={error?.data?.message} />}
                     <Button type='submit' disabled={isLoading} className='w-full rounded-lg py-2 text-sm'>
