@@ -16,9 +16,6 @@ const setNestedValue = <State,>(obj: State, path: string, value: string): State 
     return newObj;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// const getNestedValue = (obj: any, path: string): unknown => path.split('.').reduce((acc, key) => acc?.[key], obj);
-
 const Form = <State,>({ children, initialValues, onSubmit, className }: FormProviderProps<State>) => {
     const [formState, setFormState] = useState<FormState<State>>({
         data: initialValues ?? ({} as State),
