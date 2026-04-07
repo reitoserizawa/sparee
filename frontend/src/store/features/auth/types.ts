@@ -11,7 +11,7 @@ export interface AuthResponse {
 }
 
 export interface UserCreateState {
-    name: string;
+    username: string;
     email: string;
     password: string;
     confirmPassword: string;

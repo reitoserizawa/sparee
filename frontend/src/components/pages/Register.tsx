@@ -15,7 +15,7 @@ import Button from '../ui/Button';
 
 const RegisterPage = (): React.ReactElement => {
     const initialValues: UserCreateState = {
-        name: '',
+        username: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -40,8 +40,8 @@ const RegisterPage = (): React.ReactElement => {
 
                 <Form<UserCreateState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
                     <FormInput<UserCreateState>
-                        name='name'
-                        label='Name*'
+                        name='username'
+                        label='Username*'
                         type='text'
                         validators={[requiredValidator()]}
                     />
