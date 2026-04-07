@@ -7,6 +7,7 @@ import RequireAuth from './RequireAuth';
 import RootLayout from '../components/layouts/RootLayout';
 import JobPostDetailsPage from '../components/pages/jobPostDetails';
 import JobApplicationsPage from '../components/pages/jobApplication';
+import CompanyRegisterPage from '../components/pages/CompanyRegister';
 
 const AppRoutes = () => {
     return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
                     <Route path='/login' element={<LoginPage />} />
                     <Route path='/register' element={<RegisterPage />} />
                     <Route element={<RequireAuth />}>
+                        <Route path='/company-register' element={<CompanyRegisterPage />} />
                         <Route element={<RootLayout />}>
                             <Route path='/' element={<JobBoardPage />} />
                             <Route path='/job-posts/:jobPostId' element={<JobPostDetailsPage />} />
