@@ -1,12 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useStateContext } from './formContext';
+import getNestedValue from '../../../utils/getNestedValue';
 import type { DotPaths, FormInputProps } from './types';
 
 import Error from '../Error';
-
-// @typescript-eslint/no-explicit-any
-const getNestedValue = (obj: unknown, path: string): unknown =>
-    path.split('.').reduce((acc, key) => (acc as Record<string, unknown>)?.[key], obj);
 
 const FormInput = <State,>({ name, validators, placeholder, label, type = 'text' }: FormInputProps<State>) => {
     const { formState, registerInput, handleChange } = useStateContext<State>();
