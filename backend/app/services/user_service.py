@@ -39,6 +39,9 @@ class UserService:
 
     @staticmethod
     async def create_user(session: AsyncSession, data: UserCreateModel) -> User:
+        if data.password.get_secret_value() != data.confirm_password.get_secret_value():
+            raise ValueError("Passwords do not match")
+
         user = User(
             username=data.username,
             email=data.email,

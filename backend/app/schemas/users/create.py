@@ -6,6 +6,7 @@ class UserCreateModel(UserBaseModel):
     username: str = Field(...)
     email: EmailStr = Field(...)
     password: SecretStr = Field(...)
+    confirm_password: SecretStr = Field(...)
 
     class Config:
         extra = "forbid"
