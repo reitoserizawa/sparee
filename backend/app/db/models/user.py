@@ -31,6 +31,12 @@ class User(BaseModel):
     skills: Mapped[list["Skill"]] = relationship(
         "Skill", secondary="user_skills", viewonly=True)
 
+    conversations_as_applicant = relationship(
+        "Conversation",
+        back_populates="applicant",
+        foreign_keys="[Conversation.applicant_id]"
+    )
+
     conversation_participants: Mapped[list["ConversationParticipant"]] = relationship(
         "ConversationParticipant",
         back_populates="user"
