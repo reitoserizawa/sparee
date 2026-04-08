@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useRegisterMutation } from '../../store/features/auth/authApi';
@@ -21,13 +21,18 @@ const RegisterPage = (): React.ReactElement => {
         password: '',
         confirm_password: '',
     };
+    const [role, setRole] = useState<'job_seeker' | 'employer'>('job_seeker');
     const navigate = useNavigate();
     const [register, { isLoading, isError, error }] = useRegisterMutation();
 
     const handleSubmit = async (data: UserCreateState) => {
         try {
             await register(data).unwrap();
-            navigate('/');
+            if (role === 'job_seeker') {
+                navigate('/');
+            } else {
+                navigate('/create-company');
+            }
         } catch (err) {
             console.error('Failed to register user:', err);
         }
@@ -39,6 +44,30 @@ const RegisterPage = (): React.ReactElement => {
                 <div className='mb-6 text-center'>
                     <h1 className='text-2xl font-semibold tracking-tight'>Create an account</h1>
                     <p className='text-sm text-gray-500 mt-1'>Sign up to get started</p>
+                </div>
+
+                <div className='mb-6 grid grid-cols-2 gap-3'>
+                    <Button
+                        variant='secondary'
+                        className={
+                            'rounded-lg px-3 py-2 text-sm focus:outline-none ' +
+                            (role === 'job_seeker' ? 'ring-1 ring-black' : '')
+                        }
+                        onClick={() => setRole('job_seeker')}
+                    >
+                        👤 Job Seeker
+                    </Button>
+
+                    <Button
+                        variant='secondary'
+                        className={
+                            'rounded-lg px-3 py-2 text-sm focus:outline-none ' +
+                            (role === 'employer' ? 'ring-1 ring-black' : '')
+                        }
+                        onClick={() => setRole('employer')}
+                    >
+                        🏢 Employer
+                    </Button>
                 </div>
 
                 <Form<UserCreateState> initialValues={initialValues} onSubmit={handleSubmit} className='space-y-4'>
