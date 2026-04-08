@@ -2,17 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AccountCircle from '../../assets/icons/AccountCircle';
 import AccountDropdown from './AccountDropdown';
-import { selectAuth } from '../../store/features/auth/authSelector';
+import { selectCurrentUser } from '../../store/features/auth/authSelector';
 import { useAppSelector } from '../../store/hooks';
 
 const NavBar: React.FC = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const auth = useAppSelector(selectAuth);
-
-    const user = {
-        name: auth?.username || 'John Doe',
-        email: auth?.email || 'john@example.com',
-    };
+    const user = useAppSelector(selectCurrentUser);
 
     return (
         <nav className='bg-white fixed w-full z-20 top-0 start-0 border-b border-default'>
@@ -51,7 +46,9 @@ const NavBar: React.FC = () => {
                             >
                                 <AccountCircle size={24} color='black' />
                             </div>
-                            {isDropdownOpen && <AccountDropdown user={user} onClose={() => setIsDropdownOpen(false)} />}
+                            {isDropdownOpen && user && (
+                                <AccountDropdown user={user} onClose={() => setIsDropdownOpen(false)} />
+                            )}
                         </li>
                     </ul>
                 </div>

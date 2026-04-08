@@ -1,13 +1,22 @@
+import type { CompanyResponse } from '../company/type';
+
 export interface AuthState {
-    username: string | null;
-    email?: string;
+    user: UserResponse | null;
     accessToken: string | null;
 }
 
 export interface AuthResponse {
-    username: string;
-    email?: string;
+    user: UserResponse;
     access_token: string;
+}
+
+export interface UserResponse {
+    id: number;
+    username: string;
+    email: string;
+    companies: CompanyResponse[] | null;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface UserCreateState {

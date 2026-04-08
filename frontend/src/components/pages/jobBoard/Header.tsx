@@ -9,7 +9,7 @@ const Header: React.ElementType = () => {
         <>
             <div className='flex items-center gap-4'>
                 <div>
-                    <p className='text-sm text-gray-500'>Welcome back, {user}!</p>
+                    <p className='text-sm text-gray-500'>Welcome back, {user?.username}!</p>
                     <h1 className='text-3xl font-bold'>Discover Jobs &#128293;</h1>
                 </div>
             </div>
