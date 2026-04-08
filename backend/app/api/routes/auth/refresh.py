@@ -37,4 +37,4 @@ async def refresh_user(
     )
     new_access_token = Security.generate_token(user, TokenType.ACCESS)
 
-    return {"username": user.username, "access_token": new_access_token}
+    return {"user": user, "access_token": new_access_token}

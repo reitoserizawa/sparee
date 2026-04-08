@@ -48,4 +48,5 @@ class UserService:
             password=Security.hash_password(data.password.get_secret_value())
         )
         await user.save(session)
+        await user.with_companies(session)
         return user

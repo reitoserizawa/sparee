@@ -4,11 +4,6 @@ from .base import UserBaseModel
 from ..companies.response import CompanyResponseModel
 
 
-class UserTokenResponseModel(BaseModel):
-    username: str = Field(..., frozen=True)
-    access_token: str = Field(..., frozen=True)
-
-
 class UserResponseModel(UserBaseModel):
     id: int = Field(..., frozen=True)
     companies: list[CompanyResponseModel] | None = Field(
@@ -19,3 +14,8 @@ class UserResponseModel(UserBaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class UserTokenResponseModel(BaseModel):
+    user: UserResponseModel
+    access_token: str = Field(..., frozen=True)
