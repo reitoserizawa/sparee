@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.companies import CompanyResponseModel
-from backend.app.api.dependencies.company_member_required import company_member_required
+from app.api.dependencies.company_member_required import company_member_required
 
 from app.db.session import get_session
 
-from backend.app.db.models.company_member import CompanyMember
-from backend.app.services.company_service import CompanyService
+from app.db.models.company_member import CompanyMember
+from app.services.company_service import CompanyService
 
 router = APIRouter()
 company_service = CompanyService()

@@ -1,11 +1,14 @@
 import json
-from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.session import AsyncSessionLocal
 from app.db.models.user import User
+
 from app.schemas.messages.create import MessageCreateModel
+
 from app.services.message_service import MessageService
 from app.services.conversation_service import ConversationService
-from backend.app.services.conversation_participant import ConversationParticipantService
+from app.services.conversation_participant import ConversationParticipantService
+
 from ..base_worker import redis_conn
 
 
