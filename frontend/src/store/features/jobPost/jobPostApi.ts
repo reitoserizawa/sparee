@@ -25,7 +25,19 @@ const jobPostApi = baseApi.injectEndpoints({
             }),
             providesTags: (result, error, { jobPostId }) => [{ type: 'JobPost', id: jobPostId }],
         }),
+        getJobPostsFromCompany: builder.query<JobPost[], number>({
+            query: companyId => ({
+                url: `/companies/${companyId}/job-posts`,
+                method: 'GET',
+            }),
+            providesTags: result => (result ? result.map(({ id }) => ({ type: 'JobPost' as const, id })) : []),
+        }),
     }),
 });
 
-export const { useGetNearestJobPostsQuery, useGetJobPostDetailsQuery, useGetAppliedJobPostsQuery } = jobPostApi;
+export const {
+    useGetNearestJobPostsQuery,
+    useGetJobPostDetailsQuery,
+    useGetAppliedJobPostsQuery,
+    useGetJobPostsFromCompanyQuery,
+} = jobPostApi;
