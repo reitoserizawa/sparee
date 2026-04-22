@@ -15,7 +15,7 @@ company_service = CompanyService()
 job_post_service = JobPostService()
 
 
-@router.get("/", status_code=200, response_model=JobPostResponseModel)
+@router.get("/", status_code=200, response_model=list[JobPostResponseModel])
 async def get_company_details(
     company_id: int,
     _: CompanyMember = Depends(company_member_required),
