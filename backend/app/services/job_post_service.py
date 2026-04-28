@@ -33,6 +33,7 @@ class JobPostService:
 
     @staticmethod
     async def get_from_company(session: AsyncSession, company: "Company") -> Optional[Sequence["JobPost"]]:
+        from app.db.models.job_post import JobPost
         return await JobPost.get_from_company(session=session, company=company)
 
     @staticmethod
