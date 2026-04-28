@@ -48,7 +48,7 @@ const AccountDropdown: React.FC<AccountDropdownProps> = ({ user, onClose }) => {
                         {user?.companies.slice(0, 2).map(company => (
                             <button
                                 key={company.id}
-                                onClick={() => handleNavigate(`/companies/${company.id}`)}
+                                onClick={() => handleNavigate(`/companies/${company.id}/job-posts`)}
                                 className='w-full text-left px-4 py-2 hover:bg-neutral-tertiary'
                             >
                                 🏢 {company.name}

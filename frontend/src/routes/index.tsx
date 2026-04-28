@@ -8,6 +8,7 @@ import RootLayout from '../components/layouts/RootLayout';
 import JobPostDetailsPage from '../components/pages/jobPostDetails';
 import JobApplicationsPage from '../components/pages/jobApplication';
 import CompanyRegisterPage from '../components/pages/CompanyRegister';
+import CompanyJobPostManagementPage from '../components/pages/companyJobPostManagement';
 
 const AppRoutes = () => {
     return (
@@ -21,6 +22,7 @@ const AppRoutes = () => {
                         <Route element={<RootLayout />}>
                             <Route path='/' element={<JobBoardPage />} />
                             <Route path='/job-posts/:jobPostId' element={<JobPostDetailsPage />} />
+                            <Route path='/companies/:companyId/job-posts' element={<CompanyJobPostManagementPage />} />
                             <Route path='/applications' element={<JobApplicationsPage />} />
                         </Route>
                     </Route>
