@@ -20,6 +20,7 @@ export interface JobPost {
     description: string;
     company: Company;
     skills?: string[];
+    applications?: SimpleJobApplication[];
     salary: number;
     location?: string;
     address: Address;
