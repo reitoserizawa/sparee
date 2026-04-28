@@ -1,6 +1,6 @@
 import baseApi from '../base/baseApi';
 import type { UserLocationState } from '../user/types';
-import type { JobPost, JobPostState } from './types';
+import type { JobPost, JobPostCreateState, JobPostGetDetailsState } from './types';
 
 const jobPostApi = baseApi.injectEndpoints({
     endpoints: builder => ({
@@ -18,7 +18,7 @@ const jobPostApi = baseApi.injectEndpoints({
             }),
             providesTags: result => (result ? result.map(({ id }) => ({ type: 'JobPost' as const, id })) : []),
         }),
-        getJobPostDetails: builder.query<JobPost, JobPostState>({
+        getJobPostDetails: builder.query<JobPost, JobPostGetDetailsState>({
             query: ({ jobPostId }) => ({
                 url: `/job-posts/${jobPostId}`,
                 method: 'GET',
@@ -32,6 +32,14 @@ const jobPostApi = baseApi.injectEndpoints({
             }),
             providesTags: result => (result ? result.map(({ id }) => ({ type: 'JobPost' as const, id })) : []),
         }),
+        createJobPost: builder.mutation<JobPost, JobPostCreateState>({
+            query: jobPostData => ({
+                url: `/job-posts`,
+                method: 'POST',
+                body: jobPostData,
+            }),
+            invalidatesTags: ['JobPost'],
+        }),
     }),
 });
 
@@ -40,4 +48,5 @@ export const {
     useGetJobPostDetailsQuery,
     useGetAppliedJobPostsQuery,
     useGetJobPostsFromCompanyQuery,
+    useCreateJobPostMutation,
 } = jobPostApi;

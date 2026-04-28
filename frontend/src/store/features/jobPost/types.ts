@@ -1,7 +1,17 @@
+import type { AddressCreateState } from '../company/type';
 import type { SimpleJobApplication } from '../jobApplication/types';
 
-export interface JobPostState {
+export interface JobPostGetDetailsState {
     jobPostId: number;
+}
+
+export interface JobPostCreateState {
+    company_id: number;
+    jobCategory_id: number;
+    title: string;
+    description: string;
+    salary: number;
+    address?: AddressCreateState;
 }
 
 export interface JobPost {
