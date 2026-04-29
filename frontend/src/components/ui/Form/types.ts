@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 // accept nested paths
 export type DotPaths<T> = T extends object
     ? {
-          [K in keyof T & string]: T[K] extends object ? `${K}.${DotPaths<T[K]>}` | K : K;
+          [K in keyof T & string]: NonNullable<T[K]> extends object ? `${K}.${DotPaths<NonNullable<T[K]>>}` | K : K;
       }[keyof T & string]
     : string;
 
