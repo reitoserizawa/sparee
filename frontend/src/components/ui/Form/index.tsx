@@ -23,7 +23,7 @@ const Form = <State,>({ children, initialValues, onSubmit, className }: FormProv
         errors: {},
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFieldChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormState(prev => ({
             ...prev,
@@ -75,7 +75,15 @@ const Form = <State,>({ children, initialValues, onSubmit, className }: FormProv
     };
 
     return (
-        <FormContext.Provider value={{ formState, registerInput, handleChange }}>
+        <FormContext.Provider
+            value={{
+                formState,
+                registerInput,
+                handleChange: handleFieldChange,
+                handleSelectChange: handleFieldChange,
+                handleTextareaChange: handleFieldChange,
+            }}
+        >
             <form onSubmit={onSubmitHandler} className={className}>
                 {children}
             </form>
