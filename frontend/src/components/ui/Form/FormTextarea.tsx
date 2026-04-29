@@ -25,7 +25,7 @@ const FormTextarea = <State,>({
 
     return (
         <>
-            {label && <label className='block text-xs font-medium text-gray-500 mb-1'>{label}</label>}
+            {label && <label className='block text-sm font-medium text-gray-500 mb-1'>{label}</label>}
             <textarea
                 name={name}
                 value={value}

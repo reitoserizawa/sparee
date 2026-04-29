@@ -5,7 +5,14 @@ import type { DotPaths, FormInputProps } from './types';
 
 import Error from '../Error';
 
-const FormInput = <State,>({ name, validators, placeholder, label, type = 'text' }: FormInputProps<State>) => {
+const FormInput = <State,>({
+    name,
+    validators,
+    placeholder,
+    label,
+    className,
+    type = 'text',
+}: FormInputProps<State>) => {
     const { formState, registerInput, handleChange } = useStateContext<State>();
     const validatorsRef = useRef(validators);
 
@@ -19,14 +26,17 @@ const FormInput = <State,>({ name, validators, placeholder, label, type = 'text'
 
     return (
         <>
-            {label ? <label className='block text-sm font-medium mb-1'>{label}</label> : null}
+            {label && <label className='block text-sm font-medium text-gray-500 mb-1'>{label}</label>}
             <input
                 name={name}
                 value={value}
                 onChange={e => handleChange(e)}
                 placeholder={placeholder}
                 type={type}
-                className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black'
+                className={
+                    className ??
+                    'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black bg-white'
+                }
             />
             {errors[name]?.map((error, i) => (
                 <Error key={i} message={error} />
