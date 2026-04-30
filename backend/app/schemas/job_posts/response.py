@@ -38,3 +38,7 @@ class SimpleJobPostResponseModel(JobPostBaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class CompanySimpleJobPostResponseModel(SimpleJobPostResponseModel):
+    application_count: int = Field(default=0, frozen=True)
