@@ -144,8 +144,8 @@ class BaseModel(Base):
         return result.scalar_one_or_none()
 
     @classmethod
-    async def filter_by(cls: Type[T], session: AsyncSession, where: Optional[Iterable[ColumnElement[bool]]] = None, relations: Optional[list[str]] = None, include_deleted: bool = False, **kwargs) -> Optional[Sequence[T]]:
-        stmt = cls._set_stmt(where=where, relations=relations)
+    async def filter_by(cls: Type[T], session: AsyncSession, where: Optional[Iterable[ColumnElement[bool]]] = None, relations: Optional[list[str]] = None, options: Optional[list] = None, include_deleted: bool = False, **kwargs) -> Optional[Sequence[T]]:
+        stmt = cls._set_stmt(where=where, relations=relations, options=options)
 
         if kwargs:
             stmt = stmt.filter_by(**kwargs)
@@ -208,10 +208,11 @@ class BaseModel(Base):
                   limit: Optional[int] = None,
                   offset: Optional[int] = None,
                   relations: Optional[list[str]] = None,
+                  options: Optional[list] = None,
                   ) -> Select:
         stmt: Select = select(cls)
         if join_model:
-            stmt.join(join_model)
+            stmt = stmt.join(join_model)
         if where:
             stmt = stmt.where(*where)
         if order_by:
@@ -223,6 +224,8 @@ class BaseModel(Base):
         if relations:
             loaders = cls._generate_nested_loaders(relations=relations)
             stmt = stmt.options(*loaders)
+        if options:
+            stmt = stmt.options(*options)
 
         return stmt
 
