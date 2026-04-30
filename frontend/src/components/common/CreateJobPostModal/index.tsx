@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetJobCategoriesQuery } from '../../../store/features/jobCategory/jobCategoryApi';
 import requiredValidator from '../../ui/Form/validators/required';
+import { useCreateJobPostMutation } from '../../../store/features/jobPost/jobPostApi';
+import { isErrorWithMessage } from '../../../store/features/base/helpers';
 import type { CreateJobPostModalProps } from './types';
 import type { JobPostCreateState } from '../../../store/features/jobPost/types';
 import Modal from '../../ui/Modal';
@@ -9,37 +11,47 @@ import Form from '../../ui/Form';
 import FormInput from '../../ui/Form/FormInput';
 import FormSelect from '../../ui/Form/FormSelect';
 import FormTextarea from '../../ui/Form/FormTextarea';
+import Button from '../../ui/Button';
+import Error from '../../ui/Error';
 
 const inputClass =
     'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition';
 
-const CreateJobPostModal: React.FC<CreateJobPostModalProps> = ({ onClose, onSubmit }) => {
+const CreateJobPostModal: React.FC<CreateJobPostModalProps> = ({ onClose }) => {
     const { companyId } = useParams();
     const [showAddress, setShowAddress] = useState(false);
+    const [createJobPost, { isLoading: isCreating, isError, error }] = useCreateJobPostMutation();
     const { data: categories, isLoading: categoriesLoading } = useGetJobCategoriesQuery(null);
 
     const initialValues: JobPostCreateState = {
         company_id: Number(companyId),
-        jobCategory_id: 0,
+        job_category_id: undefined,
         title: '',
         description: '',
         salary: 0,
-        address: {
-            street: '',
-            city: '',
-            state: '',
-            postal_code: '',
-            country: 'USA',
-        },
+        address: undefined,
     };
 
-    const handleSubmit = (data: JobPostCreateState) => {
-        const payload: JobPostCreateState = {
-            ...data,
-            address: showAddress ? data.address : undefined,
-        };
-        onSubmit?.(payload);
-        onClose();
+    const handleSubmit = async (data: JobPostCreateState) => {
+        try {
+            const payload: JobPostCreateState = {
+                ...data,
+                address:
+                    showAddress && data.address
+                        ? {
+                              country: 'USA',
+                              street: data.address.street ?? '',
+                              city: data.address.city ?? '',
+                              state: data.address.state ?? '',
+                              postal_code: data.address.postal_code ?? '',
+                          }
+                        : undefined,
+            };
+            await createJobPost(payload).unwrap();
+            onClose();
+        } catch (error) {
+            console.error('Failed to create job post:', error);
+        }
     };
 
     const categoryOptions = (categories ?? []).map(cat => ({ value: cat.id, label: cat.name }));
@@ -56,7 +68,7 @@ const CreateJobPostModal: React.FC<CreateJobPostModalProps> = ({ onClose, onSubm
                 />
 
                 <FormSelect<JobPostCreateState>
-                    name='jobCategory_id'
+                    name='job_category_id'
                     label='Category*'
                     validators={[requiredValidator()]}
                     options={categoryOptions}
@@ -125,22 +137,20 @@ const CreateJobPostModal: React.FC<CreateJobPostModalProps> = ({ onClose, onSubm
                         />
                     </>
                 )}
-
-                {/* Actions — inside <form> so the submit button triggers onSubmit */}
+                {isError && isErrorWithMessage(error) && <Error message={error?.data?.message} />}
                 <div className='flex justify-end gap-2 pt-4 border-t border-gray-100'>
-                    <button
-                        type='button'
-                        onClick={onClose}
-                        className='px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition'
-                    >
+                    <Button variant='ghost' className='px-4 py-2 rounded-full text-sm' onClick={onClose}>
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+
+                    <Button
+                        variant='primary'
+                        className='px-4 py-2 rounded-full text-sm'
                         type='submit'
-                        className='px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition'
+                        disabled={isCreating}
                     >
-                        Create Job Post
-                    </button>
+                        {isCreating ? 'Creating...' : 'Create Job Post'}
+                    </Button>
                 </div>
             </Form>
         </Modal>
