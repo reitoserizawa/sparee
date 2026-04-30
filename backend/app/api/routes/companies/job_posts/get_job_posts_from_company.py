@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.job_posts import JobPostResponseModel
+from app.schemas.job_posts import CompanySimpleJobPostResponseModel
 from app.api.dependencies.company_member_required import company_member_required
 
 from app.db.session import get_session
@@ -15,8 +15,8 @@ company_service = CompanyService()
 job_post_service = JobPostService()
 
 
-@router.get("/", status_code=200, response_model=list[JobPostResponseModel])
-async def get_company_details(
+@router.get("/", status_code=200, response_model=list[CompanySimpleJobPostResponseModel])
+async def get_job_posts_from_company(
     company_id: int,
     _: CompanyMember = Depends(company_member_required),
     session: AsyncSession = Depends(get_session),
