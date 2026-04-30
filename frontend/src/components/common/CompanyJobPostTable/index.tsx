@@ -1,4 +1,5 @@
 import React from 'react';
+import { format } from 'date-fns';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetJobPostsFromCompanyQuery } from '../../../store/features/jobPost/jobPostApi';
 
@@ -30,7 +31,7 @@ const CompanyJobPostTable: React.FC = () => {
                         >
                             <td className='px-4 py-3 font-medium'>{job.title}</td>
                             <td className='px-4 py-3 text-gray-600'>{job.application_count}</td>
-                            <td className='px-4 py-3 text-gray-500'>{job.created_at}</td>
+                            <td className='px-4 py-3 text-gray-500'>{format(new Date(job.created_at), 'PPP')}</td>
                             <td
                                 className='px-4 py-3 text-right'
                                 onClick={e => e.stopPropagation()} // prevent row click

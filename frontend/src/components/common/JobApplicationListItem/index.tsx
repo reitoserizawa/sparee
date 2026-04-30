@@ -1,7 +1,7 @@
 import React from 'react';
+import { format } from 'date-fns';
 import type { JobApplication } from '../../../store/features/jobApplication/types';
 import { STATUS_COLORS } from '../../../constants/STATUS_COLORS';
-import moment from 'moment';
 
 interface JobApplicationListItemProps {
     jobApplication: JobApplication;
@@ -22,9 +22,9 @@ const JobApplicationListItem: React.FC<JobApplicationListItemProps> = ({ jobAppl
                 <h3 className='font-medium'>{title}</h3>
                 {/* TODO: add company name */}
                 <p className='text-sm text-gray-500'>{description}</p>
-                <p className='text-xs text-gray-400 mt-1'>Applied on {moment(createdAt).format('LLL')}</p>
+                <p className='text-xs text-gray-400 mt-1'>Applied on {format(new Date(createdAt), 'PPP')}</p>
                 {applicationStatus != 'applied' && updatedAt && (
-                    <p className='text-xs text-gray-400 mt-1'>Updated on {moment(updatedAt).format('LLL')}</p>
+                    <p className='text-xs text-gray-400 mt-1'>Updated on {format(new Date(updatedAt), 'PPP')}</p>
                 )}
             </div>
 
