@@ -15,7 +15,13 @@ const CompanyJobPostManagementPage = (): React.ReactElement => {
                     <p className='text-gray-500 text-sm'>Manage your listings and applicants</p>
                 </div>
 
-                <Button onClick={() => setIsModalOpen(true)}>+ New Job Post</Button>
+                <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className='px-4 py-2 rounded-full text-sm'
+                    variant='secondary'
+                >
+                    + New Job Post
+                </Button>
             </div>
 
             {/* Table */}
