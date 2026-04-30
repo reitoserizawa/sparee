@@ -1,7 +1,7 @@
 from typing import Type, Sequence, TYPE_CHECKING, Optional
 from datetime import datetime
-from sqlalchemy import Integer, ForeignKey, String, DateTime, Text, Float, select, func
-from sqlalchemy.orm import relationship, Mapped, mapped_column, selectinload
+from sqlalchemy import Integer, ForeignKey, String, DateTime, Text, Float, literal, select, func
+from sqlalchemy.orm import query_expression, relationship, Mapped, mapped_column, selectinload, with_expression
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 from app.db.models.base import BaseModel
@@ -61,6 +61,7 @@ class JobPost(BaseModel):
         back_populates="job_post",
         cascade="all, delete-orphan"
     )
+    application_count: Mapped[int] = query_expression(default_expr=literal(0))
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -79,7 +80,15 @@ class JobPost(BaseModel):
 
     @classmethod
     async def get_from_company(cls: Type["JobPost"], session: AsyncSession, company: "Company") -> Optional[Sequence["JobPost"]]:
-        return await cls.filter_by(session=session, company_id=company.id)
+        from app.db.models.job_application import JobApplication
+
+        count_subquery = (
+            select(func.count(JobApplication.id))
+            .where(JobApplication.job_post_id == cls.id)
+            .correlate_except(JobApplication)
+            .scalar_subquery()
+        )
+        return await cls.filter_by(session=session, company_id=company.id, options=[with_expression(cls.application_count, count_subquery)])
 
     @classmethod
     async def get_from_user(cls: Type["JobPost"], session: AsyncSession, user: "User") -> Optional[Sequence["JobPost"]]:
