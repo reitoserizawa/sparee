@@ -7,7 +7,7 @@ export interface JobPostGetDetailsState {
 
 export interface JobPostCreateState {
     company_id: number;
-    jobCategory_id: number;
+    job_category_id?: number;
     title: string;
     description: string;
     salary: number;
@@ -29,6 +29,10 @@ export interface JobPost {
     application_status?: string;
     user_application?: SimpleJobApplication | null;
     created_at: string;
+}
+
+export interface CompanyJobPost extends JobPost {
+    application_count: number;
 }
 
 export interface SimpleJobPost {

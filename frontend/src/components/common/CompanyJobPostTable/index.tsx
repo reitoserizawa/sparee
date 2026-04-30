@@ -5,7 +5,6 @@ import { useGetJobPostsFromCompanyQuery } from '../../../store/features/jobPost/
 const CompanyJobPostTable: React.FC = () => {
     const navigate = useNavigate();
     const { companyId } = useParams();
-
     const { data: jobPosts = [] } = useGetJobPostsFromCompanyQuery(Number(companyId));
 
     return (
@@ -30,9 +29,7 @@ const CompanyJobPostTable: React.FC = () => {
                             onClick={() => navigate(`/job-posts/${job.id}`)}
                         >
                             <td className='px-4 py-3 font-medium'>{job.title}</td>
-                            <td className='px-4 py-3 text-gray-600'>
-                                {job?.applications ? job.applications.length : 'N/A'}
-                            </td>
+                            <td className='px-4 py-3 text-gray-600'>{job.application_count}</td>
                             <td className='px-4 py-3 text-gray-500'>{job.created_at}</td>
                             <td
                                 className='px-4 py-3 text-right'

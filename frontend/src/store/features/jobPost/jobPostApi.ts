@@ -1,6 +1,6 @@
 import baseApi from '../base/baseApi';
 import type { UserLocationState } from '../user/types';
-import type { JobPost, JobPostCreateState, JobPostGetDetailsState } from './types';
+import type { CompanyJobPost, JobPost, JobPostCreateState, JobPostGetDetailsState } from './types';
 
 const jobPostApi = baseApi.injectEndpoints({
     endpoints: builder => ({
@@ -25,7 +25,7 @@ const jobPostApi = baseApi.injectEndpoints({
             }),
             providesTags: (result, error, { jobPostId }) => [{ type: 'JobPost', id: jobPostId }],
         }),
-        getJobPostsFromCompany: builder.query<JobPost[], number>({
+        getJobPostsFromCompany: builder.query<CompanyJobPost[], number>({
             query: companyId => ({
                 url: `/companies/${companyId}/job-posts`,
                 method: 'GET',
