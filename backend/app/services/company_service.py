@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 class CompanyService:
     @staticmethod
-    async def get_or_raise(session: AsyncSession, company_id: int) -> "Company":
-        return await Company.get_or_raise(session=session, id=company_id)
+    async def get_or_raise(session: AsyncSession, id: int) -> "Company":
+        return await Company.get_or_raise(session=session, id=id)
 
     @staticmethod
     async def get_from_user(session: AsyncSession, user: "User") -> Optional[Sequence["Company"]]:
