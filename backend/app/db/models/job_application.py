@@ -5,7 +5,7 @@ from sqlalchemy import Integer, ForeignKey, DateTime, Index, Enum as SAEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
-from app.schemas.job_applications import JobApplicationActivityResponse
+from app.schemas.job_applications import JobApplicationActivityResponseModel
 
 if TYPE_CHECKING:
     from app.db.models.user import User
@@ -91,7 +91,7 @@ class JobApplication(BaseModel):
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @classmethod
-    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: datetime, end: datetime,) -> Sequence["JobApplicationActivityResponse"]:
+    async def get_activity_by_date(cls: Type["JobApplication"], session: AsyncSession, user: "User", start: datetime, end: datetime,) -> Sequence["JobApplicationActivityResponseModel"]:
         from sqlalchemy import select, func
 
         stmt = (
@@ -140,7 +140,7 @@ class JobApplication(BaseModel):
                 activity_map[updated_date_str]["total"] += count
 
         return sorted(
-            [JobApplicationActivityResponse(**data)
+            [JobApplicationActivityResponseModel(**data)
              for data in activity_map.values()],
             key=lambda x: x.date
         )

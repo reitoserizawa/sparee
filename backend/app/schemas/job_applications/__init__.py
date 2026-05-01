@@ -1,7 +1,7 @@
 from .create import JobApplicationCreateModel
-from .response import JobApplicationResponseModel, SimpleJobApplicationResponseModel
-from .activity_response import JobApplicationActivityResponse
+from .response import JobApplicationResponseModel, SimpleJobApplicationResponseModel, CompanyJobApplicationResponseModel
+from .activity_response import JobApplicationActivityResponseModel
 from .update_status import JobApplicationUpdateStatusModel
 
 __all__ = ["JobApplicationCreateModel",
-           "JobApplicationResponseModel", "SimpleJobApplicationResponseModel", "JobApplicationUpdateStatusModel", "JobApplicationActivityResponse"]
+           "JobApplicationResponseModel", "SimpleJobApplicationResponseModel", "JobApplicationUpdateStatusModel", "JobApplicationActivityResponseModel", "CompanyJobApplicationResponseModel"]
