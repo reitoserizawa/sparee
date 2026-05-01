@@ -16,6 +16,17 @@ class UserResponseModel(UserBaseModel):
     }
 
 
+class SimpleUserResponseModel(UserBaseModel):
+    id: int = Field(..., frozen=True)
+
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
 class UserTokenResponseModel(BaseModel):
     user: UserResponseModel
     access_token: str = Field(..., frozen=True)
