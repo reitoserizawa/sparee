@@ -19,5 +19,5 @@ async def get_company_details(
     _: CompanyMember = Depends(company_member_required),
     session: AsyncSession = Depends(get_session),
 ):
-    company = await company_service.get_or_raise(session=session, company_id=company_id)
+    company = await company_service.get_or_raise(session=session, id=company_id)
     return company
