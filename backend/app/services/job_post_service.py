@@ -17,6 +17,10 @@ if TYPE_CHECKING:
 
 class JobPostService:
     @staticmethod
+    async def get_or_raise(session: AsyncSession, id: int) -> "Company":
+        return await JobPost.get_or_raise(session=session, id=id)
+
+    @staticmethod
     async def get_from_id(session: AsyncSession, id: int, user: "User | None" = None) -> "JobPost":
         from app.db.models.job_post import JobPost
 
