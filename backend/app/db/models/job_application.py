@@ -10,8 +10,10 @@ from app.schemas.job_applications import JobApplicationActivityResponse
 if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.job_post import JobPost
+    from backend.app.db.models.company import Company
 
 JOB_APPLICATION_DETAIL_RELATIONS = ["job_post"]
+PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS = ["job_post", "user"]
 
 
 class JobApplicationStatus(PyEnum):
@@ -75,6 +77,10 @@ class JobApplication(BaseModel):
     @classmethod
     async def get_from_user(cls: Type["JobApplication"], session: AsyncSession, user: "User") -> Optional[Sequence["JobApplication"]]:
         return await cls.filter_by(session=session, user_id=user.id, relations=JOB_APPLICATION_DETAIL_RELATIONS)
+
+    @classmethod
+    async def get_from_company_and_job_post(cls: Type["JobApplication"], session: AsyncSession, company: "Company", job_post: "JobPost") -> Optional[Sequence["JobApplication"]]:
+        return await cls.filter_by(session=session, company_id=company.id, job_post_id=job_post.id, relations=PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS)
 
     @classmethod
     async def get_from_user_and_job_post(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:

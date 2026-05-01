@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.job_application import JobApplication, JobApplicationStatus
     from app.db.models.job_post import JobPost
+    from app.db.models.company import Company
 
 
 class JobApplicationService:
@@ -15,6 +16,12 @@ class JobApplicationService:
     async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobApplication"] | None:
         from app.db.models.job_application import JobApplication
         job_applications = await JobApplication.get_from_user(session=session, user=user)
+        return job_applications
+
+    @staticmethod
+    async def get_from_company_and_job_post(session: AsyncSession, company: "Company", job_post: "JobPost") -> Sequence["JobApplication"] | None:
+        from app.db.models.job_application import JobApplication
+        job_applications = await JobApplication.get_from_company_and_job_post(session=session, company=company, job_post=job_post)
         return job_applications
 
     @staticmethod
