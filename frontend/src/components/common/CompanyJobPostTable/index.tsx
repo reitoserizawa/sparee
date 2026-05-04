@@ -2,6 +2,8 @@ import React from 'react';
 import { format } from 'date-fns';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetJobPostsFromCompanyQuery } from '../../../store/features/jobPost/jobPostApi';
+import LinkIcon from '../../../assets/icons/LinkIcon';
+import TableIcon from '../../../assets/icons/TableIcon';
 
 const CompanyJobPostTable: React.FC = () => {
     const navigate = useNavigate();
@@ -17,30 +19,34 @@ const CompanyJobPostTable: React.FC = () => {
                         <th className='px-4 py-3 font-medium'>Title</th>
                         <th className='px-4 py-3 font-medium'>Applications</th>
                         <th className='px-4 py-3 font-medium'>Created</th>
-                        <th className='px-4 py-3 font-medium text-right'>Actions</th>
+                        <th className='px-4 py-3 font-medium text-right'>Details</th>
+                        <th className='px-4 py-3 font-medium text-right'>Applications</th>
                     </tr>
                 </thead>
 
                 {/* Body */}
                 <tbody>
                     {jobPosts.map(job => (
-                        <tr
-                            key={job.id}
-                            className='border-t hover:bg-gray-50 cursor-pointer'
-                            onClick={() => navigate(`/job-posts/${job.id}`)}
-                        >
+                        <tr key={job.id} className='border-t hover:bg-gray-50 cursor-pointer'>
                             <td className='px-4 py-3 font-medium'>{job.title}</td>
                             <td className='px-4 py-3 text-gray-600'>{job.application_count}</td>
                             <td className='px-4 py-3 text-gray-500'>{format(new Date(job.created_at), 'PPP')}</td>
-                            <td
-                                className='px-4 py-3 text-right'
-                                onClick={e => e.stopPropagation()} // prevent row click
-                            >
+                            <td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
                                 <button
-                                    className='text-sm text-blue-600 hover:underline'
+                                    className='text-sm text-blue-600 inline-flex items-center gap-1 group cursor-pointer'
                                     onClick={() => navigate(`/job-posts/${job.id}`)}
                                 >
-                                    View
+                                    <LinkIcon size={20} color='#3B82F6' />{' '}
+                                    <span className='group-hover:underline'>View</span>
+                                </button>
+                            </td>
+                            <td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
+                                <button
+                                    className='text-sm text-blue-600 inline-flex items-center gap-1 group cursor-pointer'
+                                    onClick={() => navigate(`/job-posts/${job.id}`)}
+                                >
+                                    <TableIcon size={20} color='#3B82F6' />{' '}
+                                    <span className='group-hover:underline'>View</span>
                                 </button>
                             </td>
                         </tr>
