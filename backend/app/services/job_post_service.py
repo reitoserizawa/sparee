@@ -101,6 +101,10 @@ class JobPostService:
         return job_posts
 
     @staticmethod
+    def is_owned_by_company(job_post: "JobPost", company: "Company") -> bool:
+        return job_post.company_id == company.id
+
+    @staticmethod
     async def _get_company_for_member(session: AsyncSession, company_id: int, user: "User") -> "Company":
         from app.db.models.company import Company
         company = await Company.get_from_id(session=session, id=company_id)

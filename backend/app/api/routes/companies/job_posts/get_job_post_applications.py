@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_session
@@ -26,6 +26,10 @@ async def get_job_post_applications(
 ):
     company = await company_service.get_or_raise(session=session, id=company_id)
     job_post = await job_post_service.get_from_id(session=session, id=job_post_id)
-    applications = await job_application_service.get_from_company_and_job_post(session=session, company=company, job_post=job_post)
 
+    if not job_post_service.is_owned_by_company(job_post=job_post, company=company):
+        raise HTTPException(
+            status_code=403, detail="Job post does not belong to the company")
+
+    applications = await job_application_service.get_from_job_post(session=session, job_post=job_post)
     return applications
