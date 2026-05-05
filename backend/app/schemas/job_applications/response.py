@@ -5,9 +5,9 @@ from .base import JobApplicationBaseModel
 
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from ..job_posts import SimpleJobPostResponseModel
-    from ..users import SimpleUserResponseModel
+
+from ..job_posts import SimpleJobPostResponseModel
+from ..users import SimpleUserResponseModel
 
 
 class JobApplicationResponseModel(JobApplicationBaseModel):
@@ -35,9 +35,9 @@ class SimpleJobApplicationResponseModel(JobApplicationBaseModel):
 
 class CompanyJobApplicationResponseModel(JobApplicationBaseModel):
     id: int = Field(..., frozen=True)
-    job_post: "SimpleJobPostResponseModel | None" = Field(
+    job_post: SimpleJobPostResponseModel | None = Field(
         default=None, frozen=True)
-    user: "SimpleUserResponseModel | None" = Field(default=None, frozen=True)
+    user: SimpleUserResponseModel | None = Field(default=None, frozen=True)
     created_at: datetime
     updated_at: datetime
 
