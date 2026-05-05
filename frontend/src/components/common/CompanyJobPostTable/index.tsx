@@ -31,7 +31,7 @@ const CompanyJobPostTable: React.FC = () => {
                             <td className='px-4 py-3 font-medium'>{job.title}</td>
                             <td className='px-4 py-3 text-gray-600'>{job.application_count}</td>
                             <td className='px-4 py-3 text-gray-500'>{format(new Date(job.created_at), 'PPP')}</td>
-                            <td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
+                            <td className='px-4 py-3 text-right'>
                                 <button
                                     className='text-sm text-blue-600 inline-flex items-center gap-1 group cursor-pointer'
                                     onClick={() => navigate(`/job-posts/${job.id}`)}
@@ -40,10 +40,10 @@ const CompanyJobPostTable: React.FC = () => {
                                     <span className='group-hover:underline'>View</span>
                                 </button>
                             </td>
-                            <td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
+                            <td className='px-4 py-3 text-right'>
                                 <button
                                     className='text-sm text-blue-600 inline-flex items-center gap-1 group cursor-pointer'
-                                    onClick={() => navigate(`/job-posts/${job.id}`)}
+                                    onClick={() => navigate(`/companies/${companyId}/job-posts/${job.id}`)}
                                 >
                                     <TableIcon size={20} color='#3B82F6' />{' '}
                                     <span className='group-hover:underline'>View</span>
