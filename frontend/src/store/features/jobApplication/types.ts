@@ -1,7 +1,7 @@
 import type { SimpleJobPost } from '../jobPost/types';
 import type { SimpleUserResponse } from '../user/types';
 
-type JobApplicationStatus = 'applied' | 'rejected' | 'reviewing' | 'withdrawn';
+export type JobApplicationStatus = 'applied' | 'rejected' | 'reviewing' | 'withdrawn' | 'accepted';
 
 export interface JobApplication {
     id: number;
