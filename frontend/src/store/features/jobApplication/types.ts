@@ -1,4 +1,5 @@
 import type { SimpleJobPost } from '../jobPost/types';
+import type { SimpleUserResponse } from '../user/types';
 
 type JobApplicationStatus = 'applied' | 'rejected' | 'reviewing' | 'withdrawn';
 
@@ -20,7 +21,22 @@ export interface SimpleJobApplication {
     updated_at: string;
 }
 
+export interface CompanyJobApplication {
+    id: number;
+    application_status: JobApplicationStatus;
+    job_post_id: number;
+    job_post: SimpleJobPost;
+    user: SimpleUserResponse;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface CreateJobApplicationRequest {
+    jobPostId: number;
+}
+
+export interface GetJobApplicationsFromJobPostRequest {
+    companyId: number;
     jobPostId: number;
 }
 

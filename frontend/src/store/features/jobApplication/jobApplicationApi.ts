@@ -7,6 +7,8 @@ import {
     type UpdateJobApplicationStatusRequest,
     type JobApplicationActivityDay,
     type JobApplicationActivityDateRange,
+    type GetJobApplicationsFromJobPostRequest,
+    type CompanyJobApplication,
 } from './types';
 
 const jobApplicationApi = baseApi.injectEndpoints({
@@ -80,6 +82,11 @@ const jobApplicationApi = baseApi.injectEndpoints({
             }),
             providesTags: [{ type: 'JobApplication', id: 'LIST' }],
         }),
+        getJobApplicationFromJobPost: builder.query<CompanyJobApplication[], GetJobApplicationsFromJobPostRequest>({
+            query: ({ companyId, jobPostId }) => ({
+                url: `/companies/${companyId}/job-posts/${jobPostId}/applications`,
+            }),
+        }),
     }),
 });
 
@@ -89,4 +96,5 @@ export const {
     useDeleteJobApplicationMutation,
     useChangeJobApplicationStatusMutation,
     useGetJobApplicationActivityQuery,
+    useGetJobApplicationFromJobPostQuery,
 } = jobApplicationApi;
