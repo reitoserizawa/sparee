@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AccountCircle from '../../assets/icons/AccountCircle';
+import AccountCircleIcon from '../../assets/icons/AccountCircleIcon';
 import AccountDropdown from './AccountDropdown';
 import { selectCurrentUser } from '../../store/features/auth/authSelector';
 import { useAppSelector } from '../../store/hooks';
@@ -44,7 +44,7 @@ const NavBar: React.FC = () => {
                                 className='cursor-pointer block py-2 px-3 text-heading rounded hover:bg-neutral-tertiary md:hover:bg-transparent md:border-0 md:hover:text-fg-brand md:p-0 flex items-center'
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             >
-                                <AccountCircle size={24} color='black' />
+                                <AccountCircleIcon size={24} className='text-black' />
                             </div>
                             {isDropdownOpen && user && (
                                 <AccountDropdown user={user} onClose={() => setIsDropdownOpen(false)} />

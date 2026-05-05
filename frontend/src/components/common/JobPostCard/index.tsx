@@ -17,7 +17,7 @@ const JobPostCard: React.FC<CardProps> = ({ jobPost }) => {
         >
             <div className='flex items-start gap-4'>
                 <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm'>
-                    <EnterpriseIcon size={24} color='white' />
+                    <EnterpriseIcon size={24} className='text-white' />
                 </div>
 
                 <div className='flex-1'>

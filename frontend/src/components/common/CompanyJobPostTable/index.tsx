@@ -36,7 +36,7 @@ const CompanyJobPostTable: React.FC = () => {
                                     className='text-sm text-blue-600 inline-flex items-center gap-1 group cursor-pointer'
                                     onClick={() => navigate(`/job-posts/${job.id}`)}
                                 >
-                                    <LinkIcon size={20} color='#3B82F6' />{' '}
+                                    <LinkIcon size={20} className='text-blue-600' />{' '}
                                     <span className='group-hover:underline'>View</span>
                                 </button>
                             </td>
@@ -45,7 +45,7 @@ const CompanyJobPostTable: React.FC = () => {
                                     className='text-sm text-blue-600 inline-flex items-center gap-1 group cursor-pointer'
                                     onClick={() => navigate(`/companies/${companyId}/job-posts/${job.id}`)}
                                 >
-                                    <TableIcon size={20} color='#3B82F6' />{' '}
+                                    <TableIcon size={20} className='text-blue-600' />{' '}
                                     <span className='group-hover:underline'>View</span>
                                 </button>
                             </td>

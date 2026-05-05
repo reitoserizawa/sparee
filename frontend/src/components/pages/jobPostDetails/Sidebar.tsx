@@ -94,9 +94,9 @@ const Sidebar: React.ElementType = () => {
                         className={`material-symbols-outlined ${userApplication ? 'text-green-600' : 'text-blue-600'}`}
                     >
                         {userApplication?.application_status === 'applied' ? (
-                            <CheckIcon size={24} color='blue' />
+                            <CheckIcon size={24} className='text-blue-600' />
                         ) : (
-                            <CheckIcon size={24} color='green' />
+                            <CheckIcon size={24} className='text-green-600' />
                         )}
                     </span>
                 </div>
