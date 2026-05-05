@@ -19,9 +19,9 @@ class JobApplicationService:
         return job_applications
 
     @staticmethod
-    async def get_from_company_and_job_post(session: AsyncSession, company: "Company", job_post: "JobPost") -> Sequence["JobApplication"] | None:
+    async def get_from_job_post(session: AsyncSession, job_post: "JobPost") -> Sequence["JobApplication"] | None:
         from app.db.models.job_application import JobApplication
-        job_applications = await JobApplication.get_from_company_and_job_post(session=session, company=company, job_post=job_post)
+        job_applications = await JobApplication.get_from_company_and_job_post(session=session, job_post=job_post)
         return job_applications
 
     @staticmethod
