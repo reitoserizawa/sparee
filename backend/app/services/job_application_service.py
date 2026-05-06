@@ -8,10 +8,14 @@ if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.job_application import JobApplication, JobApplicationStatus
     from app.db.models.job_post import JobPost
-    from app.db.models.company import Company
 
 
 class JobApplicationService:
+    @staticmethod
+    async def get_or_raise(session: AsyncSession, id: int) -> "JobApplication":
+        from app.db.models.job_application import JobApplication
+        return await JobApplication.get_or_raise(session=session, id=id)
+
     @staticmethod
     async def get_from_user(session: AsyncSession, user: "User") -> Sequence["JobApplication"] | None:
         from app.db.models.job_application import JobApplication
@@ -21,7 +25,7 @@ class JobApplicationService:
     @staticmethod
     async def get_from_job_post(session: AsyncSession, job_post: "JobPost") -> Sequence["JobApplication"] | None:
         from app.db.models.job_application import JobApplication
-        job_applications = await JobApplication.get_from_company_and_job_post(session=session, job_post=job_post)
+        job_applications = await JobApplication.get_from_job_post(session=session, job_post=job_post)
         return job_applications
 
     @staticmethod
@@ -92,6 +96,10 @@ class JobApplicationService:
         await job_application.save(session)
         job_application_with_details = await job_application.with_detail_relations(session=session)
         return job_application_with_details
+
+    @staticmethod
+    def is_owned_by_job_post(job_post: "JobPost", application: "JobApplication") -> bool:
+        return job_post.id == application.job_post_id
 
     @staticmethod
     def _validate_application_status(status: str) -> "JobApplicationStatus":
