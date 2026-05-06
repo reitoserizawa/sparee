@@ -18,7 +18,7 @@ job_application_service = JobApplicationService()
 
 
 @router.get("/", status_code=200, response_model=list[CompanyJobApplicationResponseModel])
-async def get_job_post_applications(
+async def get_applications(
     company_id: int,
     job_post_id: int,
     _: CompanyMember = Depends(company_member_required),
