@@ -40,5 +40,10 @@ class SimpleJobPostResponseModel(JobPostBaseModel):
     }
 
 
+class CompanyJobPostResponseModel(SimpleJobPostResponseModel):
+    address: AddressResponseModel = Field(frozen=True)
+    job_category: JobCategoryResponseModel = Field(frozen=True)
+
+
 class CompanySimpleJobPostResponseModel(SimpleJobPostResponseModel):
     application_count: int = Field(default=0, frozen=True)
