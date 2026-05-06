@@ -13,7 +13,8 @@ if TYPE_CHECKING:
     from backend.app.db.models.company import Company
 
 JOB_APPLICATION_DETAIL_RELATIONS = ["job_post"]
-PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS = ["job_post", "user"]
+PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS = [
+    "job_post", "job_post.address", "job_post.job_category", "user"]
 
 
 class JobApplicationStatus(PyEnum):
@@ -79,7 +80,7 @@ class JobApplication(BaseModel):
         return await cls.filter_by(session=session, user_id=user.id, relations=JOB_APPLICATION_DETAIL_RELATIONS)
 
     @classmethod
-    async def get_from_company_and_job_post(cls: Type["JobApplication"], session: AsyncSession, job_post: "JobPost") -> Optional[Sequence["JobApplication"]]:
+    async def get_from_job_post(cls: Type["JobApplication"], session: AsyncSession, job_post: "JobPost") -> Optional[Sequence["JobApplication"]]:
         return await cls.filter_by(session=session, job_post_id=job_post.id, relations=PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS)
 
     @classmethod
@@ -150,8 +151,8 @@ class JobApplication(BaseModel):
         self.application_status = JobApplicationStatus.WITHDRAWN
         return await self.save(session=session)
 
-    async def with_detail_relations(self, session: AsyncSession) -> "JobApplication":
-        return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS)
+    async def with_detail_relations(self, session: AsyncSession, is_private: bool = False) -> "JobApplication":
+        return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS if is_private else PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS)
 
     def is_owned_by(self: "JobApplication", user: "User"):
         return self.user_id == user.id
