@@ -17,7 +17,7 @@ job_post_service = JobPostService()
 job_application_service = JobApplicationService()
 
 
-@router.get("/", status_code=200, response_model=list[CompanyJobApplicationResponseModel])
+@router.get("/", status_code=200, response_model=CompanyJobApplicationResponseModel)
 async def get_application_details(
     company_id: int,
     job_post_id: int,
