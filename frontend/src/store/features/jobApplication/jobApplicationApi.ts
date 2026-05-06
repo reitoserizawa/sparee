@@ -10,6 +10,7 @@ import {
     type GetJobApplicationsFromJobPostRequest,
     type CompanyJobApplication,
     type GetJobApplicationDetailsRequest,
+    type SimpleCompanyJobApplication,
 } from './types';
 
 const jobApplicationApi = baseApi.injectEndpoints({
@@ -83,12 +84,15 @@ const jobApplicationApi = baseApi.injectEndpoints({
             }),
             providesTags: [{ type: 'JobApplication', id: 'LIST' }],
         }),
-        getJobApplicationFromJobPost: builder.query<CompanyJobApplication[], GetJobApplicationsFromJobPostRequest>({
+        getJobApplicationFromJobPost: builder.query<
+            SimpleCompanyJobApplication[],
+            GetJobApplicationsFromJobPostRequest
+        >({
             query: ({ companyId, jobPostId }) => ({
                 url: `/companies/${companyId}/job-posts/${jobPostId}/applications`,
             }),
         }),
-        getJobApplicationDetails: builder.query<CompanyJobApplication[], GetJobApplicationDetailsRequest>({
+        getJobApplicationDetails: builder.query<CompanyJobApplication, GetJobApplicationDetailsRequest>({
             query: ({ companyId, jobPostId, jobApplicationId }) => ({
                 url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}`,
             }),
