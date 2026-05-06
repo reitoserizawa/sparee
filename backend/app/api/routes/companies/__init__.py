@@ -8,5 +8,6 @@ router = APIRouter()
 router.include_router(create_company_router, prefix="", tags=["companies"])
 router.include_router(get_company_details_router,
                       prefix="/{company_id}", tags=["companies"])
+
 router.include_router(job_posts_router,
                       prefix="/{company_id}/job-posts", tags=["companies"])
