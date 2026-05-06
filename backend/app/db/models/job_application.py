@@ -152,7 +152,7 @@ class JobApplication(BaseModel):
         return await self.save(session=session)
 
     async def with_detail_relations(self, session: AsyncSession, is_private: bool = False) -> "JobApplication":
-        return await self.with_relations(session=session, relations=JOB_APPLICATION_DETAIL_RELATIONS if is_private else PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS)
+        return await self.with_relations(session=session, relations=PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS if is_private else JOB_APPLICATION_DETAIL_RELATIONS)
 
     def is_owned_by(self: "JobApplication", user: "User"):
         return self.user_id == user.id
