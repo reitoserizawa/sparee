@@ -88,6 +88,20 @@ class JobApplication(BaseModel):
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 
     @classmethod
+    async def get_from_user_and_company(cls: Type["JobApplication"], session: AsyncSession, user: "User", company: "Company") -> Optional[Sequence["JobApplication"]]:
+        from app.db.models.job_post import JobPost
+
+        return await cls.filter_via_join(
+            session=session,
+            join_model=JobPost,
+            where=[
+                cls.user_id == user.id,
+                JobPost.company_id == company.id,
+            ],
+            relations=PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS,
+        )
+
+    @classmethod
     async def get_active_application(cls: Type["JobApplication"], session: AsyncSession, user: "User", job_post: "JobPost") -> Optional["JobApplication"]:
         return await cls.find_one_by(session=session, user_id=user.id, job_post_id=job_post.id, where=[JobApplication.application_status.in_(ACTIVE_STATUSES)])
 

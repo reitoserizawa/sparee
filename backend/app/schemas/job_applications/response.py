@@ -35,10 +35,26 @@ class SimpleJobApplicationResponseModel(JobApplicationBaseModel):
     }
 
 
+class CompanyJobApplicationHistoryResponseModel(JobApplicationBaseModel):
+    id: int = Field(..., frozen=True)
+    job_post: CompanyJobPostResponseModel = Field(..., frozen=True)
+
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
 class CompanyJobApplicationResponseModel(JobApplicationBaseModel):
     id: int = Field(..., frozen=True)
     job_post: CompanyJobPostResponseModel = Field(..., frozen=True)
     user: SimpleUserResponseModel | None = Field(default=None, frozen=True)
+
+    history: list["CompanyJobApplicationHistoryResponseModel"] | None = Field(
+        default=None, frozen=True)
+
     created_at: datetime
     updated_at: datetime
 
