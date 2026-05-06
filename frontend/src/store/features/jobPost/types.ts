@@ -31,10 +31,6 @@ export interface JobPost {
     created_at: string;
 }
 
-export interface CompanyJobPost extends JobPost {
-    application_count: number;
-}
-
 export interface SimpleJobPost {
     id: number;
     title: string;
@@ -45,6 +41,15 @@ export interface SimpleJobPost {
     salary_type: string;
     application_status?: string;
     created_at: string;
+}
+
+export interface CompanyJobPost extends SimpleJobPost {
+    job_category: JobPostCategory;
+    address: Address;
+}
+
+export interface SimpleCompanyJobPost extends SimpleJobPost {
+    application_count: number;
 }
 
 interface JobPostCategory {
