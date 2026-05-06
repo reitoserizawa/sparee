@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
 from app.api.dependencies.company_member_required import company_member_required
 
-from app.schemas.job_applications.response import CompanyJobApplicationResponseModel
+from app.schemas.job_applications.response import CompanySimpleJobApplicationResponseModel
 from app.services.company_service import CompanyService
 from app.services.job_application_service import JobApplicationService
 from app.services.job_post_service import JobPostService
@@ -17,7 +17,7 @@ job_post_service = JobPostService()
 job_application_service = JobApplicationService()
 
 
-@router.get("/", status_code=200, response_model=list[CompanyJobApplicationResponseModel])
+@router.get("/", status_code=200, response_model=list[CompanySimpleJobApplicationResponseModel])
 async def get_applications(
     company_id: int,
     job_post_id: int,
