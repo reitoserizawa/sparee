@@ -9,6 +9,7 @@ import {
     type JobApplicationActivityDateRange,
     type GetJobApplicationsFromJobPostRequest,
     type CompanyJobApplication,
+    type GetJobApplicationDetailsRequest,
 } from './types';
 
 const jobApplicationApi = baseApi.injectEndpoints({
@@ -87,6 +88,11 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 url: `/companies/${companyId}/job-posts/${jobPostId}/applications`,
             }),
         }),
+        getJobApplicationDetails: builder.query<CompanyJobApplication[], GetJobApplicationDetailsRequest>({
+            query: ({ companyId, jobPostId, jobApplicationId }) => ({
+                url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}`,
+            }),
+        }),
     }),
 });
 
@@ -97,4 +103,5 @@ export const {
     useChangeJobApplicationStatusMutation,
     useGetJobApplicationActivityQuery,
     useGetJobApplicationFromJobPostQuery,
+    useGetJobApplicationDetailsQuery,
 } = jobApplicationApi;

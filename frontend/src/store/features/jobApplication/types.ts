@@ -40,6 +40,12 @@ export interface GetJobApplicationsFromJobPostRequest {
     jobPostId: number;
 }
 
+export interface GetJobApplicationDetailsRequest {
+    companyId: number;
+    jobPostId: number;
+    jobApplicationId: number;
+}
+
 export interface DeleteJobApplicationRequest {
     jobApplicationId: number;
 }
