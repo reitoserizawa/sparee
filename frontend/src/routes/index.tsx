@@ -10,6 +10,7 @@ import JobApplicationsPage from '../components/pages/jobApplication';
 import CompanyRegisterPage from '../components/pages/CompanyRegister';
 import CompanyJobPostManagementPage from '../components/pages/companyJobPostManagementPage';
 import CompanyJobApplicationManagementPage from '../components/pages/companyJobApplicationManagementPage';
+import JobApplicationDetailsPage from '../components/pages/jobApplicationDetails';
 
 const AppRoutes = () => {
     return (
@@ -27,6 +28,10 @@ const AppRoutes = () => {
                             <Route
                                 path='/companies/:companyId/job-posts/:jobPostId'
                                 element={<CompanyJobApplicationManagementPage />}
+                            />
+                            <Route
+                                path='/companies/:companyId/job-posts/:jobPostId/applications/:applicationId'
+                                element={<JobApplicationDetailsPage />}
                             />
                             <Route path='/applications' element={<JobApplicationsPage />} />
                         </Route>
