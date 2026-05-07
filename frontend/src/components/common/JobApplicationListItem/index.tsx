@@ -1,11 +1,7 @@
 import React from 'react';
 import { format } from 'date-fns';
-import type { JobApplication } from '../../../store/features/jobApplication/types';
-import { STATUS_COLORS } from '../../../constants/STATUS_COLORS';
-
-interface JobApplicationListItemProps {
-    jobApplication: JobApplication;
-}
+import { STATUS_CONFIG } from '../../../constants/STATUS_COLORS';
+import type { JobApplicationListItemProps } from './types';
 
 const JobApplicationListItem: React.FC<JobApplicationListItemProps> = ({ jobApplication }) => {
     const {
@@ -28,7 +24,7 @@ const JobApplicationListItem: React.FC<JobApplicationListItemProps> = ({ jobAppl
                 )}
             </div>
 
-            <div className={`px-3 py-1 rounded-full text-sm capitalize ${STATUS_COLORS[applicationStatus]}`}>
+            <div className={`px-3 py-1 rounded-full text-sm capitalize ${STATUS_CONFIG[applicationStatus].badge}`}>
                 {applicationStatus}
             </div>
         </div>
