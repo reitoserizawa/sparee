@@ -1,4 +1,5 @@
-import type { SimpleJobPost } from '../jobPost/types';
+import type { AddressResponse } from '../company/type';
+import type { JobPost, SimpleJobPost } from '../jobPost/types';
 import type { SimpleUserResponse } from '../user/types';
 
 export type JobApplicationStatus = 'applied' | 'rejected' | 'reviewing' | 'withdrawn' | 'accepted';
@@ -22,9 +23,13 @@ export interface SimpleJobApplication {
 }
 
 export interface CompanyJobApplication extends JobApplication {
+    job_post: JobPost;
     user: SimpleUserResponse;
-    history: JobApplication[];
+    address: AddressResponse;
+    history: CompanyJobApplicationWithoutUser[];
 }
+
+export type CompanyJobApplicationWithoutUser = Omit<CompanyJobApplication, 'user'>;
 
 export interface SimpleCompanyJobApplication {
     id: number;
