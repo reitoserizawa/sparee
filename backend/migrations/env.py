@@ -141,12 +141,10 @@ def run_migrations_online():
 
 def _run_seeds():
     import asyncio
-    from app.db.session import AsyncSessionLocal
-    from app.db.seeds.job_category_test import seed_job_categories
+    from app.db.seeds.run import run
 
     async def _seed():
-        async with AsyncSessionLocal() as session:
-            await seed_job_categories(session)
+        await run()
 
     logger.info("Running database seeds...")
     try:
