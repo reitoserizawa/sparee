@@ -136,6 +136,25 @@ def run_migrations_online():
         with context.begin_transaction():
             context.run_migrations()
 
+    _run_seeds()
+
+
+def _run_seeds():
+    import asyncio
+    from app.db.session import AsyncSessionLocal
+    from app.db.seeds.job_category_test import seed_job_categories
+
+    async def _seed():
+        async with AsyncSessionLocal() as session:
+            await seed_job_categories(session)
+
+    logger.info("Running database seeds...")
+    try:
+        asyncio.run(_seed())
+        logger.info("Database seeds completed.")
+    except Exception:
+        logger.exception("Seed step failed — migrations were still applied.")
+
 
 # -------------------------------------------------
 # Run
