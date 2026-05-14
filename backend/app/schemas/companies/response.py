@@ -14,3 +14,14 @@ class CompanyResponseModel(CompanyBaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class SimpleCompanyResponseModel(CompanyBaseModel):
+    id: int = Field(..., frozen=True)
+
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
