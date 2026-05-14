@@ -1,6 +1,6 @@
 import baseApi from '../base/baseApi';
 
-import type { CompanyCreateState, CompanyResponse } from './type';
+import type { CompanyCreateState, CompanyResponse, SimpleCompanyResponse } from './type';
 
 const companyApi = baseApi.injectEndpoints({
     endpoints: builder => ({
@@ -12,7 +12,14 @@ const companyApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Company'],
         }),
+        getCompanies: builder.query<SimpleCompanyResponse[], null>({
+            query: () => ({
+                url: '/companies',
+                method: 'GET',
+            }),
+            providesTags: ['Company'],
+        }),
     }),
 });
 
-export const { useCreateCompanyMutation } = companyApi;
+export const { useCreateCompanyMutation, useGetCompaniesQuery } = companyApi;

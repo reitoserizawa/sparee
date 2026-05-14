@@ -21,6 +21,13 @@ export interface CompanyResponse {
     updated_at: string;
 }
 
+export interface SimpleCompanyResponse {
+    id: number;
+    name: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AddressResponse {
     id: number;
     full_address: string;
