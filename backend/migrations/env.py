@@ -1,5 +1,7 @@
 from app.db.models import *
 from app.db.database import Base
+from app.core.config import SYNC_DATABASE_URL
+
 import os
 import sys
 import logging
@@ -27,11 +29,6 @@ logger = logging.getLogger("alembic.env")
 # -------------------
 # Database URLs
 # -------------------
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL not set")
-SYNC_DATABASE_URL = DATABASE_URL.replace(
-    "postgresql+asyncpg://", "postgresql+psycopg2://")
 
 config.set_main_option("sqlalchemy.url", SYNC_DATABASE_URL)
 
