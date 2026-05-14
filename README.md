@@ -72,13 +72,9 @@ npm run dev</pre>
 
 <h3>Backend Setup (Dev)</h3>
 <pre>cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-docker compose up --build</pre>
-
-<h3>Database Setup</h3>
-<pre># TBD</pre>
+cp .env.example .env          # fill in your values
+docker compose up --build -d
+docker compose exec web alembic --config migrations/alembic.ini upgrade head</pre>
 
 <h2 id="folder-structure">Folder Structure</h2>
 <pre>
