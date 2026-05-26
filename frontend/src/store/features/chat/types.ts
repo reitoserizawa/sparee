@@ -5,6 +5,8 @@ export interface Message {
     sender_id: number;
     body: string;
     timestamp: string;
+    is_read: boolean;
+    read_at: string | null;
 }
 
 export interface Conversation {
