@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship, Mapped, mapped_column
@@ -39,7 +40,7 @@ class Conversation(BaseModel):
         back_populates="conversation",
     )
 
-    created_at: Mapped[DateTime] = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=BaseModel.set_utc_now, nullable=False)
 
     __table_args__ = (
