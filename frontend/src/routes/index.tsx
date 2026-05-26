@@ -11,6 +11,7 @@ import CompanyRegisterPage from '../components/pages/CompanyRegister';
 import CompanyJobPostManagementPage from '../components/pages/companyJobPostManagementPage';
 import CompanyJobApplicationManagementPage from '../components/pages/companyJobApplicationManagementPage';
 import JobApplicationDetailsPage from '../components/pages/jobApplicationDetails';
+import MessagesPage from '../components/pages/messagePage';
 
 const AppRoutes = () => {
     return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
                                 element={<JobApplicationDetailsPage />}
                             />
                             <Route path='/applications' element={<JobApplicationsPage />} />
+                            <Route path='/messages' element={<MessagesPage />} />
                         </Route>
                     </Route>
                 </Route>
