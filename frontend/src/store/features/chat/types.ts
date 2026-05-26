@@ -14,5 +14,6 @@ export interface Conversation {
     applicant: SimpleUserResponse;
     participants: SimpleUserResponse[];
     messages: Message[];
+    unread_count: number;
     created_at: string;
 }
