@@ -38,7 +38,13 @@ const jobPostApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: jobPostData,
             }),
-            invalidatesTags: ['JobPost'],
+            invalidatesTags: result =>
+                result
+                    ? [
+                          { type: 'JobPost', id: result.id },
+                          { type: 'JobPost', id: 'LIST' },
+                      ]
+                    : [{ type: 'JobPost', id: 'LIST' }],
         }),
     }),
 });
