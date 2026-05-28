@@ -63,12 +63,9 @@ class JobApplicationService:
         )
 
     @staticmethod
-    async def change_application_status(session: AsyncSession, id: int, new_status: str, user: "User") -> "JobApplication":
+    async def change_application_status(session: AsyncSession, id: int, new_status: str) -> "JobApplication":
         from app.db.models.job_application import JobApplication
         job_application = await JobApplication.get_or_raise(session=session, id=id)
-        if not job_application.is_owned_by(user=user):
-            raise HTTPException(
-                status_code=403, detail="User is not authorized to delete the application")
         validated_status = JobApplicationService._validate_application_status(
             status=new_status)
         job_application.validate_status_change(new_status=validated_status)
