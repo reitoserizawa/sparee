@@ -4,7 +4,7 @@ import {
     type CreateJobApplicationRequest,
     type DeleteJobApplicationRequest,
     type SimpleJobApplication,
-    type UpdateJobApplicationStatusRequest,
+    type ChangeJobApplicationStatusRequest,
     type JobApplicationActivityDay,
     type JobApplicationActivityDateRange,
     type GetJobApplicationsFromJobPostRequest,
@@ -59,23 +59,6 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 ];
             },
         }),
-        changeJobApplicationStatus: builder.mutation<SimpleJobApplication, UpdateJobApplicationStatusRequest>({
-            query: ({ jobApplicationId, newStatus }) => ({
-                url: `/job-applications/${jobApplicationId}`,
-                method: 'PATCH',
-                body: {
-                    new_status: newStatus,
-                },
-            }),
-            invalidatesTags: result => {
-                if (!result) return [{ type: 'JobApplication', id: 'LIST' }];
-                return [
-                    { type: 'JobApplication', id: result.id },
-                    { type: 'JobApplication', id: 'LIST' },
-                    { type: 'JobPost', id: result.job_post_id },
-                ];
-            },
-        }),
         getJobApplicationActivity: builder.query<JobApplicationActivityDay[], JobApplicationActivityDateRange>({
             query: ({ start, end }) => ({
                 url: `/job-applications/activity`,
@@ -96,6 +79,23 @@ const jobApplicationApi = baseApi.injectEndpoints({
             query: ({ companyId, jobPostId, jobApplicationId }) => ({
                 url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}`,
             }),
+        }),
+        changeJobApplicationStatus: builder.mutation<SimpleJobApplication, ChangeJobApplicationStatusRequest>({
+            query: ({ companyId, jobPostId, jobApplicationId, newStatus }) => ({
+                url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}`,
+                method: 'PATCH',
+                body: {
+                    new_status: newStatus,
+                },
+            }),
+            invalidatesTags: result => {
+                if (!result) return [{ type: 'JobApplication', id: 'LIST' }];
+                return [
+                    { type: 'JobApplication', id: result.id },
+                    { type: 'JobApplication', id: 'LIST' },
+                    { type: 'JobPost', id: result.job_post_id },
+                ];
+            },
         }),
     }),
 });
