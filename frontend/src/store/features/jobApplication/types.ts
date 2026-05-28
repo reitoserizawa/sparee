@@ -56,13 +56,15 @@ export interface GetJobApplicationDetailsRequest {
     jobApplicationId: number;
 }
 
-export interface DeleteJobApplicationRequest {
-    jobApplicationId: number;
-}
-
-export interface UpdateJobApplicationStatusRequest {
+export interface ChangeJobApplicationStatusRequest {
+    companyId: number;
+    jobPostId: number;
     jobApplicationId: number;
     newStatus: JobApplicationStatus;
+}
+
+export interface DeleteJobApplicationRequest {
+    jobApplicationId: number;
 }
 
 export interface JobApplicationActivityDateRange {
