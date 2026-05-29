@@ -10,7 +10,10 @@ import CalendarIcon from '../../../assets/icons/CalendarIcon';
 import AccountIcon from '../../../assets/icons/AccountIcon';
 import FileIcon from '../../../assets/icons/FileIcon';
 import CurrentApplicationCard from '../../common/CurrentApplicationCard';
-import { useGetJobApplicationDetailsQuery } from '../../../store/features/jobApplication/jobApplicationApi';
+import {
+    useGetJobApplicationDetailsQuery,
+    useGetJobApplicationHistoryQuery,
+} from '../../../store/features/jobApplication/jobApplicationApi';
 import FullscreenLoader from '../../ui/Loader/FullScreenLoader';
 
 const JobApplicationDetailsPage: React.FC = () => {
@@ -26,8 +29,13 @@ const JobApplicationDetailsPage: React.FC = () => {
         jobPostId: Number(jobPostId),
         jobApplicationId: Number(applicationId),
     });
+    const { data: applicationHistory, isLoading: isApplicationHistoryLoading } = useGetJobApplicationHistoryQuery({
+        companyId: Number(companyId),
+        jobPostId: Number(jobPostId),
+        jobApplicationId: Number(applicationId),
+    });
 
-    if (isApplicationDetailsLoading) {
+    if (isApplicationDetailsLoading || isApplicationHistoryLoading) {
         return <FullscreenLoader withNavBar={true} />;
     }
 
@@ -40,7 +48,7 @@ const JobApplicationDetailsPage: React.FC = () => {
     }
 
     // Derived stats
-    const statusCounts = applicationDetails?.history.reduce(
+    const statusCounts = applicationHistory?.reduce(
         (acc, a) => {
             acc[a.application_status] = (acc[a.application_status] ?? 0) + 1;
             return acc;
@@ -139,15 +147,15 @@ const JobApplicationDetailsPage: React.FC = () => {
                         Application History
                     </h2>
                     <span className='text-xs text-gray-400'>
-                        {applicationDetails.history.length} record{applicationDetails.history.length !== 1 ? 's' : ''}
+                        {applicationHistory?.length} record{applicationHistory?.length !== 1 ? 's' : ''}
                     </span>
                 </div>
 
                 {/* ── Stats row ── */}
                 <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
-                    <StatCard label='Total' value={applicationDetails.history.length} sub='applications' />
-                    <StatCard label='Reviewing' value={statusCounts['reviewing'] ?? 0} sub='in progress' />
-                    <StatCard label='Rejected' value={statusCounts['rejected'] ?? 0} sub='closed' />
+                    <StatCard label='Total' value={applicationHistory?.length ?? 0} sub='applications' />
+                    <StatCard label='Reviewing' value={statusCounts?.['reviewing'] ?? 0} sub='in progress' />
+                    <StatCard label='Rejected' value={statusCounts?.['rejected'] ?? 0} sub='closed' />
                     {/* TODO: add back after migration */}
                     {/* <StatCard label='Last Activity' value={latestActivity} /> */}
                 </div>
@@ -155,15 +163,13 @@ const JobApplicationDetailsPage: React.FC = () => {
                 {/* ── Applications list ── */}
                 <div>
                     <div className='bg-white rounded-2xl border border-gray-200 overflow-hidden'>
-                        {applicationDetails.history.length === 0 ? (
+                        {applicationHistory?.length === 0 ? (
                             <div className='py-16 flex flex-col items-center text-gray-400 gap-2'>
                                 <BriefCaseIcon className='w-8 h-8 text-gray-300' />
-                                <p className='text-sm'>No applications yet</p>
+                                <p className='text-sm'>No other applications yet</p>
                             </div>
                         ) : (
-                            applicationDetails.history.map((app, i) => (
-                                <ApplicationRow key={app.id} app={app} index={i} />
-                            ))
+                            applicationHistory?.map((app, i) => <ApplicationRow key={app.id} app={app} index={i} />)
                         )}
                     </div>
                 </div>
