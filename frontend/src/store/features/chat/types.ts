@@ -4,9 +4,9 @@ export interface Message {
     id: number;
     sender_id: number;
     body: string;
-    timestamp: string;
     is_read: boolean;
     read_at: string | null;
+    created_at: string;
 }
 
 export interface Conversation {

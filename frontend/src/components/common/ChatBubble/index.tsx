@@ -18,7 +18,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isOwn }) => {
                     {message.body}
                 </div>
                 <span className='text-xs text-gray-400 px-1'>
-                    {format(new Date(message.timestamp), 'h:mm a')}
+                    {format(new Date(message.created_at), 'h:mm a')}
                     {isOwn && <span className='ml-1 text-blue-400'>{message.is_read ? '✓✓' : '✓'}</span>}
                 </span>
             </div>

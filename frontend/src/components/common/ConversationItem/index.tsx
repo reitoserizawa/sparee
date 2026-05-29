@@ -28,7 +28,7 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation, isAct
                         {participants[0].username}
                     </span>
                     <span className='text-xs text-gray-400 flex-shrink-0'>
-                        {format(new Date(lastMessage.timestamp), 'MMM d')}
+                        {format(new Date(lastMessage.created_at), 'MMM d')}
                     </span>
                 </div>
                 <div className='flex items-center justify-between gap-2'>
