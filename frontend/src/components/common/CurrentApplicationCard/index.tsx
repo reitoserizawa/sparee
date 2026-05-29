@@ -9,24 +9,40 @@ import { format } from 'date-fns';
 import BuildingIcon from '../../../assets/icons/BuildingIcon';
 import StatusDropdown from '../StatusDropdown/Index';
 import CheckIcon from '../../../assets/icons/CheckIcon';
+import { useChangeJobApplicationStatusMutation } from '../../../store/features/jobApplication/jobApplicationApi';
+import { isErrorWithMessage } from '../../../store/features/base/helpers';
+import Error from '../../ui/Error';
+import { useParams } from 'react-router-dom';
 
-const CurrentApplicationCard: React.FC<CurrentApplicationCardProps> = ({ application, onStatusChange }) => {
+const CurrentApplicationCard: React.FC<CurrentApplicationCardProps> = ({ application }) => {
+    const { companyId } = useParams<{
+        companyId: string;
+        jobPostId: string;
+        applicationId: string;
+    }>();
+
     const [status, setStatus] = useState<JobApplicationStatus>(application.application_status);
-    const [isSaving, setIsSaving] = useState(false);
     const [justSaved, setJustSaved] = useState(false);
+    const [changeStatus, { isLoading: isSaving, isError, error }] = useChangeJobApplicationStatusMutation();
 
-    const cfg = STATUS_CONFIG[status];
+    const cfg = STATUS_CONFIG[status]; // now reactive to changes
 
     const handleStatusChange = async (newStatus: JobApplicationStatus) => {
-        if (newStatus === status) return;
-        setIsSaving(true);
+        if (!companyId || newStatus === status || isSaving) return;
+        const previous = status;
+        setStatus(newStatus);
         try {
-            await onStatusChange(application.id, newStatus);
-            setStatus(newStatus);
+            await changeStatus({
+                companyId: parseInt(companyId),
+                jobPostId: application.job_post.id,
+                jobApplicationId: application.id,
+                newStatus,
+            }).unwrap();
             setJustSaved(true);
             setTimeout(() => setJustSaved(false), 2000);
-        } finally {
-            setIsSaving(false);
+        } catch (e) {
+            console.log('error', e);
+            setStatus(previous); // rollback on failure
         }
     };
 
@@ -71,6 +87,7 @@ const CurrentApplicationCard: React.FC<CurrentApplicationCardProps> = ({ applica
                                 Saved
                             </span>
                         )}
+                        {isError && isErrorWithMessage(error) && <Error message={error?.data?.message} />}
                     </div>
 
                     {/* Right: timestamps */}
