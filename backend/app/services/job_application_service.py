@@ -70,7 +70,8 @@ class JobApplicationService:
             status=new_status)
         job_application.validate_status_change(new_status=validated_status)
         job_application.application_status = validated_status
-        return await job_application.save(session=session)
+        await job_application.save(session=session)
+        return await job_application.with_detail_relations(session=session, is_private=True)
 
     @staticmethod
     async def soft_delete(session: AsyncSession, id: int, user: "User") -> "JobApplication":
@@ -107,6 +108,7 @@ class JobApplicationService:
 
     @staticmethod
     def _validate_application_status(status: str) -> "JobApplicationStatus":
+        from app.db.models.job_application import JobApplicationStatus
         try:
             new_status = JobApplicationStatus(status)
         except ValueError:
