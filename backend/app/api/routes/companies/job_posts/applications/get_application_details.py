@@ -43,6 +43,5 @@ async def get_application_details(
             status_code=403, detail="Job application does not belong to the job post")
 
     application = await application.with_detail_relations(session=session, is_private=True)
-    application.history = await job_application_service.get_from_user_and_company(session=session, user=user, company=company)
 
     return application
