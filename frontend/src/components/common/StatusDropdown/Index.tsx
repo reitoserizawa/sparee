@@ -28,8 +28,11 @@ const StatusDropdown: React.FC<StatusDropdownProps> = ({ current, onChange, isSa
             {open && (
                 <>
                     <div className='fixed inset-0 z-10' onClick={() => setOpen(false)} />
-                    <div className='absolute left-0 top-full mt-1.5 z-20 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden min-w-[160px]'>
-                        {STATUSES.map(status => {
+                    <div
+                        className='absolute left-0 top-full mt-1.5 z-20 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden min-w-[160px]'
+                        onClick={e => e.stopPropagation()} // prevents backdrop from closing before onChange fires
+                    >
+                        {STATUSES.filter(status => status !== current && status !== 'withdrawn').map(status => {
                             const c = STATUS_CONFIG[status];
                             const isActive = status === current;
                             return (
