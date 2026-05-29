@@ -26,7 +26,6 @@ export interface CompanyJobApplication extends JobApplication {
     job_post: JobPost;
     user: SimpleUserResponse;
     address: AddressResponse;
-    history: CompanyJobApplicationWithoutUser[];
 }
 
 export type CompanyJobApplicationWithoutUser = Omit<CompanyJobApplication, 'user'>;
@@ -51,6 +50,12 @@ export interface GetJobApplicationsFromJobPostRequest {
 }
 
 export interface GetJobApplicationDetailsRequest {
+    companyId: number;
+    jobPostId: number;
+    jobApplicationId: number;
+}
+
+export interface GetJobApplicationHistoryRequest {
     companyId: number;
     jobPostId: number;
     jobApplicationId: number;

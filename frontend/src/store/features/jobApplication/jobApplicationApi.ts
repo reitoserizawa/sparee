@@ -11,6 +11,7 @@ import {
     type CompanyJobApplication,
     type GetJobApplicationDetailsRequest,
     type SimpleCompanyJobApplication,
+    type GetJobApplicationHistoryRequest,
 } from './types';
 
 const jobApplicationApi = baseApi.injectEndpoints({
@@ -80,6 +81,11 @@ const jobApplicationApi = baseApi.injectEndpoints({
                 url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}`,
             }),
         }),
+        getJobApplicationHistory: builder.query<CompanyJobApplication[], GetJobApplicationHistoryRequest>({
+            query: ({ companyId, jobPostId, jobApplicationId }) => ({
+                url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}/history`,
+            }),
+        }),
         changeJobApplicationStatus: builder.mutation<SimpleJobApplication, ChangeJobApplicationStatusRequest>({
             query: ({ companyId, jobPostId, jobApplicationId, newStatus }) => ({
                 url: `/companies/${companyId}/job-posts/${jobPostId}/applications/${jobApplicationId}`,
@@ -108,4 +114,5 @@ export const {
     useGetJobApplicationActivityQuery,
     useGetJobApplicationFromJobPostQuery,
     useGetJobApplicationDetailsQuery,
+    useGetJobApplicationHistoryQuery,
 } = jobApplicationApi;
