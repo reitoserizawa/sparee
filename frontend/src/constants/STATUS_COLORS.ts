@@ -1,6 +1,6 @@
 import type { JobApplicationStatus } from '../store/features/jobApplication/types';
 
-export const STATUSES: JobApplicationStatus[] = ['applied', 'reviewing', 'rejected', 'withdrawn'];
+export const STATUSES: JobApplicationStatus[] = ['applied', 'reviewing', 'rejected', 'withdrawn', 'accepted'];
 
 export const STATUS_CONFIG: Record<
     JobApplicationStatus,
