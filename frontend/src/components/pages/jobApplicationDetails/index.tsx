@@ -144,7 +144,7 @@ const JobApplicationDetailsPage: React.FC = () => {
                 <div className='flex items-center justify-between mb-3'>
                     <h2 className='text-sm font-semibold text-gray-900 flex items-center gap-2'>
                         <FileIcon className='w-4 h-4 text-gray-400' />
-                        Application History
+                        Other Applications
                     </h2>
                     <span className='text-xs text-gray-400'>
                         {applicationHistory?.length} record{applicationHistory?.length !== 1 ? 's' : ''}
