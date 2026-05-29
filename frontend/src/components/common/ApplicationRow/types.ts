@@ -2,6 +2,5 @@ import type { CompanyJobApplicationWithoutUser } from '../../../store/features/j
 
 export interface ApplicationRowProps {
     app: CompanyJobApplicationWithoutUser;
-    onEdit: (app: CompanyJobApplicationWithoutUser) => void;
     index: number;
 }

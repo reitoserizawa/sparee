@@ -1,15 +1,16 @@
 import React from 'react';
 import { format } from 'date-fns';
-
 import { useNavigate } from 'react-router-dom';
-import StatusBadge from '../StatusBadge';
+
 import type { ApplicationRowProps } from './types';
+
 import BriefCaseIcon from '../../../assets/icons/BriefCaseIcon';
 import CalendarIcon from '../../../assets/icons/CalendarIcon';
 import ClockIcon from '../../../assets/icons/ClockIcon';
-import ChevronRightIcon from '../../../assets/icons/ChevronRightIcon';
 
-const ApplicationRow: React.FC<ApplicationRowProps> = ({ app, onEdit, index }) => {
+import StatusBadge from '../StatusBadge';
+
+const ApplicationRow: React.FC<ApplicationRowProps> = ({ app, index }) => {
     const navigate = useNavigate();
 
     return (
@@ -56,7 +57,7 @@ const ApplicationRow: React.FC<ApplicationRowProps> = ({ app, onEdit, index }) =
             </div>
 
             {/* Right */}
-            <div className='flex items-center gap-2 flex-shrink-0'>
+            {/* <div className='flex items-center gap-2 flex-shrink-0'>
                 <button
                     onClick={e => {
                         e.stopPropagation();
@@ -68,7 +69,7 @@ const ApplicationRow: React.FC<ApplicationRowProps> = ({ app, onEdit, index }) =
                     Edit Status
                 </button>
                 <ChevronRightIcon className='w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors' />
-            </div>
+            </div> */}
         </div>
     );
 };

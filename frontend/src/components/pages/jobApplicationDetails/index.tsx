@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import { useNavigate, useParams } from 'react-router-dom';
-import type {
-    CompanyJobApplicationWithoutUser,
-    JobApplicationStatus,
-} from '../../../store/features/jobApplication/types';
 import StatCard from '../../common/StatCard';
 import ApplicationRow from '../../common/ApplicationRow';
-import EditStatusModal from '../../common/EditStatusModal';
 import ArrowLeftIcon from '../../../assets/icons/ArrowLeftIcon';
 import BriefCaseIcon from '../../../assets/icons/BriefCaseIcon';
 import MailIcon from '../../../assets/icons/MailIcon';
@@ -19,8 +14,6 @@ import { useGetJobApplicationDetailsQuery } from '../../../store/features/jobApp
 import FullscreenLoader from '../../ui/Loader/FullScreenLoader';
 
 const JobApplicationDetailsPage: React.FC = () => {
-    const [modalOpen, setModalOpen] = useState(false);
-
     const navigate = useNavigate();
     const { companyId, jobPostId, applicationId } = useParams<{
         companyId: string;
@@ -35,7 +28,7 @@ const JobApplicationDetailsPage: React.FC = () => {
     });
 
     if (isApplicationDetailsLoading) {
-        <FullscreenLoader withNavBar={true} />;
+        return <FullscreenLoader withNavBar={true} />;
     }
 
     if (!applicationDetails) {
@@ -45,19 +38,6 @@ const JobApplicationDetailsPage: React.FC = () => {
             </div>
         );
     }
-
-    const openEdit = (app: CompanyJobApplicationWithoutUser) => {
-        setModalOpen(true);
-    };
-
-    const closeEdit = () => {
-        setModalOpen(false);
-        setTimeout(() => null, 200);
-    };
-
-    const updateStatus = async (applicationId: number, newStatus: JobApplicationStatus) => {
-        setTimeout(() => null, 200);
-    };
 
     // Derived stats
     const statusCounts = applicationDetails?.history.reduce(
@@ -151,7 +131,7 @@ const JobApplicationDetailsPage: React.FC = () => {
                     </h2>
                 </div>
                 {/* ── Current application ── */}
-                <CurrentApplicationCard application={applicationDetails} onStatusChange={updateStatus} />
+                <CurrentApplicationCard application={applicationDetails} />
 
                 <div className='flex items-center justify-between mb-3'>
                     <h2 className='text-sm font-semibold text-gray-900 flex items-center gap-2'>
@@ -182,20 +162,20 @@ const JobApplicationDetailsPage: React.FC = () => {
                             </div>
                         ) : (
                             applicationDetails.history.map((app, i) => (
-                                <ApplicationRow key={app.id} app={app} index={i} onEdit={openEdit} />
+                                <ApplicationRow key={app.id} app={app} index={i} />
                             ))
                         )}
                     </div>
                 </div>
             </div>
 
-            <EditStatusModal
+            {/* <EditStatusModal
                 open={modalOpen}
                 application={applicationDetails}
                 onClose={closeEdit}
                 onSave={updateStatus}
                 isSaving={false}
-            />
+            /> */}
         </div>
     );
 };
