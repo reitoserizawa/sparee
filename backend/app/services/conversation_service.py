@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.conversations.create import ConversationCreateModel
+
+from backend.app.db.models import job_post
 
 if TYPE_CHECKING:
     from app.db.models.user import User
+    from app.db.models.job_post import JobPost
     from app.db.models.conversation import Conversation
     from app.db.models.conversation_participant import ConversationParticipant
 
@@ -21,6 +23,12 @@ class ConversationService:
             f"User {user.id} is not a participant of conversation {id}")
 
     @staticmethod
+    async def get_from_job_post_and_applicant(session: AsyncSession, job_post_id: int, applicant_id: int) -> Optional["Conversation"]:
+        from app.db.models.conversation import Conversation
+        conversation = await Conversation.get_from_job_post_and_applicant(session=session, job_post_id=job_post_id, applicant_id=applicant_id)
+        return conversation
+
+    @staticmethod
     async def get_participants(session: AsyncSession, id: int, user: "User") -> "ConversationParticipant":
         from app.db.models.conversation import Conversation
         from app.db.models.conversation_participant import ConversationParticipant
@@ -34,11 +42,11 @@ class ConversationService:
             f"User {user.id} is not a participant of conversation {id}")
 
     @staticmethod
-    async def create_conversation(session: AsyncSession, data: ConversationCreateModel) -> "Conversation":
+    async def create_conversation(session: AsyncSession, job_post_id: int, applicant_id: int) -> "Conversation":
         from app.db.models.conversation import Conversation
         conversation = Conversation(
-            job_post_id=data.job_post_id,
-            applicant_id=data.applicant_id
+            job_post_id=job_post_id,
+            applicant_id=applicant_id
         )
         await conversation.save(session)
         conversation = await conversation.with_detail_relations(session=session)
