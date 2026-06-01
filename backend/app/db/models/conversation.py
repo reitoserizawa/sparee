@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Type
 from sqlalchemy import Integer, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -50,6 +50,10 @@ class Conversation(BaseModel):
             name="unique_applicant_per_job_post"
         ),
     )
+
+    @classmethod
+    async def get_from_job_post_and_applicant(cls: Type["Conversation"], session: AsyncSession, job_post_id: int, applicant_id: int) -> Optional["Conversation"]:
+        return await cls.find_one_by(session=session, job_post_id=job_post_id, applicant_id=applicant_id)
 
     async def with_detail_relations(self, session: AsyncSession) -> "Conversation":
         return await self.with_relations(session=session, relations=CONVERSATION_DETAIL_RELATIONS)
