@@ -122,7 +122,7 @@ class BaseModel(Base):
         return result.scalar_one_or_none()
 
     @classmethod
-    async def get_all(cls: Type[T], session: AsyncSession, include_deleted: bool = False) -> Optional[Sequence[T]]:
+    async def get_all(cls: Type[T], session: AsyncSession, include_deleted: bool = False) -> Sequence[T]:
         stmt = select(cls)
         if not include_deleted:
             stmt = cls._soft_delete_filter(stmt)
@@ -144,7 +144,7 @@ class BaseModel(Base):
         return result.scalar_one_or_none()
 
     @classmethod
-    async def filter_by(cls: Type[T], session: AsyncSession, where: Optional[Iterable[ColumnElement[bool]]] = None, relations: Optional[list[str]] = None, options: Optional[list] = None, include_deleted: bool = False, **kwargs) -> Optional[Sequence[T]]:
+    async def filter_by(cls: Type[T], session: AsyncSession, where: Optional[Iterable[ColumnElement[bool]]] = None, relations: Optional[list[str]] = None, options: Optional[list] = None, include_deleted: bool = False, **kwargs) -> Sequence[T]:
         stmt = cls._set_stmt(where=where, relations=relations, options=options)
 
         if kwargs:
@@ -188,7 +188,7 @@ class BaseModel(Base):
         limit: Optional[int] = None,
         offset: Optional[int] = None,
         relations: Optional[list[str]] = None,
-    ) -> Optional[Sequence[T]]:
+    ) -> Sequence[T]:
         stmt = cls._set_stmt(
             join_model=join_model,
             where=where,
