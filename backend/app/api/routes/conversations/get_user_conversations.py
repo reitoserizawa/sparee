@@ -5,7 +5,7 @@ from app.api.dependencies.user_required import user_required
 from app.db.session import get_session
 from app.db.models import User
 from app.services.conversation_service import ConversationService
-from backend.app.schemas.conversations.response import ConversationResponseModel
+from app.schemas.conversations.response import ConversationResponseModel
 
 router = APIRouter()
 conversation_service = ConversationService()

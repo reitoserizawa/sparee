@@ -10,7 +10,7 @@ from app.schemas.job_applications import JobApplicationActivityResponseModel
 if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.job_post import JobPost
-    from backend.app.db.models.company import Company
+    from app.db.models.company import Company
 
 JOB_APPLICATION_DETAIL_RELATIONS = ["job_post"]
 PRIVATE_JOB_APPLICATION_DETAIL_RELATIONS = [

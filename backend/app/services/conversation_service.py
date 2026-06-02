@@ -2,8 +2,7 @@ from typing import TYPE_CHECKING, Optional, Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.db.models import job_post
-from backend.app.services.conversation_participant import ConversationParticipantService
+from app.services.conversation_participant import ConversationParticipantService
 
 if TYPE_CHECKING:
     from app.db.models.user import User
