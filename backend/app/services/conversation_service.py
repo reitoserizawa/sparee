@@ -6,9 +6,7 @@ from app.services.conversation_participant import ConversationParticipantService
 
 if TYPE_CHECKING:
     from app.db.models.user import User
-    from app.db.models.job_post import JobPost
     from app.db.models.conversation import Conversation
-    from app.db.models.conversation_participant import ConversationParticipant
 
 
 class ConversationService:
@@ -48,6 +46,8 @@ class ConversationService:
 
     @staticmethod
     async def create_conversation(session: AsyncSession, job_post_id: int, applicant_id: int) -> "Conversation":
+        from app.db.models.conversation import Conversation
+
         conversation = Conversation(
             job_post_id=job_post_id,
             applicant_id=applicant_id
