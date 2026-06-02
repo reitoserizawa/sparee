@@ -50,6 +50,9 @@ class CompanyMember(BaseModel):
 
     @classmethod
     async def get_from_job_post(cls: Type["CompanyMember"], session: AsyncSession, job_post_id: int) -> Sequence["CompanyMember"]:
+        from app.db.models.company import Company
+        from app.db.models.job_post import JobPost
+
         stmt = (
             select(CompanyMember)
             .join(Company, Company.id == CompanyMember.company_id)
