@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Type, Optional, Sequence
-from sqlalchemy import Integer, ForeignKey, Sequence, UniqueConstraint
+from typing import TYPE_CHECKING, Sequence, Type, Optional
+from sqlalchemy import Integer, ForeignKey, UniqueConstraint
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
@@ -32,18 +33,28 @@ class ConversationParticipant(BaseModel):
     )
 
     @classmethod
-    async def get_from_conversation(cls: Type["ConversationParticipant"], session: AsyncSession, conversation: "Conversation") -> Optional[Sequence["ConversationParticipant"]]:
-        cps = await cls.filter_by(
-            session=session,
-            conversation_id=conversation.id
-        )
-        return cps
+    async def get_from_conversation(
+        cls: Type["ConversationParticipant"], session: AsyncSession, conversation: "Conversation"
+    ) -> Sequence["ConversationParticipant"]:
+        cps = await cls.filter_by(session=session, conversation_id=conversation.id)
+
+        return cps if cps else []
 
     @classmethod
-    async def get_from_user_and_conversation(cls: Type["ConversationParticipant"], session: AsyncSession, user: "User", conversation: "Conversation") -> Optional["ConversationParticipant"]:
+    async def get_from_user_and_conversation(cls: Type["ConversationParticipant"], session: AsyncSession, user_id: int, conversation_id: int) -> Optional["ConversationParticipant"]:
         cp = await cls.find_one_by(
             session=session,
-            user_id=user.id,
-            conversation_id=conversation.id
+            user_id=user_id,
+            conversation_id=conversation_id
         )
         return cp
+
+    @staticmethod
+    async def bulk_add_participants(
+        session: AsyncSession, conversation_id: int, user_ids: list[int]
+    ) -> None:
+        stmt = insert(ConversationParticipant).values([
+            {"conversation_id": conversation_id, "user_id": uid}
+            for uid in user_ids
+        ]).on_conflict_do_nothing()
+        await session.execute(stmt)
