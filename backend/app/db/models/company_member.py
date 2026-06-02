@@ -1,6 +1,6 @@
-from typing import Optional, Type, TYPE_CHECKING
+from typing import Optional, Sequence, Type, TYPE_CHECKING
 
-from sqlalchemy import Integer, ForeignKey, UniqueConstraint
+from sqlalchemy import Integer, ForeignKey, UniqueConstraint, select
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.base import BaseModel
@@ -8,6 +8,7 @@ from app.db.models.base import BaseModel
 if TYPE_CHECKING:
     from app.db.models.user import User
     from app.db.models.company import Company
+    from app.db.models.job_post import JobPost
 
 
 class CompanyMember(BaseModel):
@@ -31,6 +32,14 @@ class CompanyMember(BaseModel):
     )
 
     @classmethod
+    async def get_from_company(cls: Type["CompanyMember"], session: AsyncSession, company: "Company") -> Sequence["CompanyMember"]:
+        members = await cls.filter_by(
+            session=session,
+            company_id=company.id
+        )
+        return members if members else []
+
+    @classmethod
     async def get_from_user_and_company(cls: Type["CompanyMember"], session: AsyncSession, user: "User", company: "Company") -> Optional["CompanyMember"]:
         member = await cls.find_one_by(
             session=session,
@@ -38,6 +47,17 @@ class CompanyMember(BaseModel):
             company_id=company.id
         )
         return member
+
+    @classmethod
+    async def get_from_job_post(cls: Type["CompanyMember"], session: AsyncSession, job_post_id: int) -> Sequence["CompanyMember"]:
+        stmt = (
+            select(CompanyMember)
+            .join(Company, Company.id == CompanyMember.company_id)
+            .join(JobPost, JobPost.company_id == Company.id)
+            .where(JobPost.id == job_post_id)
+        )
+        result = await session.execute(stmt)
+        return result.scalars().unique().all()
 
     @classmethod
     async def add_member_or_raise(cls: Type["CompanyMember"], session: AsyncSession, user: "User", company: "Company") -> "CompanyMember":
