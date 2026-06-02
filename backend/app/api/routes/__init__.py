@@ -7,6 +7,7 @@ from app.api.routes.auth import router as auth_router
 from app.api.routes.job_applications import router as job_application_router
 from app.api.routes.chats import router as chat_router
 from app.api.routes.job_categories import router as job_categories_router
+from app.api.routes.conversations import router as conversations_router
 
 router = APIRouter()
 
@@ -26,4 +27,7 @@ router.include_router(
 )
 router.include_router(
     job_categories_router, prefix="/job-categories", tags=["job-categories"]
+)
+router.include_router(
+    conversations_router, prefix="/conversations", tags=["conversations"]
 )
