@@ -33,12 +33,19 @@ class ConversationParticipant(BaseModel):
     )
 
     @classmethod
+    async def get_from_user(cls: Type["ConversationParticipant"], session: AsyncSession, user_id: int) -> Sequence["ConversationParticipant"]:
+        cps = await cls.filter_by(
+            session=session,
+            user_id=user_id
+        )
+        return cps
+
+    @classmethod
     async def get_from_conversation(
         cls: Type["ConversationParticipant"], session: AsyncSession, conversation: "Conversation"
     ) -> Sequence["ConversationParticipant"]:
         cps = await cls.filter_by(session=session, conversation_id=conversation.id)
-
-        return cps if cps else []
+        return cps
 
     @classmethod
     async def get_from_user_and_conversation(cls: Type["ConversationParticipant"], session: AsyncSession, user_id: int, conversation_id: int) -> Optional["ConversationParticipant"]:
@@ -58,3 +65,4 @@ class ConversationParticipant(BaseModel):
             for uid in user_ids
         ]).on_conflict_do_nothing()
         await session.execute(stmt)
+        await session.commit()
