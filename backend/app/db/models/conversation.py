@@ -55,10 +55,13 @@ class Conversation(BaseModel):
     async def get_from_user(
         cls, session: AsyncSession, user_id: int
     ) -> Sequence["Conversation"]:
+        from app.db.models import ConversationParticipant
+
         stmt = (
             select(cls)
             .join(ConversationParticipant, ConversationParticipant.conversation_id == cls.id)
             .where(ConversationParticipant.user_id == user_id)
+            .order_by(cls.id)
         )
         loaders = cls._generate_nested_loaders(
             relations=CONVERSATION_DETAIL_RELATIONS)
