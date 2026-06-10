@@ -1,7 +1,6 @@
 import json
 
 from app.db.session import AsyncSessionLocal
-from app.db.models.user import User
 
 from app.schemas.messages.create import MessageCreateModel
 
@@ -16,8 +15,10 @@ class MessageJob:
     @staticmethod
     async def save_and_broadcast(message_data: dict):
         async with AsyncSessionLocal() as session:
+            from app.services.user_service import UserService
             # create message
-            user: User = message_data["user"]
+            user_id = message_data["user_id"]
+            user = await UserService.get_from_id(session=session, id=user_id)
             msg = await MessageService.create_message(
                 session=session,
                 data=MessageCreateModel(
@@ -44,6 +45,6 @@ class MessageJob:
                 "id": msg.id,
                 "body": msg.body,
                 "sender_id": msg.sender_id,
-                "recipent_ids": recipient_ids,
+                "recipient_ids": recipient_ids,
                 "conversation_id": msg.conversation_id,
             }))
