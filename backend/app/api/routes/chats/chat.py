@@ -1,6 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from app.ws_manager import manager
-from app.workers.base_worker import run_async_job
 from app.api.dependencies.user_required import user_required
 from app.db.models import User
 
@@ -10,6 +9,8 @@ router = APIRouter()
 @router.websocket("")
 async def websocket_endpoint(websocket: WebSocket, conversation_id: int, user: User = Depends(user_required)):
     try:
+        await manager.connect(user.id, websocket)
+
         while True:
             data = await websocket.receive_json()
 
@@ -20,14 +21,10 @@ async def websocket_endpoint(websocket: WebSocket, conversation_id: int, user: U
             })
 
             from app.queues.message_queue import enqueue_message
-            from app.workers.job_queues import message_queue
 
-            message_queue.enqueue(
-                run_async_job,
-                enqueue_message,
-                # message_data
+            enqueue_message(
                 {
-                    "user": user,
+                    "user_id": user.id,
                     "conversation_id": conversation_id,
                     "body": data["body"]
                 }
