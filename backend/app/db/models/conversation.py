@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from app.db.models.message import Message
     from app.db.models.conversation_participant import ConversationParticipant
 
-CONVERSATION_DETAIL_RELATIONS = ["messages"]
+CONVERSATION_DETAIL_RELATIONS = ["messages", "applicant", "job_post", "users"]
 
 
 class Conversation(BaseModel):
@@ -33,6 +33,16 @@ class Conversation(BaseModel):
     participants: Mapped[list["ConversationParticipant"]] = relationship(
         "ConversationParticipant",
         back_populates="conversation",
+    )
+
+    users: Mapped[list["User"]] = relationship(
+        "User",
+        secondary="conversation_participants",
+        primaryjoin="Conversation.id == ConversationParticipant.conversation_id",
+        secondaryjoin="ConversationParticipant.user_id == User.id",
+        viewonly=True,
+        lazy="noload",
+        overlaps="applicant,conversation_participants,participants"
     )
 
     messages: Mapped[list["Message"]] = relationship(
